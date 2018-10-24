@@ -4,12 +4,12 @@ Created on Tue May 17 17:31:33 2016
 
 @author: bmazoyer, dshi, hbaud, vlefranc
 """
-import json
+# import json
 import logging
 import requests
-from datetime import datetime
+# from datetime import datetime
 from twython import TwythonStreamer
-from config import ACCESS, FILEDIR, FILEBREAK, PROXY, LANG, MONGODB
+from config import ACCESS, PROXY, LANG, MONGODB
 from pymongo import MongoClient
 
 # connect to MongoDB
@@ -32,7 +32,7 @@ class SampleStreamer(TwythonStreamer):
 
         self.do_continue = True
         self.line_count = 0
-        self.current_file = FILEDIR + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
+        # self.current_file = FILEDIR + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
         if PROXY:
             client_args = {
                 'proxies': PROXY
