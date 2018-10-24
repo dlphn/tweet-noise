@@ -31,6 +31,7 @@ class SampleStreamer(TwythonStreamer):
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
 
         self.do_continue = True
+        self.count = 0
         self.line_count = 0
         # self.current_file = FILEDIR + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
         if PROXY:
@@ -48,8 +49,9 @@ class SampleStreamer(TwythonStreamer):
         :param data: response from Twitter API (one tweet in json format)
         """
 
-        result = db.tweets.insert_one(data)
-        logging.info("Added {}".format(result.inserted_id))
+        db.tweets.insert_one(data)
+        self.count += 1
+        logging.info("Total of {} elements added".format(self.count))
 
         # with open(self.current_file, "a+", encoding='utf-8') as f:
         #     json.dump(data, f)
