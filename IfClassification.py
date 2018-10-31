@@ -8,7 +8,7 @@ class IfClassification:
 
     def __init__(self):
 
-        self.current_file = 'C:\\Users\\Hélène\\Downloads\\tweets_2018-10-31T09_24_43.923494.txt'
+        self.current_file = '/Users/delphineshi/Downloads/temp/tweets_2018-10-31T10:29:59.502392.txt'
         self.nf_line_count =0
         self.new_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
 
@@ -34,7 +34,7 @@ class IfClassification:
                 self.spam = re.sub("['\\n]",'', data_split[10])
                 print(self.spam)
                 with open(self.new_file, "a+", encoding='utf-8') as nf:
-                    nf.write(data + classification(self) + "\n")
+                    nf.write(ligne + self.classification() + "\n")
                 self.nf_line_count += 1
 
                 if self.nf_line_count > FILEBREAK:
@@ -42,10 +42,8 @@ class IfClassification:
                     self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
                     self.nf_line_count = 0
 
-
-
     def classification(self):
-        potentialspam = true
+        potentialspam = "true"
         verdict =0
         if self.nb_emoji == 0 :
             if self.proportion_spamword < 0.1 :
@@ -54,7 +52,7 @@ class IfClassification:
                         potentialspam = "false"
         if potentialspam == self.spam :
             verdict =1
-        return potentialspam + ","+ verdict
+        return potentialspam + ","+ str(verdict)
 
 
 fichier = IfClassification()
