@@ -22,17 +22,17 @@ class IfClassification:
                 data_split = ligne.split(',')
                 print (data_split)
                 self.id = re.sub("'",'', data_split[0])
-                self.nb_follower = re.sub("'",'', data_split[1])
-                self.nb_following = re.sub("'",'', data_split[2])
+                self.nb_follower = int(re.sub("'",'', data_split[1]))
+                self.nb_following = int(re.sub("'",'', data_split[2]))
                 self.verified = re.sub("'",'', data_split[3])
-                self.reputation = re.sub("'",'', data_split[4])
+                self.reputation = float(re.sub("'",'', data_split[4]))
                 self.age = re.sub("'",'', data_split[5])
-                self.nb_tweets = re.sub("'",'', data_split[6])
+                self.nb_tweets = int(re.sub("'",'', data_split[6]))
                 self.time = re.sub("'",'', data_split[7])
-                self.proportion_spamwords= re.sub("'",'', data_split[8])
-                self.orthographe= re.sub("'",'', data_split[9])
-                self.nb_emoji= re.sub("'",'', data_split[10])
-                self.RT = re.sub("'",'', data_split[11])
+                self.proportion_spamwords= float(re.sub("'",'', data_split[8]))
+                self.orthographe= float(re.sub("'",'', data_split[9]))
+                self.nb_emoji= int(re.sub("'",'', data_split[10]))
+                self.RT = re.sub("[\"']",'', data_split[11])
                 self.spam = re.sub("[\"'\\n]", '', data_split[12])
                 with open(self.new_file, "a+", encoding='utf-8') as nf:
                     nf.write(ligne + self.classification() + "\n")
@@ -46,10 +46,10 @@ class IfClassification:
     def classification(self):
         potentialspam = "true"
         verdict =0
-        if int(self.nb_emoji) == 0 :
-            if float(self.proportion_spamwords) < 0.1 :
-                if float(self.orthographe) > 0.5 :
-                    if self.RT == "\"true\"":
+        if self.nb_emoji == 0 :
+            if self.proportion_spamwords < 0.1 :
+                if self.orthographe > 0.5 :
+                    if self.RT == "true":
                         potentialspam = "false"
         if potentialspam == self.spam:
             verdict = 1
