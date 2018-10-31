@@ -72,7 +72,7 @@ class FeaturesBuilder:
         message_min = message.lower()
         message_min_sansaccent = unidecode.unidecode(message_min)
         liste_mot = message.split()
-        emojiList = [":)", ":(", ":P", ":-*", "XD"]
+        emojiList = [":)", ":(", ":P", ":-*", "XD", "^^"]
         emoji = 0
         spamwords = ["sexe", "hot", "sexy", "chaud", "viagra", "cure", "sexuel", "hormone", "perdre du poids", "regime",
              "rides", "agrandissez votre penis", "performance", "celibataires","casino", "blackjack", "poker", "jetons", "roulette",
