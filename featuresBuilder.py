@@ -11,6 +11,7 @@ from config import FILEDIR, FILEBREAK, MONGODB
 from pymongo import MongoClient
 import enchant
 import unidecode
+import time
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -25,12 +26,13 @@ class FeaturesBuilder:
         self.do_continue = True
         self.count = 0
         self.line_count = 0
-        self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
+        self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
         # connect to MongoDB
         client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
 
     def retrieve(self):
+        start = time.time()
         logging.info("Retrieving data...")
         tweets = self.db.tweets.find({"spam": {"$exists": True}})
         logging.info("Building features file...")
@@ -39,7 +41,8 @@ class FeaturesBuilder:
             self.write(obj)
             if self.count % 100 == 0:
                 logging.info("{} elements retrieved".format(self.count))
-        logging.info("Total of {} elements retrieved".format(self.count))
+        end = time.time()
+        logging.info("Total of {0} elements retrieved in {1} seconds".format(self.count, end - start))
 
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
@@ -76,7 +79,7 @@ class FeaturesBuilder:
         result += "," + ("%.2f" % round(reputation, 2))
         result += "," + str(age)
         result += "," + str(user["statuses_count"])
-        result += "," + posted_at
+        result += "," + "\"" + posted_at + "\""
         return result
 
     @staticmethod
