@@ -9,14 +9,14 @@ keywords_list = [
     'nouveaux clients uniquement', 'obtenez-le maintenant', 'offre exclusive', 'opportunite', 'pas de frais',
     'paypal', 'postulez', 'pour seulement', 'prix les plus bas', "profitez aujourd'hui", 'promotion speciale',
     'quantites limitees', 'réduction', 'sans engagement', 'sans frais', 'spam', "taux d'interet", 'temps limite',
-    'unique'
+    'unique',
 
     # Mots Spam corps et sexualité
     'bite', 'celibataires', 'chaud', 'cul', 'cure', 'hormone', 'hot', 'perdre du poids', 'penis',
-    'performance', 'regime', 'rides', 'sexe', 'sexuel', 'sexy', 'viagra'
+    'performance', 'regime', 'rides', 'sexe', 'sexuel', 'sexy', 'viagra',
 
     #Mots Spam Jeux d'argent
-    'blackjack', 'casino', 'jetons', 'poker', 'roulette'
+    'blackjack', 'casino', 'jetons', 'poker', 'roulette',
 
     #Mots Spam Twitter
     'hashtag', 'tweet',
