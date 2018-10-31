@@ -16,7 +16,7 @@ keywords_list = [
     'performance', 'regime', 'rides', 'sexe', 'sexuel', 'sexy', 'viagra',
 
     #Mots Spam Jeux d'argent
-    'blackjack', 'casino', 'jetons', 'poker', 'roulette',
+    'blackjack', 'casino', 'jetons', 'poker', 'roulette', 'parier', 'bet',
 
     #Mots Spam Twitter
     'hashtag', 'tweet',
