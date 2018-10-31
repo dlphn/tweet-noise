@@ -1,6 +1,6 @@
 keywords_list = [
     # Mots Spam Arnaques & Bots
-    '100% gratuit', 'acces gratuit', 'agissez des maintenant', 'annulation à tout moment', 'annulez à tout moment',
+    '100% gratuit', 'acces gratuit', 'agissez des maintenant', 'annulation a tout moment', 'annulez a tout moment',
     'aucun cout', 'aucun engagement', 'aucun risque', 'bon plan', 'bonne affaire', 'cadeau',
     'carte bancaire', 'carte de credit', 'cartes acceptees', 'cb', 'certifie', 'cheque', 'cliquez', 'cliquez ici',
     'commandez aujourd’hui', 'commandez maintenant', 'devenez membre', 'duree limite', 'echantillon gratuit',
@@ -12,7 +12,7 @@ keywords_list = [
     'unique',
 
     # Mots Spam corps et sexualité
-    'bite', 'celibataires', 'chaud', 'cul', 'cure', 'hormone', 'hot', 'perdre du poids', 'penis',
+    'bite', 'celibataire', 'chaud', 'cul', 'cure', 'fesse', 'hormone', 'hot', 'maigrir', 'perdre du poids', 'penis',
     'performance', 'regime', 'rides', 'sexe', 'sexuel', 'sexy', 'viagra',
 
     #Mots Spam Jeux d'argent
@@ -25,6 +25,7 @@ keywords_list = [
     'concours', 'euros', 'jeu', 'maintenant', 'offre exclusive', 'promotion', "seulement aujourd'hui",
 
     #Mots Spam conversations privées
-    'ahah', 'buzzword', 'chiant', 'cool', 'dab', 'galere', 'gueule', 'haha', 'hahaha', 'hahahaha', 'hahahahaha', 'hihi',
-    'lol', 'maj', 'mdr', 'mec', 'meuf', 'ok', 'oups', 'ptdr', 'relou', 'srab', 'wallah', 'wesh', 'xd', 'yolo'
+    'ahah', 'bisous', 'buzzword', 'chiant', 'cool', 'dab', 'galere', 'gueule', 'haha', 'hahaha', 'hahahaha',
+    'hahahahaha', 'hihi', 'lol', 'maj', 'mdr', 'mec', 'meuf', 'nana', 'ok', 'oups', 'ptdr', 'relou', 'srab',
+    'wallah', 'wesh', 'xd', 'yes', 'yolo'
                  ]
