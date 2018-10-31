@@ -32,7 +32,7 @@ class FeaturesBuilder:
 
     def retrieve(self):
 
-        for obj in self.db.tweets.find():
+        for obj in self.db.tweets.find({"spam": {"$exists": True}}):
             self.count += 1
             self.write(obj)
         logging.info("Total of {} elements retrieved".format(self.count))
@@ -40,10 +40,11 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"nb_follower\" \"nb_following\" \"verified\" \"reputation\" \"age\" \"nb_tweets\" \"proportion_spamwords\" \"orthographe\" \"nb_emoji\" \"RT\" \n")
+                f.write("\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"proportion_spamwords\",\"orthographe\",\"nb_emoji\",\"RT\",\"spam\"\n")
             f.write(
                 self.user_features(data) +
                 self.information_contenu(data) +
+                "," + ("\"true\"" if data["spam"] else "\"false\"") +
                 "\n")
         self.line_count += 1
 
@@ -58,14 +59,13 @@ class FeaturesBuilder:
         now = datetime.now(timezone.utc)
         age = (now - created_at).days
         reputation = user["followers_count"]/(user["followers_count"] + user["friends_count"])
-        result = str(user["followers_count"]) + " "
-        result += str(user["friends_count"]) + " "
-        result += ("\"true\"" if user["verified"] else "\"false\"") + " "
-        result += ("%.2f" % round(reputation, 2)) + " "
-        result += str(age) + " "
-        result += str(user["statuses_count"])
+        result = str(user["followers_count"])
+        result += "," + str(user["friends_count"])
+        result += "," + ("\"true\"" if user["verified"] else "\"false\"")
+        result += "," + ("%.2f" % round(reputation, 2))
+        result += "," + str(age)
+        result += "," + str(user["statuses_count"])
         return result
-
 
     def information_contenu(self, data):
         message = data['text']
@@ -105,7 +105,7 @@ class FeaturesBuilder:
         if 'RT @' in message:
             rt = True
 
-        return " " + str(ratio_spamword) + " " + str(ratio_orth) + " " + str(emoji) + " " + ("\"true\"" if rt else "\"false\"")
+        return "," + str(ratio_spamword) + "," + str(ratio_orth) + "," + str(emoji) + "," + ("\"true\"" if rt else "\"false\"")
 
 
 if __name__ == "__main__":
