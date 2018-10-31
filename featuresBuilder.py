@@ -44,8 +44,9 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"proportion_spamwords\",\"orthographe\",\"nb_emoji\",\"RT\",\"spam\"\n")
+                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"time\",\"proportion_spamwords\",\"orthographe\",\"nb_emoji\",\"RT\",\"spam\"\n")
             f.write(
+                data["id_str"] +
                 self.user_features(data) +
                 self.information_contenu(data) +
                 "," + ("\"true\"" if data["spam"] else "\"false\"") +
@@ -63,13 +64,19 @@ class FeaturesBuilder:
         created_at = datetime.strptime(user["created_at"], '%a %b %d %H:%M:%S %z %Y')
         now = datetime.now(timezone.utc)
         age = (now - created_at).days
-        reputation = user["followers_count"]/(user["followers_count"] + user["friends_count"])
-        result = str(user["followers_count"])
+        if user["followers_count"] + user["friends_count"] > 0:
+            reputation = user["followers_count"]/(user["followers_count"] + user["friends_count"])
+        else:
+            reputation = 0
+        ts = int(data["timestamp_ms"])/1000
+        posted_at = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')
+        result = "," + str(user["followers_count"])
         result += "," + str(user["friends_count"])
         result += "," + ("\"true\"" if user["verified"] else "\"false\"")
         result += "," + ("%.2f" % round(reputation, 2))
         result += "," + str(age)
         result += "," + str(user["statuses_count"])
+        result += "," + posted_at
         return result
 
     @staticmethod
