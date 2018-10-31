@@ -31,10 +31,14 @@ class FeaturesBuilder:
         self.db = client[MONGODB["DATABASE"]]
 
     def retrieve(self):
-
-        for obj in self.db.tweets.find({"spam": {"$exists": True}}):
+        logging.info("Retrieving data...")
+        tweets = self.db.tweets.find({"spam": {"$exists": True}})
+        logging.info("Building features file...")
+        for obj in tweets:
             self.count += 1
             self.write(obj)
+            if self.count % 100 == 0:
+                logging.info("{} elements retrieved".format(self.count))
         logging.info("Total of {} elements retrieved".format(self.count))
 
     def write(self, data):
@@ -53,7 +57,8 @@ class FeaturesBuilder:
             self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
             self.line_count = 0
 
-    def user_features(self, data):
+    @staticmethod
+    def user_features(data):
         user = data["user"]
         created_at = datetime.strptime(user["created_at"], '%a %b %d %H:%M:%S %z %Y')
         now = datetime.now(timezone.utc)
@@ -67,7 +72,8 @@ class FeaturesBuilder:
         result += "," + str(user["statuses_count"])
         return result
 
-    def information_contenu(self, data):
+    @staticmethod
+    def information_contenu(data):
         message = data['text']
         message_min = message.lower()
         message_min_sansaccent = unidecode.unidecode(message_min)
@@ -105,7 +111,11 @@ class FeaturesBuilder:
         if 'RT @' in message:
             rt = True
 
-        return "," + str(ratio_spamword) + "," + str(ratio_orth) + "," + str(emoji) + "," + ("\"true\"" if rt else "\"false\"")
+        result = "," + ("%.2f" % round(ratio_spamword, 2))
+        result += "," + ("%.2f" % round(ratio_orth, 2))
+        result += "," + str(emoji)
+        result += "," + ("\"true\"" if rt else "\"false\"")
+        return result
 
 
 if __name__ == "__main__":
