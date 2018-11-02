@@ -12,6 +12,7 @@ from pymongo import MongoClient
 import enchant
 import unidecode
 import time
+import re
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -87,7 +88,7 @@ class FeaturesBuilder:
         message = data['text']
         message_min = message.lower()
         message_min_sansaccent = unidecode.unidecode(message_min)
-        liste_mot = message.split()
+        liste_mot = re.sub("[,.#]",'', message_min).split()
         emojiList = [":)", ":(", ":P", ":-*", "XD", "^^"]
         emoji = 0
         spamwords = ["sexe", "hot", "sexy", "chaud", "viagra", "cure", "sexuel", "hormone", "perdre du poids", "regime",
