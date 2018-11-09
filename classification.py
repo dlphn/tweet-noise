@@ -20,7 +20,7 @@ df = pd.read_csv(current_file, encoding="utf-8")
 # print(df.describe())
 
 columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'time', 'proportion_spamwords',
-       'orthographe', 'nb_emoji', 'RT', 'spam']
+           'orthographe', 'nb_emoji', 'RT', 'spam']
 df_tweets = df[columns]
 
 
@@ -30,12 +30,13 @@ def categorize_proportion(x):
     else:
         return 0
 
+
 def categorize_spamword(x):
-    if x < 0.1 :
+    if x < 0.1:
         return 0
-    elif x < 0.2 :
+    elif x < 0.2:
         return 1
-    else :
+    else:
         return 3
 
 
@@ -66,40 +67,41 @@ def categorize_time(x):
     else:
         return 'nuit'
 
+
 def categorize_follower_following(x):
-    if x < 100 :
+    if x < 100:
         return 0
-    elif x < 300 :
+    elif x < 300:
         return 1
-    elif x < 6000 :
+    elif x < 6000:
         return 2
-    else :
+    else:
         return 3
 
+
 def categorize_age(x):
-     if x < 180 :
-         return 0
-     if x < 730 :
-         return 1
-     if x < 2190 :
-         return 2
-     else :
-         return 3
+    if x < 180:
+        return 0
+    if x < 730:
+        return 1
+    if x < 2190:
+        return 2
+    else:
+        return 3
+
 
 def categorize_nb_tweets(x):
-    if x < 1000 :
+    if x < 1000:
         return 0
-    if x < 10000 :
+    if x < 10000:
         return 1
-    else :
+    else:
         return 2
-
 
 
 def categorize_columns(cols, func):
     for col in cols:
         df_tweets_categorized[col] = df_tweets[col].apply(func)
-        
 
 
 df_tweets_categorized = df_tweets.copy(deep=True)
@@ -110,7 +112,6 @@ categorize_columns(['time'], categorize_time)
 categorize_columns(['nb_follower', 'nb_following'], categorize_follower_following)
 categorize_columns(['age'], categorize_age)
 categorize_columns(['nb_tweets'], categorize_nb_tweets)
-
 
 print(df_tweets_categorized.head())
 
@@ -128,7 +129,6 @@ def label_encode(data_frame, cols):
         le.classes_
         col_values_transformed = le.transform(col_values)
         data_frame[col] = col_values_transformed
-
 
 # df_tweets_ohe = df_tweets.copy(deep=True)
 # to_be_encoded_cols = df_tweets_ohe.columns.values
