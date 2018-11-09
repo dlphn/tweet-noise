@@ -8,12 +8,13 @@ Created on Wed Oct 31 14:28 2018
 import pandas as pd
 import datetime
 from config import FILEDIR
+import os
 
 from sklearn.preprocessing import LabelEncoder
 
 pd.set_option('display.width', None)
 
-current_file = FILEDIR + "tweets_2018-10-31T14:25:32.735253.csv";
+current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-05T22_47_26.114536.csv";
 df = pd.read_csv(current_file, encoding="utf-8")
 # print(df.head())
 # print(df.describe())
@@ -85,11 +86,20 @@ def categorize_age(x):
      else :
          return 3
 
+def categorize_nb_tweets(x):
+    if x < 1000 :
+        return 0
+    if x < 10000 :
+        return 1
+    else :
+        return 2
+
 
 
 def categorize_columns(cols, func):
     for col in cols:
         df_tweets_categorized[col] = df_tweets[col].apply(func)
+        
 
 
 df_tweets_categorized = df_tweets.copy(deep=True)
@@ -99,6 +109,8 @@ categorize_columns(['verified', 'RT', 'spam'], categorize_bool)
 categorize_columns(['time'], categorize_time)
 categorize_columns(['nb_follower', 'nb_following'], categorize_follower_following)
 categorize_columns(['age'], categorize_age)
+categorize_columns(['nb_tweets'], categorize_nb_tweets)
+
 
 print(df_tweets_categorized.head())
 
