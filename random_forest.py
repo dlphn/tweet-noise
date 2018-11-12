@@ -1,5 +1,5 @@
 """Ce modèle sur représente les spams. Trop de faux positif (1 au lieu de 0).
-A voir si on peut donner un poid plus important aux données d'entrainement ou y == 0"""
+j'ai donné un poids 5 fois plus important aux données d'entrainement où y == 0. Peu concluant..."""
 
 # Required Python Packages
 import pandas as pd
