@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Nov 12 10:55 2018
+
+@author: dshi, hbaud, vlefranc
+"""
+
 """Weight de l'algorithm uniform ou distance, à voir --> faire bcp de repetition pour voir le meilleur score.
 Toujours un problème de faux positif !"""
 

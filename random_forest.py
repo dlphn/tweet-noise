@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Nov 11 10:55 2018
+
+@author: dshi, hbaud, vlefranc
+"""
+
 """Ce modèle sur représente les spams. Trop de faux positif (1 au lieu de 0).
 j'ai donné un poids 5 fois plus important aux données d'entrainement où y == 0. Peu concluant..."""
 
