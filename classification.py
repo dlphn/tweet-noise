@@ -14,7 +14,7 @@ from sklearn.preprocessing import LabelEncoder
 
 pd.set_option('display.width', None)
 
-current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-05T22_47_26.114536.csv";
+current_file = FILEDIR + "tweets_2018-11-05T22:47:26.114536.csv";
 df = pd.read_csv(current_file, encoding="utf-8")
 # print(df.head())
 # print(df.describe())
@@ -29,6 +29,7 @@ def categorize_proportion(x):
         return 1
     else:
         return 0
+
 
 def categorize_spamword(x):
     if x < 0.1 :
@@ -66,40 +67,41 @@ def categorize_time(x):
     else:
         return 4
 
+
 def categorize_follower_following(x):
-    if x < 100 :
+    if x < 100:
         return 0
-    elif x < 300 :
+    elif x < 300:
         return 1
-    elif x < 6000 :
+    elif x < 6000:
         return 2
     else :
         return 3
 
+
 def categorize_age(x):
-     if x < 180 :
+     if x < 180:
          return 0
-     if x < 730 :
+     if x < 730:
          return 1
-     if x < 2190 :
+     if x < 2190:
          return 2
-     else :
+     else:
          return 3
+
 
 def categorize_nb_tweets(x):
     if x < 1000 :
         return 0
     if x < 10000 :
         return 1
-    else :
+    else:
         return 2
-
 
 
 def categorize_columns(cols, func):
     for col in cols:
         df_tweets_categorized[col] = df_tweets[col].apply(func)
-
 
 
 df_tweets_categorized = df_tweets.copy(deep=True)
