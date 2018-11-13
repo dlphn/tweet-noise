@@ -24,7 +24,7 @@ dict_classifiers = {
     "Logistic Regression": LogisticRegression(),
     "Nearest Neighbors": KNeighborsClassifier(n_neighbors=K_value, weights='distance', algorithm='auto'),
     "Linear SVM": SVC(gamma='scale', class_weight={0: 10, 1: 1}),
-    "Random Forest": RandomForestClassifier(n_estimators=1000),
+    "Random Forest": RandomForestClassifier(class_weight={0: 5, 1: 1}),
     "Naive Bayes": GaussianNB(),
 }
 dict_models = {}
@@ -79,9 +79,10 @@ def predict(dataset, classifier):
     train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[1:-1], HEADERS[-1])
     clf = classify(classifier, dict_classifiers[classifier], train_x, test_x, train_y, test_y)
     pred_y = clf.predict(test_x)
+    print("Train Accuracy :: ", accuracy_score(train_y, clf.predict(train_x)))
+    print("Test Accuracy  :: ", accuracy_score(test_y, pred_y))
     cm = pd.DataFrame(confusion_matrix(test_y, pred_y), columns=[0, 1], index=[0, 1])
-    print("Accuracy (test score) is ", accuracy_score(test_y, pred_y) * 100,
-          "\nActu catégorisées Actu = {}, Actu catégorisées Spam={}. Ratio={} ".format(cm[0][0], cm[1][0], cm[0][0]/(cm[0][0]+cm[1][0])))
+    print("Actu catégorisées Actu = {}, Actu catégorisées Spam = {}. Ratio = {} ".format(cm[0][0], cm[1][0], cm[0][0]/(cm[0][0]+cm[1][0])))
     print(cm)
 
 
@@ -89,4 +90,5 @@ predict(tweets, "Naive Bayes")
 predict(tweets, "Linear SVM")
 predict(tweets, "Nearest Neighbors")
 predict(tweets, "Random Forest")
+print("\n========================= Results ========================= ")
 display_dict_models(dict_models)
