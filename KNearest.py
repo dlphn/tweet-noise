@@ -48,7 +48,7 @@ def KNeighbors (n):
                "\nActu catégorisées Actu = {}, Actu catégorisées Spam={}".format(cm[0][0],cm[1][0]))
 
 
-#KNeighbors(7)
+KNeighbors(7)
 
 def choose_features ():
     cm_max = 0
@@ -78,4 +78,4 @@ def choose_features ():
 
 
 
-choose_features()
+#choose_features()

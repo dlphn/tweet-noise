@@ -11,7 +11,7 @@ columns = dataframe.columns.values.tolist()
 
 
 y = dataframe.iloc[:,-1]
-"""for i in [1,2,4,5] :
+for i in [1,2,4,5] :
     X = dataframe.iloc[:, i]
     if i == 5 :
         j = 3
@@ -30,9 +30,9 @@ for i in [6,7,8,9] :
     plt.xlabel('Paramètre {}'.format(columns[i]))
     plt.ylabel('Spam')
 plt.show()
-"""
+
 i=0
-for n in [3,10,11] :
+for n in [3,8,10,11] :
     i +=1
     x = dataframe.iloc[:, n]
     c = Counter(zip(x, y))
