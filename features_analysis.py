@@ -11,7 +11,7 @@ columns = dataframe.columns.values.tolist()
 
 
 y = dataframe.iloc[:,-1]
-for i in [1,2,4,5] :
+"""for i in [1,2,4,5] :
     X = dataframe.iloc[:, i]
     if i == 5 :
         j = 3
@@ -30,13 +30,14 @@ for i in [6,7,8,9] :
     plt.xlabel('Paramètre {}'.format(columns[i]))
     plt.ylabel('Spam')
 plt.show()
-
+"""
 i=0
 for n in [3,10,11] :
     i +=1
     x = dataframe.iloc[:, n]
     c = Counter(zip(x, y))
-    s = [ 0.5*c[(xx, yy)] for xx, yy in zip(x, y)]
+    a = Counter ( y )
+    s = [ 30*c[(xx, yy)]/a [(yy)] for xx, yy in zip(x, y)]
     plt.subplot(2,2,i)
     plt.scatter(x, y, s=s)
     plt.xlabel('Paramètre {}'.format(columns[n]))
