@@ -48,4 +48,34 @@ def KNeighbors (n):
                "\nActu catégorisées Actu = {}, Actu catégorisées Spam={}".format(cm[0][0],cm[1][0]))
 
 
-KNeighbors(7)
+#KNeighbors(7)
+
+def choose_features ():
+    cm_max = 0
+    acc_max = 0
+    (a,b) = (0,0)
+    (c,d) = (0,0)
+    for i in range (1,len(HEADERS)-1):
+        for j in range (i) :
+            train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[j:i], HEADERS[-1])
+            #print(train_x.shape)
+            acc_sum = 0
+            cm_sum = 0
+            for k in range (20):
+                neigh = K_Neighbors_classifier(int(k//5)+1, train_x, train_y)
+                pred_y = neigh.predict(test_x)
+                cm = pd.DataFrame(confusion_matrix(test_y, pred_y), columns=[0, 1], index=[0, 1])
+                acc_sum = acc_sum + accuracy_score(test_y,pred_y)
+                cm_sum = cm_sum + cm[0][0]/(cm[1][0]+cm[0][0])
+            if acc_sum/20 > acc_max :
+                acc_max = acc_sum/20
+                (a,b)=(j,i)
+            if cm_sum/20 > cm_max :
+                cm_max = cm_sum/20
+                print(cm_max)
+                (c,d)=(j,i)
+    print (acc_max, (a,b),cm_max, (c,d) )
+
+
+
+choose_features()

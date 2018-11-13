@@ -28,7 +28,7 @@ class Classification :
         self.df_tweets = df[self.columns]
         #print(df_tweets.head())
         self.df_tweets_categorized = self.df_tweets.copy(deep=True)
-        self.categorize_columns(['reputation'], self.categorize_proportion())
+        self.categorize_columns(['reputation'], self.categorize_proportion)
         self.categorize_columns(['orthographe'], self.categorize_proportion)
         self.categorize_columns(['proportion_spamwords'], self.categorize_spamword)
         self.categorize_columns(['verified'], self.categorize_bool)
@@ -40,16 +40,16 @@ class Classification :
         self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
         # print(df_tweets_categorized.head())
         # print(type(df_tweets_categorized))
-        return df_tweets_categorized
+        return self.df_tweets_categorized.head()
 
 
-    def categorize_proportion(x):
+    def categorize_proportion(self,x):
         if x > 0.5:
             return 1
         else:
             return 0
 
-    def categorize_spamword(x):
+    def categorize_spamword(self,x):
         if x < 0.1 :
             return 0
         elif x < 0.2 :
@@ -58,14 +58,14 @@ class Classification :
             return 3
 
 
-    def categorize_bool(x):
+    def categorize_bool(self,x):
         if x:
             return 1
         else:
             return 0
 
 
-    def categorize_time(x):
+    def categorize_time(self,x):
         now = datetime.datetime.now()
         today8am = now.replace(hour=8, minute=0, second=0, microsecond=0)
         todaynoon = now.replace(hour=12, minute=0, second=0, microsecond=0)
@@ -85,7 +85,7 @@ class Classification :
         else:
             return 4
 
-    def categorize_follower_following(x):
+    def categorize_follower_following(self,x):
         if x < 100 :
             return 0
         elif x < 300 :
@@ -95,7 +95,7 @@ class Classification :
         else :
             return 3
 
-    def categorize_age(x):
+    def categorize_age(self,x):
          if x < 180 :
              return 0
          if x < 730 :
@@ -105,7 +105,7 @@ class Classification :
          else :
              return 3
 
-    def categorize_nb_tweets(x):
+    def categorize_nb_tweets(self,x):
         if x < 1000 :
             return 0
         if x < 10000 :
@@ -114,16 +114,14 @@ class Classification :
             return 2
 
 
-    def categorize_columns(cols, func):
+    def categorize_columns(self,cols, func):
+        #print(cols)
         for col in cols:
             self.df_tweets_categorized[col] = self.df_tweets[col].apply(func)
+            #print(self.df_tweets[col])
 
 classification= Classification()
 classification.create_dataframe()
-
-
-
-
 
 
 
