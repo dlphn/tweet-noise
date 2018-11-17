@@ -26,7 +26,7 @@ class Classification :
         #print(df.head())
         #  print(df.describe())
         self.df_tweets = df[self.columns]
-        #print(df_tweets.head())
+        #print(self.df_tweets)
         self.df_tweets_categorized = self.df_tweets.copy(deep=True)
         self.categorize_columns(['reputation'], self.categorize_proportion)
         self.categorize_columns(['orthographe'], self.categorize_proportion)
@@ -38,9 +38,9 @@ class Classification :
         self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
         self.categorize_columns(['age'], self.categorize_age)
         self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
-        # print(df_tweets_categorized.head())
-        # print(type(df_tweets_categorized))
-        return self.df_tweets_categorized.head()
+        #print(self.df_tweets_categorized.head())
+        #print(type(df_tweets_categorized))
+        return self.df_tweets_categorized
 
 
     def categorize_proportion(self,x):
@@ -120,8 +120,8 @@ class Classification :
             self.df_tweets_categorized[col] = self.df_tweets[col].apply(func)
             #print(self.df_tweets[col])
 
-classification= Classification()
-classification.create_dataframe()
+#classification= Classification()
+#classification.create_dataframe()
 
 
 

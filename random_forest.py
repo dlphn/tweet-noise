@@ -14,12 +14,14 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 
-from classification import *
+from classification2 import Classification
+
+
 
 """Ce modèle sur représente les spams. Trop de faux positif (1 au lieu de 0).
 j'ai donné un poids 5 fois plus important aux données d'entrainement où y == 0. Peu concluant..."""
-
-dataset = df_tweets_categorized
+classif = Classification()
+dataset = classif.create_dataframe()
 HEADERS = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'time', 'proportion_spamwords',
        'orthographe', 'RT', 'spam']
 
@@ -44,16 +46,15 @@ def randomtree():
     trained_model = random_forest_classifier(train_x, train_y)
     #print("Trained model :: ", trained_model)
     predictions = trained_model.predict(test_x)
+    cm = pd.DataFrame(confusion_matrix(test_y, predictions), columns=[0,1], index=[0,1])
     print("Train Accuracy :: ", accuracy_score(train_y, trained_model.predict(train_x)))
     print("Test Accuracy  :: ", accuracy_score(test_y, predictions))
-    cm = pd.DataFrame(confusion_matrix(test_y, predictions), columns=[0,1], index=[0,1])
+    print("ratio de tweet d'actu bien classé : {}".format(cm[0][0]/(cm[0][0]+cm[1][0])))
+    print("ratio de tweet spam classé actu : {}".format(cm[0][1]/(cm[1][1]+cm[0][1])))
     #sns.heatmap(cm, annot=True)
     print(cm)
     cmpt = 0
-    for elt in test_y:
-        if elt == 0:
-            cmpt += 1
-    print(cmpt)
+
 
 randomtree()
 

@@ -40,6 +40,14 @@ def split_dataset(dataset, train_percentage, feature_headers, target_header):
                                                         train_size=train_percentage)
     return train_x, test_x, train_y, test_y
 
+def Score(y, predicted_y):
+    acc =accuracy_score(y, predicted_y)
+    cm = pd.DataFrame(confusion_matrix(y, predicted_y), columns=[0, 1], index=[0, 1])
+    precision = cm[0][0]/(cm[0][0]+cm[0][1])
+    recall = cm[0][0]/(cm[0][0]+cm[1][0])
+    F_score = 2*precision*recall / (precision+ recall)
+    return "Precision = {} /n Recall = {} /n F_score ={}".format(precision, recall, F_score)
+
 
 def classify(classifier_name, classifier, train_x, test_x, train_y, test_y, verbose=True):
     t_start = time.clock()
@@ -79,11 +87,8 @@ def predict(dataset, classifier):
     train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[1:-1], HEADERS[-1])
     clf = classify(classifier, dict_classifiers[classifier], train_x, test_x, train_y, test_y)
     pred_y = clf.predict(test_x)
-    print("Train Accuracy :: ", accuracy_score(train_y, clf.predict(train_x)))
-    print("Test Accuracy  :: ", accuracy_score(test_y, pred_y))
-    cm = pd.DataFrame(confusion_matrix(test_y, pred_y), columns=[0, 1], index=[0, 1])
-    print("Actu catégorisées Actu = {}, Actu catégorisées Spam = {}. Ratio = {} ".format(cm[0][0], cm[1][0], cm[0][0]/(cm[0][0]+cm[1][0])))
-    print(cm)
+    score = Score(test_y,pred_y)
+    print(score)
 
 
 predict(tweets, "Naive Bayes")
