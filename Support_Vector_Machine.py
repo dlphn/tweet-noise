@@ -26,7 +26,7 @@ def split_dataset(dataset, train_percentage, feature_headers, target_header):
     return train_x, test_x, train_y, test_y
 
 def Support_Vector_Machine_Classifier(train_x, train_y):
-    clf = svm.SVC(gamma='scale',class_weight={0:10,1:1})
+    clf = svm.SVC(gamma='scale',class_weight={0:5,1:1}, kernel='rbf')
     clf.fit(train_x, train_y)
     return clf
 
@@ -35,9 +35,14 @@ def SVM():
     #print(train_y)
     clf = Support_Vector_Machine_Classifier(train_x,train_y)
     pred_y = clf.predict(test_x)
-    cm = pd.DataFrame(confusion_matrix(test_y, pred_y), columns=[0, 1], index=[0, 1])
-    print("Accuracy is ", accuracy_score(test_y, pred_y) * 100,
-          "\nActu catégorisées Actu = {}, Actu catégorisées Spam={}. Ratio ={} ".format(cm[0][0], cm[1][0], cm[0][0]/(cm[0][0]+cm[1][0])))
-    print(cm)
+    print(Score(test_y, pred_y))
+
+def Score(y, predicted_y):
+    acc =accuracy_score(y, predicted_y)
+    cm = pd.DataFrame(confusion_matrix(y, predicted_y), columns=[0, 1], index=[0, 1])
+    precision = cm[0][0]/(cm[0][0]+cm[0][1])
+    recall = cm[0][0]/(cm[0][0]+cm[1][0])
+    F_score = 2*precision*recall / (precision+ recall)
+    return "Precision = {} \n Recall = {} \n F_score ={} ".format(precision, recall, F_score)
 
 print(SVM())

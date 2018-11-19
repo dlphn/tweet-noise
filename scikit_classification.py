@@ -23,7 +23,7 @@ K_value = 7
 dict_classifiers = {
     "Logistic Regression": LogisticRegression(),
     "Nearest Neighbors": KNeighborsClassifier(n_neighbors=K_value, weights='distance', algorithm='auto'),
-    "Linear SVM": SVC(gamma='scale', class_weight={0: 10, 1: 1}),
+    "Linear SVM": SVC(gamma='scale', class_weight={0: 10, 1: 1},kernel='rbf'),
     "Random Forest": RandomForestClassifier(class_weight={0: 5, 1: 1}),
     "Naive Bayes": GaussianNB(),
 }
