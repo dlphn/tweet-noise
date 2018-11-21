@@ -1,0 +1,1 @@
+keywords_whitelist = ["news", "info"]
