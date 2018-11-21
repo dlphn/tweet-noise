@@ -76,7 +76,7 @@ class FeaturesBuilder:
         posted_at = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')
         result = "," + str(user["followers_count"])
         result += "," + str(user["friends_count"])
-        result += "," + ("\"true\"" if user["verified"] else "\"false\"")
+        result += "," + ("1" if user["verified"] else "0")
         result += "," + ("%.2f" % round(reputation, 2))
         result += "," + str(age)
         result += "," + str(user["statuses_count"])
@@ -104,7 +104,7 @@ class FeaturesBuilder:
              "doublez", "gagnez", "offre exclusive", "aucun cout", "pas de frais", "aucun engagement",
              "sans engagement", "commandez maintenant","aucun risque", "bon plan", "felicitations", "incroyable", "spam", "escroquerie", "unique"]
         spamword_count = 0
-        rt = False
+        rt = 0
         spell_dict = enchant.Dict('fr_FR')
         mot_bien_orth = 0
 
@@ -120,12 +120,12 @@ class FeaturesBuilder:
             if j in message:
                 emoji += 1
         if 'RT @' in message:
-            rt = True
+            rt = 1
 
         result = "," + ("%.2f" % round(ratio_spamword, 2))
         result += "," + ("%.2f" % round(ratio_orth, 2))
         result += "," + str(emoji)
-        result += "," + ("\"true\"" if rt else "\"false\"")
+        result += "," + str(rt)
         return result
 
 
