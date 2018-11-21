@@ -29,5 +29,3 @@ keywords_blacklist = [
     'hahahahaha', 'hihi', 'lol', 'maj', 'mdr', 'mec', 'meuf', 'nana', 'ok', 'oups', 'ptdr', 'relou', 'srab',
     'wallah', 'wesh', 'xd', 'yes', 'yolo'
                  ]
-
-keywords_whitelist = ["news", "info"]
