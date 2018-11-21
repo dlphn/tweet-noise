@@ -1,4 +1,4 @@
-keywords_list = [
+keywords_blacklist = [
     # Mots Spam Arnaques & Bots
     '100% gratuit', 'acces gratuit', 'agissez des maintenant', 'annulation a tout moment', 'annulez a tout moment',
     'aucun cout', 'aucun engagement', 'aucun risque', 'bon plan', 'bonne affaire', 'cadeau',
