@@ -52,7 +52,7 @@ class FeaturesBuilder:
             if self.line_count == 0:
                 f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\","
                         "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
-                        "\"guillements\",\"nb_emoji\",\"spam\"\n")
+                        "\"guillemets\",\"nb_emoji\",\"spam\"\n")
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
@@ -76,15 +76,15 @@ class FeaturesBuilder:
             reputation = user["followers_count"]/(user["followers_count"] + user["friends_count"])
         else:
             reputation = 0
-        ts = int(data["timestamp_ms"])/1000
-        posted_at = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')
+        # ts = int(data["timestamp_ms"])/1000
+        # posted_at = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')
         result = "," + str(user["followers_count"])
         result += "," + str(user["friends_count"])
         result += "," + ("1" if user["verified"] else "0")
         result += "," + ("%.2f" % round(reputation, 2))
         result += "," + str(age)
         result += "," + str(user["statuses_count"])
-        result += "," + "\"" + posted_at + "\""
+        # result += "," + "\"" + posted_at + "\""
         return result
 
     @staticmethod
@@ -114,21 +114,20 @@ class FeaturesBuilder:
                 mot_bien_orth += 1
         ratio_orth = mot_bien_orth/len(liste_mot)
         nb_hashtag = message.count('#')
-        guillements = message.count('\'')+message.count('\"')
+        guillemets = message.count('\'')+message.count('\"')
         for j in emojiList:
             if j in message:
                 emoji += 1
-
 
         result = "," + ("%.2f" % round(ratio_spamword, 2))
         result += "," + ("%.2f" % round(whiteword_count, 2))
         result += "," + ("%.2f" % round(ratio_orth, 2))
         result += "," + str(nb_hashtag)
-        result += "," + str(guillements)
+        result += "," + str(guillemets)
         result += "," + str(emoji)
         return result
 
 
 if __name__ == "__main__":
-    mongo = FeaturesBuilder()
-    mongo.retrieve()
+    features = FeaturesBuilder()
+    features.retrieve()
