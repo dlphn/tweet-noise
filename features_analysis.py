@@ -6,7 +6,7 @@ from collections import Counter
 from sklearn import decomposition
 from sklearn.preprocessing import StandardScaler
 
-current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-05T22_47_26.114536.csv"
+current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-22T14_28_36.815852.csv"
 dataframe = pd.read_csv(current_file, encoding="utf-8")
 #print(dataframe.head())
 columns = dataframe.columns.values.tolist()
@@ -94,4 +94,6 @@ X = dataframe.iloc[:,:-1]
 y = dataframe.iloc[:,-1]
 #print(X.head())
 #print(correlation_matrix(X))
-print(PCA(X,y))
+#print(PCA(X,y))
+
+show_features()
