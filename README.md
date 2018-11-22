@@ -64,5 +64,6 @@ MONGODB = {
     - `KNearest.py` : K Nearest Neighbours classifier
     - `random_forest.py` : Random Forest classifier
     - `Support_Vector_Machine.py` : Support Vector Machine classifier
+- Classification (npm) `bayesnpm/` : implement a simple text classifier with the Bayes NPM package
 
 
