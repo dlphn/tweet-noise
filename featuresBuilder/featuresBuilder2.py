@@ -107,8 +107,7 @@ class FeaturesBuilder:
         ratio_spamword = spamword_count/len(liste_mot)
         for i in whitewords:
             if i in message_min_sansaccent:
-                spamword_count += 1
-        ratio_whiteword = whiteword_count/len(liste_mot)
+                whiteword_count += 1
         for mot in liste_mot:
             if spell_dict.check(mot):
                 mot_bien_orth += 1
@@ -121,7 +120,7 @@ class FeaturesBuilder:
 
 
         result = "," + ("%.2f" % round(ratio_spamword, 2))
-        result += "," + ("%.2f" % round(ratio_whiteword, 2))
+        result += "," + ("%.2f" % round(whiteword_count, 2))
         result += "," + ("%.2f" % round(ratio_orth, 2))
         result += "," + str(nb_hashtag)
         result += "," + str(guillements)
