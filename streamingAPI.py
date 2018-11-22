@@ -49,9 +49,11 @@ class SampleStreamer(TwythonStreamer):
         :param data: response from Twitter API (one tweet in json format)
         """
 
-        db.tweets.insert_one(data)
-        self.count += 1
-        logging.info("Total of {} elements added".format(self.count))
+        if 'RT @' not in data["text"] :
+            db.tweets.insert_one(data)
+            self.count += 1
+            logging.info("Total of {} elements added".format(self.count))
+
 
         # with open(self.current_file, "a+", encoding='utf-8') as f:
         #     json.dump(data, f)
