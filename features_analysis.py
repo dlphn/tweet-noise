@@ -6,11 +6,13 @@ from collections import Counter
 from sklearn import decomposition
 from sklearn.preprocessing import StandardScaler
 
-current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-05T22_47_26.114536.csv"
+current_file = "D:\\valentin\\documents\\Centrale\\3A\\OSY\\TweetNoise\\tweets_2018-11-22T142836.815852.csv"
 dataframe = pd.read_csv(current_file, encoding="utf-8")
 #print(dataframe.head())
+#id,nb_follower,nb_following,verified,reputation,age,nb_tweets,time,proportion_spamwords,
+# orthographe,nb_emoji,RT,spam)
 columns = dataframe.columns.values.tolist()
-#print(columns)
+print(columns)
 
 def show_features():
     y = dataframe.iloc[:,-1]
@@ -26,7 +28,7 @@ def show_features():
         plt.ylabel('Spam')
     plt.show()
 
-    for i in [6,7,8,9] :
+    for i in [6,9] :
         X = dataframe.iloc[:, i]
         plt.subplot(2,2,i-5)
         plt.scatter(X, y)
@@ -35,13 +37,26 @@ def show_features():
     plt.show()
 
     i=0
-    for n in [3,8,10,11] :
+    for n in [3,7,8,10] :
         i +=1
         x = dataframe.iloc[:, n]
         c = Counter(zip(x, y))
         a = Counter ( y )
         s = [ 30*c[(xx, yy)]/a [(yy)] for xx, yy in zip(x, y)]
         plt.subplot(2,2,i)
+        plt.scatter(x, y, s=s)
+        plt.xlabel('Paramètre {}'.format(columns[n]))
+        plt.ylabel('Spam')
+    plt.show()
+
+    i = 0
+    for n in [11,12]:
+        i += 1
+        x = dataframe.iloc[:, n]
+        c = Counter(zip(x, y))
+        a = Counter(y)
+        s = [30 * c[(xx, yy)] / a[(yy)] for xx, yy in zip(x, y)]
+        plt.subplot(2, 2, i)
         plt.scatter(x, y, s=s)
         plt.xlabel('Paramètre {}'.format(columns[n]))
         plt.ylabel('Spam')
@@ -62,8 +77,8 @@ def PCA(X,y):
     #return result
 
 def correlation_matrix(dataset):
-    HEADERS = ['follower', 'following', 'verif', 'reput', 'age', 'tweets',
-               'spamwords','orth','emoji', 'RT']
+    HEADERS = ['nb_follower','nb_following','verified','reputation','age','nb_tweets','proportion_spamwords',
+               'proportion_whitewords','orthographe','nb_hashtag','guillements','nb_emoji','spam']
     correlations = dataset.corr()
     #print(correlations)
     # plot correlation matrix
@@ -87,11 +102,13 @@ def affichage (result):
     plt.legend((positive, negative), ('actu', 'non actu'))
     #plt.show()
 
-classif = Classification()
-dataframe = classif.create_dataframe()
+#classif = Classification()
+#dataframe = classif.create_dataframe()
 #X = pd.concat([dataframe.iloc[:,1:7], dataframe.iloc[:,8:-1]], axis=1)
 X = dataframe.iloc[:,:-1]
 y = dataframe.iloc[:,-1]
 #print(X.head())
 #print(correlation_matrix(X))
-print(PCA(X,y))
+#print(PCA(X,y))
+
+show_features()
