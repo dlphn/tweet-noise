@@ -8,12 +8,13 @@ Created on Mon Oct 29 09:35 2018
 import logging
 from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
+from spamKeywords import keywords_blacklist
+from whitelistKeywords import keywords_whitelist
 from pymongo import MongoClient
 import enchant
 import unidecode
 import time
 import re
-import spamKeywords
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -62,7 +63,7 @@ class FeaturesBuilder:
 
         if self.line_count > FILEBREAK:
             logging.info("Closing file {}".format(self.current_file))
-            self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
+            self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
             self.line_count = 0
 
     @staticmethod
