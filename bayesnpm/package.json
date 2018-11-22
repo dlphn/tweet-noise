@@ -1,0 +1,14 @@
+{
+  "name": "bayesnpm",
+  "version": "1.0.0",
+  "description": "Test the Bayes NPM package for tweets classification",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bayes": "0.0.7"
+  }
+}

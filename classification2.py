@@ -57,13 +57,11 @@ class Classification :
         else :
             return 3
 
-
     def categorize_bool(self,x):
         if x:
             return 1
         else:
             return 0
-
 
     def categorize_time(self,x):
         now = datetime.datetime.now()
@@ -112,6 +110,13 @@ class Classification :
             return 1
         else :
             return 2
+
+    def categorize_whiteword(self,x):
+        if x > 0 :
+            return 1
+
+    def categorize_hashtag(self,x):
+
 
 
     def categorize_columns(self,cols, func):

@@ -49,6 +49,7 @@ MONGODB = {
 
 - `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
 - `featuresBuilder.py`: fetch data from MongoDB and build the features table
+- `JSONBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
 - `spamKeywords.py`: list of key words considered as spam
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
@@ -63,5 +64,6 @@ MONGODB = {
     - `KNearest.py` : K Nearest Neighbours classifier
     - `random_forest.py` : Random Forest classifier
     - `Support_Vector_Machine.py` : Support Vector Machine classifier
+- Classification (npm) `bayesnpm/` : implement a simple text classifier with the Bayes NPM package
 
 
