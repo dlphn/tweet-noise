@@ -1,1 +1,1 @@
-keywords_whitelist = ["news", "info"]
+keywords_whitelist = ["news", "info", "actu", "actualite"]
