@@ -50,7 +50,7 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\","
+                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"posted_at\","
                         "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
                         "\"guillemets\",\"nb_emoji\",\"spam\"\n")
             f.write(
@@ -76,15 +76,15 @@ class FeaturesBuilder:
             reputation = user["followers_count"]/(user["followers_count"] + user["friends_count"])
         else:
             reputation = 0
-        # ts = int(data["timestamp_ms"])/1000
-        # posted_at = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')
+        ts = int(data["timestamp_ms"])/1000
+        posted_at = datetime.utcfromtimestamp(ts).strftime('%H:%M:%S')
         result = "," + str(user["followers_count"])
         result += "," + str(user["friends_count"])
         result += "," + ("1" if user["verified"] else "0")
         result += "," + ("%.2f" % round(reputation, 2))
         result += "," + str(age)
         result += "," + str(user["statuses_count"])
-        # result += "," + "\"" + posted_at + "\""
+        result += "," + "\"" + posted_at + "\""
         return result
 
     @staticmethod
