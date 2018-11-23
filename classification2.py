@@ -29,10 +29,11 @@ class Classification :
         #print(self.df_tweets)
         self.df_tweets_categorized = self.df_tweets.copy(deep=True)
         self.categorize_columns(['reputation'], self.categorize_proportion)
-        self.categorize_columns(['orthographe'], self.categorize_proportion)
+        self.categorize_columns(['orthographe'], self.categorize_orth)
         self.categorize_columns(['proportion_spamwords'], self.categorize_spamword)
+        self.categorize_columns(['proportion_whitewords'], self.categorize_whiteword)
         self.categorize_columns(['verified'], self.categorize_bool)
-        self.categorize_columns(['RT', 'spam'], self.categorize_bool)
+        self.categorize_columns(['nb_emoji'], self.categorize_emoji)
         self.categorize_columns(['spam'], self.categorize_bool)
         self.categorize_columns(['time'], self.categorize_time)
         self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
@@ -49,13 +50,17 @@ class Classification :
         else:
             return 0
 
-    def categorize_spamword(self,x):
-        if x < 0.1 :
-            return 0
-        elif x < 0.2 :
+    def categorize_orth(self,x):
+        if x > 0.4:
             return 1
+        else:
+            return 0
+
+    def categorize_spamword(self,x):
+        if x < 0.15 :
+            return 0
         else :
-            return 3
+            return 1
 
     def categorize_bool(self,x):
         if x:
@@ -104,9 +109,9 @@ class Classification :
              return 3
 
     def categorize_nb_tweets(self,x):
-        if x < 1000 :
+        if x < 40000 :
             return 0
-        if x < 10000 :
+        if x < 80000 :
             return 1
         else :
             return 2
@@ -115,9 +120,9 @@ class Classification :
         if x > 0 :
             return 1
 
-    def categorize_hashtag(self,x):
-
-
+    def categorize_emoji(self,x):
+        if x > 0 :
+            return 1
 
     def categorize_columns(self,cols, func):
         #print(cols)

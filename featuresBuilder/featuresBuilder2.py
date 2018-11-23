@@ -50,9 +50,9 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\","
+                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"posted_at\","
                         "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
-                        "\"guillements\",\"nb_emoji\",\"spam\"\n")
+                        "\"guillemets\",\"nb_emoji\",\"spam\"\n")
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
@@ -114,21 +114,20 @@ class FeaturesBuilder:
                 mot_bien_orth += 1
         ratio_orth = mot_bien_orth/len(liste_mot)
         nb_hashtag = message.count('#')
-        guillements = message.count('\'')+message.count('\"')
+        guillements = message.count('\"')
         for j in emojiList:
             if j in message:
                 emoji += 1
-
 
         result = "," + ("%.2f" % round(ratio_spamword, 2))
         result += "," + ("%.2f" % round(whiteword_count, 2))
         result += "," + ("%.2f" % round(ratio_orth, 2))
         result += "," + str(nb_hashtag)
-        result += "," + str(guillements)
+        result += "," + str(guillemets)
         result += "," + str(emoji)
         return result
 
 
 if __name__ == "__main__":
-    mongo = FeaturesBuilder()
-    mongo.retrieve()
+    features = FeaturesBuilder()
+    features.retrieve()
