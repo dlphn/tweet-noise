@@ -5,6 +5,7 @@ import time
 import string
 import re
 from config import FILEDIR
+from stopKeywords import keywords_stoplist
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -24,10 +25,11 @@ def tokenizer(text):
 def frequency_table(tokens):
     freq_table = {}
     for token in tokens:
-        if token not in freq_table.keys():
-            freq_table[token] = 1
-        else:
-            freq_table[token] += 1
+        if token not in keywords_stoplist:
+            if token not in freq_table.keys():
+                freq_table[token] = 1
+            else:
+                freq_table[token] += 1
     return freq_table
 
 
@@ -108,7 +110,7 @@ class DictBuilder:
 
     def build(self, category):
         self.category = category
-        self.current_file = FILEDIR + "tweets_" + self.category + ".json"
+        self.current_file = FILEDIR + "tweets_" + self.category + "2.json"
         start = time.time()
         self.retrieve()
         logging.info("Building " + self.category + " frequency tables...")
@@ -118,9 +120,21 @@ class DictBuilder:
         print(self.wordCount)
         print(self.docCount)
         end = time.time()
+        logging.info("Took {0} seconds".format(end - start))
+
+    def build_white_list(self):
+        whitelist = []
+        info_words = self.wordFrequencyCount["info"].keys()
+        spam_words = self.wordFrequencyCount["spam"].keys()
+        for word in info_words:
+            if self.wordFrequencyCount["info"][word] > 1:
+                if word not in spam_words:
+                    whitelist.append(word)
+        print(whitelist)
 
 
 if __name__ == "__main__":
     data = DictBuilder()
     data.build("info")
     data.build("spam")
+    data.build_white_list()
