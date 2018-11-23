@@ -6,7 +6,9 @@ from collections import Counter
 from sklearn import decomposition
 from sklearn.preprocessing import StandardScaler
 
-current_file = "D:\\valentin\\documents\\Centrale\\3A\\OSY\\TweetNoise\\tweets_2018-11-22T142836.815852.csv"
+
+current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-22T14_28_36.815852.csv"
+
 dataframe = pd.read_csv(current_file, encoding="utf-8")
 #print(dataframe.head())
 #id,nb_follower,nb_following,verified,reputation,age,nb_tweets,time,proportion_spamwords,
