@@ -50,7 +50,7 @@ class FeaturesBuilder:
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
                 f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\","
-                        "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
+                        "\"proportion_spamwords\",\"whitewords\",\"orthographe\",\"nb_hashtag\","
                         "\"guillements\",\"nb_emoji\",\"spam\"\n")
             f.write(
                 data["id_str"] +
@@ -113,7 +113,7 @@ class FeaturesBuilder:
                 mot_bien_orth += 1
         ratio_orth = mot_bien_orth/len(liste_mot)
         nb_hashtag = message.count('#')
-        guillements = message.count('\'')+message.count('\"')
+        guillements = message.count('\"')
         for j in emojiList:
             if j in message:
                 emoji += 1
