@@ -1,8 +1,8 @@
 
 var bayes = require('bayes');
 var classifier = bayes();
-var spamTweets = require("/Users/delphineshi/Downloads/temp/tweets_spam.json");
-var infoTweets = require("/Users/delphineshi/Downloads/temp/tweets_info.json");
+var spamTweets = require("/Users/delphineshi/Downloads/temp/tweets_spam2.json");
+var infoTweets = require("/Users/delphineshi/Downloads/temp/tweets_info2.json");
 
 const data = [{name: 'info', tweets: infoTweets}, {name: 'spam', tweets: spamTweets}];
 
