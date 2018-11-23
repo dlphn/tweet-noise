@@ -115,6 +115,8 @@ class Classification :
         if x > 0 :
             return 1
 
+    def categorize_hashtag(self,x):
+
 
 
     def categorize_columns(self,cols, func):
