@@ -9,6 +9,8 @@ from sklearn.preprocessing import StandardScaler
 current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-23T091721.577598.csv"
 dataframe = pd.read_csv(current_file, encoding="utf-8")
 #print(dataframe.head())
+#id,nb_follower,nb_following,verified,reputation,age,nb_tweets,time,proportion_spamwords,
+# orthographe,nb_emoji,RT,spam)
 columns = dataframe.columns.values.tolist()
 print(columns)
 
@@ -62,6 +64,19 @@ def show_features():
         plt.ylabel('Spam')
     plt.show()
 
+    i = 0
+    for n in [11,12]:
+        i += 1
+        x = dataframe.iloc[:, n]
+        c = Counter(zip(x, y))
+        a = Counter(y)
+        s = [30 * c[(xx, yy)] / a[(yy)] for xx, yy in zip(x, y)]
+        plt.subplot(2, 2, i)
+        plt.scatter(x, y, s=s)
+        plt.xlabel('Paramètre {}'.format(columns[n]))
+        plt.ylabel('Spam')
+    plt.show()
+
 
 def PCA(X,y):
     sc = StandardScaler()
@@ -77,8 +92,8 @@ def PCA(X,y):
     #return result
 
 def correlation_matrix(dataset):
-    HEADERS = ['follower', 'following', 'verif', 'reput', 'age', 'tweets',
-               'spamwords','orth','emoji', 'RT']
+    HEADERS = ['nb_follower','nb_following','verified','reputation','age','nb_tweets','proportion_spamwords',
+               'proportion_whitewords','orthographe','nb_hashtag','guillements','nb_emoji','spam']
     correlations = dataset.corr()
     #print(correlations)
     # plot correlation matrix
