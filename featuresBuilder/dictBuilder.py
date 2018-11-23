@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
+import math
+
 import time
 import string
 import re
@@ -131,6 +133,29 @@ class DictBuilder:
                 if word not in spam_words:
                     whitelist.append(word)
         print(whitelist)
+
+    # Calculate probability that a `token` belongs to a `category`
+    def token_probability(self, token, category):
+        word_freq_count = self.wordFrequencyCount[category][token] | 0
+        word_count = self.wordCount[category]
+        # use laplace Add-1 Smoothing equation
+        return (word_freq_count + 1) / (word_count + self.vocabularySize)
+
+    # def categorize(self, text):
+    #     tokens = tokenizer(text)
+    #     freq_table = frequency_table(tokens)
+    #     # iterate through our categories to find the one with max probability for this text
+    #     for category in self.categories.keys():
+    #         # start by calculating the overall probability of this category
+    #         category_probability = self.docCount[category] / self.totalDocuments
+    #         # take the log to avoid underflow
+    #         log_probability = math.log(category_probability)
+    #         # now determine P( w | c ) for each word `w` in the text
+    #         for token in freq_table.keys():
+    #             frequency_in_text = freq_table[token]
+    #             token_probability = token_probability(token, category)
+    #             # determine the log of the P( w | c ) for this word
+    #             log_probability += frequency_in_text * math.log(token_probability)
 
 
 if __name__ == "__main__":
