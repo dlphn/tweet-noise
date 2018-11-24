@@ -8,12 +8,13 @@ Created on Mon Oct 29 09:35 2018
 import logging
 from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
+from spamKeywords import keywords_blacklist
+from whitelistKeywords import keywords_whitelist
 from pymongo import MongoClient
 import enchant
 import unidecode
 import time
 import re
-import spamKeywords
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -49,9 +50,9 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\","
-                        "\"proportion_spamwords\",\"whitewords\",\"orthographe\",\"nb_hashtag\","
-                        "\"guillements\",\"nb_emoji\",\"spam\"\n")
+                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"posted_at\","
+                        "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
+                        "\"guillemets\",\"nb_emoji\",\"spam\"\n")
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
@@ -62,7 +63,7 @@ class FeaturesBuilder:
 
         if self.line_count > FILEBREAK:
             logging.info("Closing file {}".format(self.current_file))
-            self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
+            self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
             self.line_count = 0
 
     @staticmethod
@@ -118,16 +119,15 @@ class FeaturesBuilder:
             if j in message:
                 emoji += 1
 
-
         result = "," + ("%.2f" % round(ratio_spamword, 2))
         result += "," + ("%.2f" % round(whiteword_count, 2))
         result += "," + ("%.2f" % round(ratio_orth, 2))
         result += "," + str(nb_hashtag)
-        result += "," + str(guillements)
+        result += "," + str(guillemets)
         result += "," + str(emoji)
         return result
 
 
 if __name__ == "__main__":
-    mongo = FeaturesBuilder()
-    mongo.retrieve()
+    features = FeaturesBuilder()
+    features.retrieve()
