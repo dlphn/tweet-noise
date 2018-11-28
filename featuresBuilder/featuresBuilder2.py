@@ -114,7 +114,7 @@ class FeaturesBuilder:
                 mot_bien_orth += 1
         ratio_orth = mot_bien_orth/len(liste_mot)
         nb_hashtag = message.count('#')
-        guillemets = message.count('\'')+message.count('\"')
+        guillements = message.count('\"')
         for j in emojiList:
             if j in message:
                 emoji += 1

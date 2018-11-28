@@ -6,9 +6,7 @@ from collections import Counter
 from sklearn import decomposition
 from sklearn.preprocessing import StandardScaler
 
-
-current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-22T14_28_36.815852.csv"
-
+current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-23T091721.577598.csv"
 dataframe = pd.read_csv(current_file, encoding="utf-8")
 #print(dataframe.head())
 #id,nb_follower,nb_following,verified,reputation,age,nb_tweets,time,proportion_spamwords,
@@ -18,28 +16,43 @@ print(columns)
 
 def show_features():
     y = dataframe.iloc[:,-1]
+    j=0
     for i in [1,2,4,5] :
         X = dataframe.iloc[:, i]
-        if i == 5 :
-            j = 3
-        else :
-            j =i
+        j += 1
         plt.subplot(2,2,j)
         plt.scatter(X, y)
         plt.xlabel('Paramètre {}'.format(columns[i]))
         plt.ylabel('Spam')
     plt.show()
 
-    for i in [6,9] :
+    j = 0
+    for i in [6,7] :
+        j += 1
         X = dataframe.iloc[:, i]
-        plt.subplot(2,2,i-5)
+        plt.subplot(2,1,j)
+        if i == 6 :
+            plt.axis(xmax = 100000)
         plt.scatter(X, y)
         plt.xlabel('Paramètre {}'.format(columns[i]))
         plt.ylabel('Spam')
     plt.show()
 
     i=0
-    for n in [3,7,8,10] :
+    for n in [3,8,9,10] :
+        i +=1
+        x = dataframe.iloc[:, n]
+        c = Counter(zip(x, y))
+        a = Counter ( y )
+        s = [ 30*c[(xx, yy)]/a [(yy)] for xx, yy in zip(x, y)]
+        plt.subplot(2,2,i)
+        plt.scatter(x, y, s=s)
+        plt.xlabel('Paramètre {}'.format(columns[n]))
+        plt.ylabel('Spam')
+    plt.show()
+
+    i = 0
+    for n in [11,12,13] :
         i +=1
         x = dataframe.iloc[:, n]
         c = Counter(zip(x, y))
