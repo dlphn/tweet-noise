@@ -10,11 +10,15 @@ from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
 from spamKeywords import keywords_blacklist
 from whitelistKeywords import keywords_whitelist
+from Emojilist import emojilist
 from pymongo import MongoClient
 import enchant
 import unidecode
 import time
 import re
+import spacy
+import fr_core_news_md
+nlp = fr_core_news_md.load()
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -52,7 +56,7 @@ class FeaturesBuilder:
             if self.line_count == 0:
                 f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"posted_at\","
                         "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
-                        "\"guillemets\",\"nb_emoji\",\"spam\"\n")
+                        "\"guillemets\",\"nb_emoji\",\"named_id\",\"spam\"\n")
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
@@ -93,7 +97,7 @@ class FeaturesBuilder:
         message_min = message.lower()
         message_min_sansaccent = unidecode.unidecode(message_min)
         liste_mot = re.sub("[,.#]",'', message_min).split()
-        emojiList = [":)", ":(", ":P", ":-*", "XD", "^^", "😂","💀","👍" ]
+        emojiList = emojilist
         emoji = 0
         spamwords = keywords_blacklist
         whitewords = keywords_whitelist
@@ -101,6 +105,7 @@ class FeaturesBuilder:
         whiteword_count = 0
         spell_dict = enchant.Dict('fr_FR')
         mot_bien_orth = 0
+        named_id = 0
 
         for i in spamwords:
             if i in message_min_sansaccent:
@@ -119,13 +124,20 @@ class FeaturesBuilder:
             if j in message:
                 emoji += 1
 
+        #On transforme le message en format compatible avec nlp
+        doc = nlp(message_min_sansaccent)
+
         result = "," + ("%.2f" % round(ratio_spamword, 2))
         result += "," + ("%.2f" % round(whiteword_count, 2))
         result += "," + ("%.2f" % round(ratio_orth, 2))
         result += "," + str(nb_hashtag)
         result += "," + str(guillemets)
         result += "," + str(emoji)
+        result += "," + str(len(doc.ents))
         return result
+
+
+
 
 
 if __name__ == "__main__":

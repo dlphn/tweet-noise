@@ -17,9 +17,11 @@ pd.set_option('display.width', None)
 class Classification :
 
     def __init__(self):
-        self.current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-05T22_47_26.114536.csv"
-        self.columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'time',
-                   'proportion_spamwords','orthographe', 'nb_emoji', 'RT', 'spam']
+        self.current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-23T091721.577598.csv"
+        self.columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at',
+                        'proportion_spamwords', 'proportion_whitewords', 'orthographe', 'nb_hashtag', 'guillemets',
+                        'nb_emoji', 'spam']
+
 
     def create_dataframe(self):
         df = pd.read_csv(self.current_file, encoding="utf-8")
@@ -35,7 +37,7 @@ class Classification :
         self.categorize_columns(['verified'], self.categorize_bool)
         self.categorize_columns(['nb_emoji'], self.categorize_emoji)
         self.categorize_columns(['spam'], self.categorize_bool)
-        self.categorize_columns(['time'], self.categorize_time)
+        self.categorize_columns(['posted_at'], self.categorize_time)
         self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
         self.categorize_columns(['age'], self.categorize_age)
         self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
@@ -119,10 +121,14 @@ class Classification :
     def categorize_whiteword(self,x):
         if x > 0 :
             return 1
+        else :
+            return 0
 
     def categorize_emoji(self,x):
         if x > 0 :
             return 1
+        else :
+            return 0
 
     def categorize_columns(self,cols, func):
         #print(cols)
