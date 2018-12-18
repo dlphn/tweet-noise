@@ -13,6 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+import datetime
 
 from classification2 import Classification
 
@@ -22,8 +23,42 @@ from classification2 import Classification
 j'ai donné un poids 5 fois plus important aux données d'entrainement où y == 0. Peu concluant..."""
 classif = Classification()
 dataset = classif.create_dataframe()
-df2 = dataset[['nb_follower', 'nb_following', 'verified', 'nb_tweets', 'proportion_spamwords', 'proportion_whitewords',  'orthographe',  'nb_emoji','spam']]
+df = dataset[['nb_follower', 'nb_following', 'verified', 'nb_tweets', 'proportion_spamwords', 'proportion_whitewords',  'orthographe',  'nb_emoji','spam']]
+df2 = pd.read_csv('C:\\Users\\Public\\Documents\\tweets_2018-11-23T091721.577598.csv')
 
+def categorize_bool(x):
+    if x:
+        return 1
+    else:
+        return 0
+
+def categorize_time(x):
+    now = datetime.datetime.now()
+    today8am = now.replace(hour=8, minute=0, second=0, microsecond=0)
+    todaynoon = now.replace(hour=12, minute=0, second=0, microsecond=0)
+    today2pm = now.replace(hour=14, minute=0, second=0, microsecond=0)
+    today6pm = now.replace(hour=18, minute=0, second=0, microsecond=0)
+    today10pm = now.replace(hour=22, minute=0, second=0, microsecond=0)
+    t = x.split(':')
+    time = now.replace(hour=int(t[0]), minute=int(t[1]), second=int(t[2]), microsecond=0)
+    if today8am <= time < todaynoon:
+        return 0
+    elif todaynoon <= time < today2pm:
+        return 1
+    elif today2pm <= time < today6pm:
+        return 2
+    elif today6pm <= time < today10pm:
+        return 3
+    else:
+        return 4
+
+df2['spam'] = df2.spam.apply(categorize_bool)
+df2['posted_at'] = df2.posted_at.apply(categorize_time)
+
+for i in range (1,14):
+    df2.iloc[:,i] = ((df2.iloc[:,i] - df2.iloc[:,i].mean()) / (df2.iloc[:,i].max() - df2.iloc[:,i].min()))
+
+#print(df2.head())
 
 
 def split_dataset(dataset, train_percentage, feature_headers, target_header):
@@ -34,7 +69,7 @@ def split_dataset(dataset, train_percentage, feature_headers, target_header):
 
 def random_forest_classifier(features, target):
     t_start = time.clock()
-    clf = RandomForestClassifier(class_weight={0:5,1:1})
+    clf = RandomForestClassifier(class_weight={0:20,1:1})
     clf.fit(features, target)
     t_end = time.clock()
     t_diff = t_end - t_start
@@ -59,5 +94,6 @@ def Score(y, predicted_y):
     return "Precision = {} \n Recall = {} \n F_score ={} ".format(precision, recall, F_score)
 
 
-randomtree(df2)
-
+#randomtree(df2)
+#print('ok')
+#randomtree(df)

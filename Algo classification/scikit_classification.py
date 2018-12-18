@@ -17,21 +17,24 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, confusion_matrix
 
-from classification import df_tweets_categorized
+from classification2 import Classification
 
+#Data frame classifié
+classif = Classification()
+df_tweets_categorized = classif.create_dataframe()
 K_value = 7
 dict_classifiers = {
     "Logistic Regression": LogisticRegression(),
     "Nearest Neighbors": KNeighborsClassifier(n_neighbors=K_value, weights='distance', algorithm='auto'),
-    "Linear SVM": SVC(gamma='scale', class_weight={0: 10, 1: 1},kernel='rbf'),
+    "Linear SVM": SVC(gamma='scale', class_weight={0: 5, 1: 1},kernel='rbf'),
     "Random Forest": RandomForestClassifier(class_weight={0: 5, 1: 1}),
     "Naive Bayes": GaussianNB(),
 }
 dict_models = {}
 
 tweets = df_tweets_categorized
-HEADERS = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'time', 'proportion_spamwords',
-       'orthographe', 'RT', 'spam']
+HEADERS = df_tweets_categorized.columns.values.tolist()
+
 
 
 def split_dataset(dataset, train_percentage, feature_headers, target_header):
@@ -46,7 +49,7 @@ def Score(y, predicted_y):
     precision = cm[0][0]/(cm[0][0]+cm[0][1])
     recall = cm[0][0]/(cm[0][0]+cm[1][0])
     F_score = 2*precision*recall / (precision+ recall)
-    return "Precision = {} /n Recall = {} /n F_score ={}".format(precision, recall, F_score)
+    return "Precision = {} \n Recall = {} \n F_score ={}".format(precision, recall, F_score)
 
 
 def classify(classifier_name, classifier, train_x, test_x, train_y, test_y, verbose=True):
@@ -82,18 +85,23 @@ def display_dict_models(dict, sort_by='test_score'):
 
     display(df_.sort_values(by=sort_by, ascending=False))
 
-
+classif =[]
 def predict(dataset, classifier):
     train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[1:-1], HEADERS[-1])
     clf = classify(classifier, dict_classifiers[classifier], train_x, test_x, train_y, test_y)
     pred_y = clf.predict(test_x)
     score = Score(test_y,pred_y)
-    print(score)
+    classif.append(classifier)
+    classif.append(score)
 
+
+def display_classif ():
+    for i in range(len(classif)):
+        print(classif[i] + " \n")
 
 predict(tweets, "Naive Bayes")
 predict(tweets, "Linear SVM")
 predict(tweets, "Nearest Neighbors")
 predict(tweets, "Random Forest")
 print("\n========================= Results ========================= ")
-display_dict_models(dict_models)
+display_classif()
