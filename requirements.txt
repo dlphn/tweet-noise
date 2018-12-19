@@ -1,3 +1,4 @@
+nltk
 spacy
 pandas
 numpy
