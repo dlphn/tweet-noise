@@ -29,8 +29,8 @@ for token in doc:
 print("======================================")
 
 # Visualization
-sentence_spans = list(doc.sents)
-displacy.serve(sentence_spans, style='dep')
+# sentence_spans = list(doc.sents)
+# displacy.serve(sentence_spans, style='dep')
 # displacy.serve(doc, style='ent')
 
 print("======================================")
@@ -50,7 +50,7 @@ print("======================================")
 
 # Determine semantic similarities
 doc1 = nlp(u"mes frites étaient trop dégueu")
-doc2 = nlp(u"des frites tellement dégoûtantantes")
+doc2 = nlp(u"des frites tellement dégoûtantes")
 similarity = doc1.similarity(doc2)
 print(doc1.text, doc2.text, similarity)
 
