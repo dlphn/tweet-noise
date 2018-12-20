@@ -105,7 +105,6 @@ class FeaturesBuilder:
         whiteword_count = 0
         spell_dict = enchant.Dict('fr_FR')
         mot_bien_orth = 0
-        named_id = 0
 
         for i in spamwords:
             if i in message_min_sansaccent:
