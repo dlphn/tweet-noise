@@ -7,6 +7,8 @@ import spacy
 from math import log, sqrt
 from itertools import combinations
 
+import arrayBuilder
+
 nlp = spacy.load('fr_core_news_md')
 
 
@@ -134,15 +136,30 @@ def get_documents():
     return result
 
 
+def get_tweets():
+    mongo = arrayBuilder.ArrayBuilder()
+    tweets = mongo.retrieve()
+    result = []
+    for i, text in enumerate(tweets):
+        doc = nlp(text)
+        tokens = [token.text for token in doc]
+        result.append({"text": text, "tokens": tokens})
+    return result
+
+
 def main(args):
-    documents = get_documents()
+    # documents = get_documents()
+    documents = get_tweets()
     add_tfidf_to(documents)
     dist_graph = get_distance_graph(documents)
 
-    for cluster in majorclust(dist_graph):
+    clusters = majorclust(dist_graph)
+    for cluster in clusters:
         print("=========")
         for doc_id in cluster:
             print(documents[doc_id]["text"])
+
+    print(len(clusters))
 
 
 if __name__ == '__main__':
