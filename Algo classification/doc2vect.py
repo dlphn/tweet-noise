@@ -9,14 +9,16 @@ import logging
 from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
 from pymongo import MongoClient
+from Emojilist import emojilist
 import spacy
 import fr_core_news_md
 nlp = fr_core_news_md.load()
+spell = SpellChecker(language='fr')
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
 
-class FeaturesBuilder:
+class VectorBuilder:
     """
     Retrieve data from the MongoDB database.
 
@@ -61,17 +63,40 @@ class FeaturesBuilder:
     @staticmethod
     def vectorize(data):
         message = data['text']
-        doc = nlp(message)
+        doc = nlp(correct_words(message))
         vect = 0
         for token in doc:
             vect += token.vector/(len(doc))
         return vect
 
-
+    @staticmethod
+    def correct_words(message, spellchecker = spell):
+        # find those words that may be misspelled
+        doc = nlp (message)
+        hashtag = False
+        list = [str(token) for token in doc]
+        corrected = ''
+        for elt in list :
+            for i in range(len(elt)-1,1, -1):
+                if elt[i] == elt [i-1] and elt[i] == elt [i-2] :
+                    elt = elt[:i]+elt[i+1:]
+            #On coupe le mot si il s'agit du terme après un hastag
+            if hashtag == True :
+                decoup = re.findall('[A-Z][^A-Z]*',elt)
+                for word in decoup :
+                    corrected += word + ' '
+                hashtag = False
+            elif elt == '#' :
+                hashtag = True
+            elif elt in emojilist :
+                pass
+            else :
+                corrected += elt + ' '
+        return corrected
 
 
 
 
 if __name__ == "__main__":
-    features = FeaturesBuilder()
-    features.retrieve()
+    vect = VectorBuilder()
+    vect.retrieve()
