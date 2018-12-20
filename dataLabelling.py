@@ -30,8 +30,8 @@ class DataLabelling:
         Retrieve tweets from mongo database and save user's label for the tweets.
         """
         print("=============================================\n")
-        print("Tweets labelling - possible inputs: bot/b, conv/c, pub/p, actu/a, reaction/r, other, skip/next/pass, "
-              "stop/end, help.\nWhat is the type of the tweet displayed?\n")
+        print("Tweets labelling - possible inputs: actu/a/1, reaction/r/2, factu/f/3, fspam/g/4, conv/c/5, pub/p/6, "
+              "bot/b/7, other/o/8, skip/next/pass, stop/end, help.\nWhat is the type of the tweet displayed?\n")
         print("=============================================\n")
         for obj in self.db.tweets.find():
             try:
@@ -40,9 +40,10 @@ class DataLabelling:
                 classification = self.label(obj)
                 if classification == "stop" or classification == "end" or classification == "x":
                     break
-                elif classification in ["bot","conversation","publicité", "other spam", "actualité","reaction"]:
+                elif classification in ["actualité","reaction","actualité par personnalité",
+                                        "spam par personnalité","conversation","publicité","bot","other spam"]:
                     spam_value = True
-                    if classification in ["actualité","reaction"] :
+                    if classification in ["actualité","reaction","actualité par personnalité"] :
                         spam_value = False
                     self.db.tweets.update_one({"_id": obj.get("_id")}, {"$set": {"type": classification,"spam":spam_value}})
                     self.count += 1
@@ -56,10 +57,13 @@ class DataLabelling:
         :return: the user's answer (True, False, or an action to skip or stop)
         """
         # display tweet and allow input from user true/false
-        valid = {"bot" : "bot", "b" : "bot", "conv" : "conversation", "c" : "conversation", "pub": "publicité",
-                 "p": "publicité", "other" : "other spam","other" : "other spam", "f" : "actualité par personnalité",
-                 "g": "spam par personnalité", "factu": "actualité par personnalité", "fspam": "spam par personnalité",
-                 "actu" : "actualité","a" : "actualité", "reaction" : "reaction", "r" : "reaction"}
+        valid =  {"actu" : "actualité","a" : "actualité","1" : "actualité", "reaction" : "reaction", "r" : "reaction",
+                  "2": "reaction", "factu" : "actualité par personnalité", "f" : "actualité par personnalité",
+                  "3" : "actualité par personnalité", "fspam": "spam par personnalité", "g": "spam par personnalité",
+                  "4": "spam par personnalité", "conv": "conversation", "c": "conversation", "5": "conversation",
+                  "pub": "publicité","p": "publicité", "6": "publicité", "bot" : "bot", "b": "bot", "7": "bot",
+                  "other" : "other spam","o" : "other spam","8" : "other spam"}
+
         other_actions = ["stop", "end", "x", "skip", "next", "pass"]
         while True:
             print("https://twitter.com/test/status/" + data["id_str"] + " : " + data["text"])
@@ -69,9 +73,11 @@ class DataLabelling:
             elif choice in other_actions:
                 return choice
             elif choice == "help":
-                print("Possible inputs: bot/b, conv/c, pub/p, actu/a, reaction/r, other/o, f, g, skip/next/pass, stop/end, help")
+                print("Possible inputs: actu/a/1, reaction/r/2, factu/f/3, fspam/g/4, conv/c/5, pub/p/6, bot/b/7,"
+                      " other/o/8, skip/next/pass, stop/end, help")
             else:
-                print("Please respond with 'bot'/'b', 'conv'/'c', 'pub'/'p', 'actu'/'a', 'reaction'/'r', 'factu'/'f','fspam'/'g' or 'other' .\n")
+                print("Please respond with 'actu'/'a'/'1', 'reaction'/'r'/'2', 'factu'/'f'/'3','fspam'/'g'/'4',"
+                      "'conv'/'c'/'5','pub'/'p'/'6','bot'/'b'/'7' or 'other'/'o'/'8' .\n")
 
 
 if __name__ == "__main__":
