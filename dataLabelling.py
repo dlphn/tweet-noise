@@ -57,7 +57,9 @@ class DataLabelling:
         """
         # display tweet and allow input from user true/false
         valid = {"bot" : "bot", "b" : "bot", "conv" : "conversation", "c" : "conversation", "pub": "publicité",
-                 "p": "publicité", "other" : "other spam", "actu" : "actualité","a" : "actualité", "reaction" : "reaction", "r" : "reaction"}
+                 "p": "publicité", "other" : "other spam","other" : "other spam", "f" : "actualité par personnalité",
+                 "g": "spam par personnalité", "factu": "actualité par personnalité", "fspam": "spam par personnalité",
+                 "actu" : "actualité","a" : "actualité", "reaction" : "reaction", "r" : "reaction"}
         other_actions = ["stop", "end", "x", "skip", "next", "pass"]
         while True:
             print("https://twitter.com/test/status/" + data["id_str"] + " : " + data["text"])
@@ -67,9 +69,9 @@ class DataLabelling:
             elif choice in other_actions:
                 return choice
             elif choice == "help":
-                print("Possible inputs: bot/b, conv/c, pub/p, actu/a, reaction/r, other, skip/next/pass, stop/end, help")
+                print("Possible inputs: bot/b, conv/c, pub/p, actu/a, reaction/r, other/o, f, g, skip/next/pass, stop/end, help")
             else:
-                print("Please respond with 'bot'/'b', 'conv'/'c', 'pub'/'p', 'actu'/'a', 'reaction'/'r' or 'other' .\n")
+                print("Please respond with 'bot'/'b', 'conv'/'c', 'pub'/'p', 'actu'/'a', 'reaction'/'r', 'factu'/'f','fspam'/'g' or 'other' .\n")
 
 
 if __name__ == "__main__":
