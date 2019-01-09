@@ -41,7 +41,27 @@ class ArrayBuilder:
         logging.info("Total of {0} elements retrieved in {1} seconds".format(self.count, end - start))
         return self.data
 
+    def retrieve_text_and_labels(self):
+        start = time.time()
+        logging.info("Retrieving data...")
+        tweets = self.db.tweets.find()
+        logging.info("Building tweets array...")
+        texts, labels = [], []
+        for obj in tweets:
+            self.count += 1
+            texts.append(obj['text'])
+            if 'spam' in obj:
+                labels.append('spam' if obj['spam'] else 'actualité')
+            else:
+                labels.append('?')
+        end = time.time()
+        logging.info("Total of {0} elements retrieved in {1} seconds".format(self.count, end - start))
+        return texts, labels
+
 
 if __name__ == "__main__":
     mongo = ArrayBuilder()
-    print(mongo.retrieve())
+    data = mongo.retrieve_text_and_labels()
+    print(data[0])
+    print(data[1])
+

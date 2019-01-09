@@ -18,7 +18,7 @@ class TextClustering:
         self.km_model = None
 
     @staticmethod
-    def process_text_simple(text):
+    def process_text(text):
         """ Tokenize text removing punctuation """
         # stop = set(stopwords.words('french'))
         stop = stopKeywords.keywords_stoplist
@@ -28,7 +28,7 @@ class TextClustering:
         return text
 
     @staticmethod
-    def process_text(text, stem=True):
+    def tokenize(text, stem=True):
         """ Tokenize text and stem words removing punctuation """
         text = re.sub(r'(?:\@|https?\://)\S+', '', text)  # remove links and @username
         text = re.sub(r'[^\w\s]', ' ', text)  # remove non-alphanumeric characters
@@ -43,14 +43,14 @@ class TextClustering:
     def cluster_texts(self, texts, k=3):
         """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
         self.vectorizer = TfidfVectorizer(
-            # tokenizer=self.process_text,
+            # tokenizer=self.tokenize,
             # stop_words=stopwords.words('english'),
             # stop_words=stopwords.words('french'),
             # max_df=0.8,
             # min_df=0.1,
             # lowercase=True
         )
-        texts = [self.process_text_simple(text) for text in texts]
+        texts = [self.process_text(text) for text in texts]
         print(texts)
 
         tfidf_model = self.vectorizer.fit_transform(texts)
@@ -80,9 +80,8 @@ class TextClustering:
 
 
 def get_tweets():
-    mongo = arrayBuilder.ArrayBuilder()
-    tweets = mongo.retrieve()
-    return tweets
+    data = arrayBuilder.ArrayBuilder()
+    return data.retrieve_text_and_labels()
 
 
 if __name__ == "__main__":
@@ -115,12 +114,14 @@ if __name__ == "__main__":
     # model.predict("Lol je sors sans parapluie trankil et là il pleut.")
 
     # Tweets
-    articles = get_tweets()
+    articles, labels = get_tweets()
     print(articles)
     model = TextClustering()
-    clusters = model.cluster_texts(articles, 15)
+    clusters = model.cluster_texts(articles, 20)
     result = dict(clusters)
+    print
     print(result)
+    print
     for key in result.keys():
-        print(key, len(result[key]))
+        print(key, len(result[key]), collections.Counter([labels[tweet_id] for tweet_id in result[key]]))
 
