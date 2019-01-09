@@ -1,4 +1,4 @@
-import string
+import re
 import collections
 
 from nltk import word_tokenize
@@ -17,7 +17,7 @@ class TextClustering:
     @staticmethod
     def process_text(text, stem=True):
         """ Tokenize text and stem words removing punctuation """
-        # text = text.translate(None, string.punctuation)
+        text = re.sub(r'[^\w\s]', '', text)
         tokens = word_tokenize(text)
 
         if stem:
