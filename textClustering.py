@@ -7,6 +7,8 @@ from nltk.corpus import stopwords
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import arrayBuilder
+
 
 class TextClustering:
 
@@ -31,8 +33,8 @@ class TextClustering:
         self.vectorizer = TfidfVectorizer(tokenizer=self.process_text,
                                           # stop_words=stopwords.words('english'),
                                           stop_words=stopwords.words('french'),
-                                          max_df=0.5,
-                                          min_df=0.1,
+                                          max_df=1,
+                                          min_df=0,
                                           lowercase=True)
 
         tfidf_model = self.vectorizer.fit_transform(texts)
@@ -61,7 +63,14 @@ class TextClustering:
         print(prediction)
 
 
+def get_tweets():
+    mongo = arrayBuilder.ArrayBuilder()
+    tweets = mongo.retrieve()
+    return tweets
+
+
 if __name__ == "__main__":
+    # Cat/Google test
     # articles = ["This little kitty came to play when I was eating at a restaurant.",
     #             "Merley has the best squooshy kitten belly.",
     #             "Google Translate app is incredible.",
@@ -76,14 +85,23 @@ if __name__ == "__main__":
     # model.predict("chrome browser to open.")
     # model.predict("My cat is hungry.")
 
-    articles = ["J'aime les frites",
-                "Je suis d'accord, j'aime pas la pluie...",
-                "Les frites je les adore",
-                "La taxe d'habitation ne sera pas augmentée annonce le gouvernement",
-                "Cool pas d'augmentation de la taxe d'habitation !!!",
-                "Il fait trop moche aujourd'hui", ]
+    # French test
+    # articles = ["J'aime les frites",
+    #             "Je suis d'accord, j'aime pas la pluie...",
+    #             "Les frites je les adore",
+    #             "La taxe d'habitation ne sera pas augmentée annonce le gouvernement",
+    #             "Cool pas d'augmentation de la taxe d'habitation !!!",
+    #             "Il fait trop moche aujourd'hui", ]
+    # model = TextClustering()
+    # clusters = model.cluster_texts(articles, 3)
+    # print(dict(clusters))
+    # model.predict("Des manifestants dans la rue pour exprimer leur colère face à l'augmentation de la taxe d'habitation.")
+    # model.predict("Lol je sors sans parapluie trankil et là il pleut.")
+
+    # Tweets
+    articles = get_tweets()
+    print(articles)
     model = TextClustering()
-    clusters = model.cluster_texts(articles, 3)
+    clusters = model.cluster_texts(articles, 4)
     print(dict(clusters))
-    model.predict("Des manifestants dans la rue pour exprimer leur colère face à l'augmentation de la taxe d'habitation.")
-    model.predict("Lol je sors sans parapluie trankil et là il pleut.")
+
