@@ -14,4 +14,3 @@ liste3 = chaine3.split(" ")
 
 emojilist = liste1 + liste2 + liste3
 
-print(emojiList)
