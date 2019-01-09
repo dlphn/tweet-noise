@@ -19,7 +19,8 @@ class TextClustering:
     @staticmethod
     def process_text(text, stem=True):
         """ Tokenize text and stem words removing punctuation """
-        text = re.sub(r'[^\w\s]', '', text)
+        text = re.sub(r'(?:\@|https?\://)\S+', '', text)  # remove links and @username
+        text = re.sub(r'[^\w\s]', ' ', text)  # remove non-alphanumeric characters
         tokens = word_tokenize(text)
 
         if stem:
@@ -33,12 +34,12 @@ class TextClustering:
         self.vectorizer = TfidfVectorizer(tokenizer=self.process_text,
                                           # stop_words=stopwords.words('english'),
                                           stop_words=stopwords.words('french'),
-                                          max_df=1,
-                                          min_df=0,
+                                          max_df=0.8,
+                                          min_df=0.1,
                                           lowercase=True)
 
         tfidf_model = self.vectorizer.fit_transform(texts)
-        self.km_model = KMeans(n_clusters=k)
+        self.km_model = KMeans(n_clusters=k, init='k-means++', n_init=10)
         self.km_model.fit(tfidf_model)
 
         clustering = collections.defaultdict(list)
@@ -86,12 +87,12 @@ if __name__ == "__main__":
     # model.predict("My cat is hungry.")
 
     # French test
-    # articles = ["J'aime les frites",
-    #             "Je suis d'accord, j'aime pas la pluie...",
-    #             "Les frites je les adore",
-    #             "La taxe d'habitation ne sera pas augmentée annonce le gouvernement",
-    #             "Cool pas d'augmentation de la taxe d'habitation !!!",
-    #             "Il fait trop moche aujourd'hui", ]
+    articles = ["J'aime les frites https://t.co/JkpvrfmC6F oui",
+                "Je suis d'accord, j'aime pas la pluie... #@tropbeaulavie !",
+                "Les frites je les adore",
+                "La taxe d'habitation ne sera pas augmentée annonce le gouvernement",
+                "Cool pas d'augmentation de la taxe d'habitation !!!",
+                "Il fait trop moche aujourd'hui", ]
     # model = TextClustering()
     # clusters = model.cluster_texts(articles, 3)
     # print(dict(clusters))
@@ -99,9 +100,9 @@ if __name__ == "__main__":
     # model.predict("Lol je sors sans parapluie trankil et là il pleut.")
 
     # Tweets
-    articles = get_tweets()
+    articles = get_tweets()[:15]
     print(articles)
     model = TextClustering()
-    clusters = model.cluster_texts(articles, 4)
+    clusters = model.cluster_texts(articles, 2)
     print(dict(clusters))
 
