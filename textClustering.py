@@ -1,5 +1,6 @@
 import re
 import collections
+import operator
 
 from nltk import word_tokenize
 from nltk.stem import PorterStemmer
@@ -43,15 +44,15 @@ class TextClustering:
     def cluster_texts(self, texts, k=3):
         """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
         self.vectorizer = TfidfVectorizer(
-            # tokenizer=self.tokenize,
+            tokenizer=self.tokenize,
             # stop_words=stopwords.words('english'),
-            # stop_words=stopwords.words('french'),
-            # max_df=0.8,
-            # min_df=0.1,
-            # lowercase=True
+            stop_words=stopwords.words('french'),
+            max_df=100,
+            min_df=5,
+            lowercase=True
         )
-        texts = [self.process_text(text) for text in texts]
-        print(texts)
+        # texts = [self.process_text(text) for text in texts]
+        # print(texts)
 
         tfidf_model = self.vectorizer.fit_transform(texts)
         self.km_model = KMeans(n_clusters=k, init='k-means++', n_init=10)
@@ -119,10 +120,19 @@ if __name__ == "__main__":
     model = TextClustering()
     clusters = model.cluster_texts(articles, 20)
     result = dict(clusters)
-    print
+    print()
     print(result)
-    print
+    print()
+    major_labels = {}
     print('Cluster', 'Count', 'Labels')
     for key in result.keys():
-        print(key, len(result[key]), collections.Counter([labels[tweet_id] for tweet_id in result[key]]))
-
+        counter = collections.Counter([labels[tweet_id] for tweet_id in result[key]])
+        major_labels[key] = max(counter.items(), key=operator.itemgetter(1))[0]
+        print(key, len(result[key]), counter, max(counter.items(), key=operator.itemgetter(1))[0])
+    print()
+    print("Unlabelled tweets")
+    for tweet_id in range(len(articles)):
+        if labels[tweet_id] == '?':
+            for key in result.keys():
+                if tweet_id in result[key]:
+                    print(key, major_labels[key], articles[tweet_id])
