@@ -122,6 +122,7 @@ if __name__ == "__main__":
     print
     print(result)
     print
+    print('Cluster', 'Count', 'Labels')
     for key in result.keys():
         print(key, len(result[key]), collections.Counter([labels[tweet_id] for tweet_id in result[key]]))
 
