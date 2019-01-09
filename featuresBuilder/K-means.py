@@ -9,7 +9,7 @@ dataframe = pd.read_csv('C:\\Users\\Public\\Documents\\new.csv', sep = ',', head
 del dataframe["Unnamed: 3"]
 #print(dataframe.describe())
 
-
+#Visualisation des Clusters
 def Draw(pred, dataframe, name="image.png", f1_name="feature 1", f2_name="feature 2"):
     """ some plotting code designed to help you visualize your clusters """
 
@@ -25,6 +25,7 @@ def Draw(pred, dataframe, name="image.png", f1_name="feature 1", f2_name="featur
     #plt.savefig(name)
     plt.show()
 
+#Remise en forme du Dataframe, une ligne = un tweet
 def shape_df (dataframe):
     dataframe.vectorize = dataframe.vectorize.map(lambda x: x.lstrip('[').rstrip(']'))
     temp = dataframe.vectorize.str.split( expand=True)
@@ -33,6 +34,7 @@ def shape_df (dataframe):
     #print(dataframe.describe())
     return dataframe
 
+#Reduction de dimensionalité pour facilité les calculs
 def PCA(X,y,n):
     pca = decomposition.PCA(n_components=n)
     principalComponents = pca.fit_transform(X)
@@ -43,16 +45,14 @@ def PCA(X,y,n):
     #print(pca.explained_variance_ratio_)
     return result
 
+#Clusterization par les méthodes des K-means pour n clusters
 def Clusterize(df,n):
     clusterize = KMeans(n_clusters=n, n_init = 50)
     clusterize.fit(df.iloc[:, 2:9])
     pred = clusterize.predict(df_pca.iloc[:, 2:9])
     return clusterize.inertia_, pred
 
-dataframe = shape_df(dataframe)
-df_pca = PCA(dataframe.iloc[:,2:30],dataframe.iloc[:,1],8)
-
-
+#fonction pour visualiser l'erreur en fonction du nombre de Cluster
 def choose_K(n):
     cost_list = []
     for i in range(2,n+1):
@@ -62,10 +62,12 @@ def choose_K(n):
     plt.plot([i for i in range(2,len(cost_list)+2)],cost_list)
     plt.show()
 
-choose_K(30)
+dataframe = shape_df(dataframe)
+df_pca = PCA(dataframe.iloc[:,2:30],dataframe.iloc[:,1],8)
+inertia, pred = Clusterize(df_pca,3)
 
-#try:
-#    Draw(pred, df_pca, name="clusters.pdf", f1_name='pca 1', f2_name='pca 2')
-#except NameError:
-#    print ("no predictions object named pred found, no clusters to plot")
+try:
+    Draw(pred, df_pca, name="clusters.pdf", f1_name='pca 1', f2_name='pca 2')
+except NameError:
+    print ("no predictions object named pred found, no clusters to plot")
 

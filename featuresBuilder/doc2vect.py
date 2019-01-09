@@ -64,15 +64,17 @@ class VectorBuilder:
             self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
             self.line_count = 0
 
+#Vectorisation des mots et moyennation de tous les vecteurs des mots d'un tweet
     def vectorize(self,data):
         message = data['text']
-        doc = nlp(self.correct_words(message))
+        doc = nlp(self.correct_tweet(message))
         vect = 0
         for token in doc:
             vect += token.vector/(len(doc))
         return vect
 
-    def correct_words(self,message, language = "french" ):
+#Elimination des stopwords, des lettres qui se répète, séparation des hashtags par majuscule et supression des emoji
+    def correct_tweet(self,message, language = "french" ):
         doc = nlp (message)
         stopWords = set(stopwords.words(language))
         hashtag = False
