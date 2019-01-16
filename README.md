@@ -67,7 +67,7 @@ MONGODB = {
 - Classification (npm) `bayesnpm/` : implement a simple text classifier with the Bayes NPM package
 - Clustering :
     - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
-    - `clustering.py`
-    - `clusteringTest.py`
+    - `clustering.py` : tests [to be removed]
+    - `clusteringTest.py` : tests [to be removed]
 
 

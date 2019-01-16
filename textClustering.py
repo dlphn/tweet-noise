@@ -13,20 +13,23 @@ from featuresBuilder import stopKeywords
 
 
 class TextClustering:
+    """
+    Clusterize tweets for classification
+    """
 
     def __init__(self):
         self.vectorizer = None
         self.km_model = None
 
-    @staticmethod
-    def process_text(text):
-        """ Tokenize text removing punctuation """
-        # stop = set(stopwords.words('french'))
-        stop = stopKeywords.keywords_stoplist
-        text = re.sub(r'(?:\@|https?\://)\S+', '', text)  # remove links and @username
-        text = re.sub(r'[^\w\s]', ' ', text)  # remove non-alphanumeric characters
-        text = ' '.join([token for token in word_tokenize(text.lower()) if token not in stop])  # remove stopwords
-        return text
+    # @staticmethod
+    # def process_text(text):
+    #     """ Tokenize text removing punctuation """
+    #     # stop = set(stopwords.words('french'))
+    #     stop = stopKeywords.keywords_stoplist
+    #     text = re.sub(r'(?:\@|https?\://)\S+', '', text)  # remove links and @username
+    #     text = re.sub(r'[^\w\s]', ' ', text)  # remove non-alphanumeric characters
+    #     text = ' '.join([token for token in word_tokenize(text.lower()) if token not in stop])  # remove stopwords
+    #     return text
 
     @staticmethod
     def tokenize(text, stem=True):
@@ -86,20 +89,6 @@ def get_tweets():
 
 
 if __name__ == "__main__":
-    # Cat/Google test
-    # articles = ["This little kitty came to play when I was eating at a restaurant.",
-    #             "Merley has the best squooshy kitten belly.",
-    #             "Google Translate app is incredible.",
-    #             "If you open 100 tab in google you get a smiley face.",
-    #             "Best cat photo I've ever taken.",
-    #             "Climbing ninja cat.",
-    #             "Impressed with google map feedback.",
-    #             "Key promoter extension for Google Chrome."]
-    # model = TextClustering()
-    # clusters = model.cluster_texts(articles, 2)
-    # print(dict(clusters))
-    # model.predict("chrome browser to open.")
-    # model.predict("My cat is hungry.")
 
     # French test
     articles = ["J'aime les frites https://t.co/JkpvrfmC6F oui",
@@ -116,15 +105,15 @@ if __name__ == "__main__":
 
     # Tweets
     articles, labels = get_tweets()
-    print(articles)
+    # print(articles)
     model = TextClustering()
     clusters = model.cluster_texts(articles, 20)
     result = dict(clusters)
-    print()
-    print(result)
+    # print()
+    # print(result)
     print()
     major_labels = {}
-    print('Cluster', 'Count', 'Labels')
+    print('Cluster', 'Count', 'Label')
     for key in result.keys():
         counter = collections.Counter([labels[tweet_id] for tweet_id in result[key]])
         major_labels[key] = max(counter.items(), key=operator.itemgetter(1))[0]
