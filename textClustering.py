@@ -48,9 +48,10 @@ class TextClustering:
         """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
         self.vectorizer = TfidfVectorizer(
             tokenizer=self.tokenize,
+            max_features=1500,
             # stop_words=stopwords.words('english'),
             stop_words=stopwords.words('french'),
-            max_df=100,
+            max_df=0.7,
             min_df=5,
             lowercase=True
         )
