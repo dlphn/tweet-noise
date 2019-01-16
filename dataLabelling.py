@@ -30,7 +30,7 @@ class DataLabelling:
         Retrieve tweets from mongo database and save user's label for the tweets.
         """
         print("=============================================\n")
-        print("Tweets labelling - possible inputs: actu/a/1, reaction/r/2, factu/f/3, fspam/g/4, conv/c/5, pub/p/6, "
+        print("Tweets labelling - possible inputs: actu/a/1, reaction/r/2, famous_actu/f/3, famous_spam/g/4, conv/c/5, pub/p/6, "
               "bot/b/7, other/o/8, skip/next/pass, stop/end, help.\nWhat is the type of the tweet displayed?\n")
         print("=============================================\n")
         for obj in self.db.tweets.find():
@@ -58,8 +58,8 @@ class DataLabelling:
         """
         # display tweet and allow input from user true/false
         valid =  {"actu" : "actualité","a" : "actualité","1" : "actualité", "reaction" : "reaction", "r" : "reaction",
-                  "2": "reaction", "factu" : "actualité par personnalité", "f" : "actualité par personnalité",
-                  "3" : "actualité par personnalité", "fspam": "spam par personnalité", "g": "spam par personnalité",
+                  "2": "reaction", "famous_actu" : "actualité par personnalité", "f" : "actualité par personnalité",
+                  "3" : "actualité par personnalité", "famous_spam": "spam par personnalité", "g": "spam par personnalité",
                   "4": "spam par personnalité", "conv": "conversation", "c": "conversation", "5": "conversation",
                   "pub": "publicité","p": "publicité", "6": "publicité", "bot" : "bot", "b": "bot", "7": "bot",
                   "other" : "other spam","o" : "other spam","8" : "other spam"}
