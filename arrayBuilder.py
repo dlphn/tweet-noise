@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=lo
 
 class ArrayBuilder:
     """
-    Retrieve data from the MongoDB database.
+    Retrieve data from the MongoDB database (text and label only).
 
     """
     def __init__(self):
