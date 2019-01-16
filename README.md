@@ -50,10 +50,10 @@ MONGODB = {
 - `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
 - `featuresBuilder.py`: fetch data from MongoDB and build the features table
 - `JSONBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
+- `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)
 - `spamKeywords.py`: list of key words considered as spam
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
-- (`classification2.py`: duplicate of `classification.py`)
 - Data Visualization :
     - `features_analysis.py` : matplotlib
     - `dataVisualization.py` : seaborn tests
@@ -65,5 +65,8 @@ MONGODB = {
     - `random_forest.py` : Random Forest classifier
     - `Support_Vector_Machine.py` : Support Vector Machine classifier
 - Classification (npm) `bayesnpm/` : implement a simple text classifier with the Bayes NPM package
+- Clustering :
+    - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
+    - `clusteringTest.py` : tests [to be removed]
 
 
