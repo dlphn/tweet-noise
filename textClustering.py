@@ -1,6 +1,7 @@
 import re
 import collections
 import operator
+import pickle
 
 from nltk import word_tokenize
 from nltk.stem import PorterStemmer
@@ -9,7 +10,7 @@ from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import arrayBuilder
-from featuresBuilder import stopKeywords
+# from featuresBuilder import stopKeywords
 
 
 class TextClustering:
@@ -62,6 +63,9 @@ class TextClustering:
         self.km_model = KMeans(n_clusters=k, init='k-means++', n_init=10)
         self.km_model.fit(tfidf_model)
 
+        with open('clustering_text_classifier', 'wb') as picklefile:
+            pickle.dump(self.km_model, picklefile)
+
         clustering = collections.defaultdict(list)
 
         print("Top terms per cluster:")
@@ -82,6 +86,11 @@ class TextClustering:
         y = self.vectorizer.transform([text])
         prediction = self.km_model.predict(y)
         print(prediction)
+
+        # with open('clustering_text_classifier', 'rb') as training_model:
+        #     loaded_model = pickle.load(training_model)
+        #     prediction2 = loaded_model.predict(y)
+        #     print(prediction2)
 
 
 def get_tweets():
@@ -126,3 +135,9 @@ if __name__ == "__main__":
             for key in result.keys():
                 if tweet_id in result[key]:
                     print(key, major_labels[key], articles[tweet_id])
+
+    # print()
+    # print("Predict unlabelled tweets")
+    # for tweet_id in range(len(articles)):
+    #     if labels[tweet_id] == '?':
+    #         model.predict(articles[tweet_id])
