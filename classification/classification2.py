@@ -25,24 +25,25 @@ class Classification:
         self.df_tweets = None
         self.df_tweets_categorized = None
 
-    def create_dataframe(self):
+    def create_dataframe(self, categorize=True):
         df = pd.read_csv(self.current_file, encoding="utf-8")
         # print(df.head())
         # print(df.describe())
         self.df_tweets = df[self.columns]
         # print(self.df_tweets)
         self.df_tweets_categorized = self.df_tweets.copy(deep=True)
-        # self.categorize_columns(['reputation'], self.categorize_proportion)
-        # self.categorize_columns(['orthographe'], self.categorize_orth)
-        # self.categorize_columns(['proportion_spamwords'], self.categorize_spamword)
-        # self.categorize_columns(['proportion_whitewords'], self.categorize_whiteword)
-        # self.categorize_columns(['verified'], self.categorize_bool)
-        # self.categorize_columns(['nb_emoji'], self.categorize_emoji)
-        # self.categorize_columns(['spam'], self.categorize_bool)
         self.categorize_columns(['posted_at'], self.categorize_time)
-        # self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
-        # self.categorize_columns(['age'], self.categorize_age)
-        # self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
+        if categorize:
+            self.categorize_columns(['reputation'], self.categorize_proportion)
+            self.categorize_columns(['orthographe'], self.categorize_orth)
+            self.categorize_columns(['proportion_spamwords'], self.categorize_spamword)
+            self.categorize_columns(['proportion_whitewords'], self.categorize_whiteword)
+            self.categorize_columns(['verified'], self.categorize_bool)
+            self.categorize_columns(['nb_emoji'], self.categorize_emoji)
+            self.categorize_columns(['spam'], self.categorize_bool)
+            self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
+            self.categorize_columns(['age'], self.categorize_age)
+            self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
         # print(self.df_tweets_categorized.head())
         # print(type(df_tweets_categorized))
         return self.df_tweets_categorized

@@ -28,6 +28,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 # Categorized data frame
 classif = Classification()
 df_tweets_categorized = classif.create_dataframe()
+# df_tweets_categorized = classif.create_dataframe(False)
 K_value = 7
 dict_classifiers = {
     "Logistic Regression": LogisticRegression(),
@@ -58,12 +59,12 @@ def split_dataset(dataset, train_percentage, feature_headers, target_header):
 
 
 def evaluate(y, predicted_y):
-    acc = accuracy_score(y, predicted_y)
+    # acc = accuracy_score(y, predicted_y)
     cm = pd.DataFrame(confusion_matrix(y, predicted_y), columns=[0, 1], index=[0, 1])
     precision = cm[0][0] / (cm[0][0] + cm[0][1])
     recall = cm[0][0] / (cm[0][0] + cm[1][0])
     f_score = 2 * precision * recall / (precision + recall) if precision > 0 and recall > 0 else 0
-    return acc, precision, recall, f_score
+    return precision, recall, f_score
     # return "Precision = {} \nRecall = {} \nF score = {}".format(precision, recall, f_score)
 
 
@@ -93,12 +94,11 @@ def display_dict_models(dict, sort_by='test_score'):
     test_s = [dict[key]['test_score'] for key in cls]
     training_s = [dict[key]['train_score'] for key in cls]
     training_t = [dict[key]['train_time'] for key in cls]
-    accuracy = [dict[key]['accuracy'] for key in cls]
     precision = [dict[key]['precision'] for key in cls]
     recall = [dict[key]['recall'] for key in cls]
     f_score = [dict[key]['f_score'] for key in cls]
 
-    columns = ['classifier', 'train_score', 'test_score', 'train_time', 'accuracy', 'precision', 'recall', 'f_score']
+    columns = ['classifier', 'train_score', 'test_score', 'train_time', 'precision', 'recall', 'f_score']
 
     df_ = pd.DataFrame(data=np.zeros(shape=(len(cls), len(columns))),
                        columns=columns)
@@ -107,7 +107,6 @@ def display_dict_models(dict, sort_by='test_score'):
         df_.loc[ii, 'train_score'] = training_s[ii]
         df_.loc[ii, 'test_score'] = test_s[ii]
         df_.loc[ii, 'train_time'] = training_t[ii]
-        df_.loc[ii, 'accuracy'] = accuracy[ii]
         df_.loc[ii, 'precision'] = precision[ii]
         df_.loc[ii, 'recall'] = recall[ii]
         df_.loc[ii, 'f_score'] = f_score[ii]
@@ -119,8 +118,7 @@ def predict(dataset, classifier):
     train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[1:-1], HEADERS[-1])
     clf = classify(classifier, dict_classifiers[classifier], train_x, test_x, train_y, test_y)
     pred_y = clf.predict(test_x)
-    acc, precision, recall, f_score = evaluate(test_y, pred_y)
-    dict_models[classifier_name]['accuracy'] = acc
+    precision, recall, f_score = evaluate(test_y, pred_y)
     dict_models[classifier_name]['precision'] = precision
     dict_models[classifier_name]['recall'] = recall
     dict_models[classifier_name]['f_score'] = f_score
