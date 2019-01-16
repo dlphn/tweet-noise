@@ -17,7 +17,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, confusion_matrix
 
-from classification2 import Classification
+from classification.classification2 import Classification
+
 
 #Data frame classifié
 classif = Classification()
@@ -36,12 +37,12 @@ tweets = df_tweets_categorized
 HEADERS = df_tweets_categorized.columns.values.tolist()
 
 
-
 def split_dataset(dataset, train_percentage, feature_headers, target_header):
     # Split dataset into train and test dataset
     train_x, test_x, train_y, test_y = train_test_split(dataset[feature_headers], dataset[target_header],
                                                         train_size=train_percentage)
     return train_x, test_x, train_y, test_y
+
 
 def Score(y, predicted_y):
     acc =accuracy_score(y, predicted_y)
@@ -85,7 +86,10 @@ def display_dict_models(dict, sort_by='test_score'):
 
     display(df_.sort_values(by=sort_by, ascending=False))
 
+
 classif =[]
+
+
 def predict(dataset, classifier):
     train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[1:-1], HEADERS[-1])
     clf = classify(classifier, dict_classifiers[classifier], train_x, test_x, train_y, test_y)
@@ -95,9 +99,10 @@ def predict(dataset, classifier):
     classif.append(score)
 
 
-def display_classif ():
+def display_classif():
     for i in range(len(classif)):
         print(classif[i] + " \n")
+
 
 predict(tweets, "Naive Bayes")
 predict(tweets, "Linear SVM")

@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score,confusion_matrix
 import matplotlib.pyplot as plt
 from features_analysis import PCA
 
-from classification2 import Classification
+from classification.classification2 import Classification
 
 classif = Classification()
 dataset = classif.create_dataframe()

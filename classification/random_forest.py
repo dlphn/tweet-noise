@@ -15,7 +15,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import datetime
 
-from classification2 import Classification
+from classification.classification2 import Classification
 
 
 

@@ -17,7 +17,7 @@ pd.set_option('display.width', None)
 class Classification :
 
     def __init__(self):
-        self.current_file = "C:\\Users\\Public\\Documents\\tweets_2018-11-23T091721.577598.csv"
+        self.current_file = FILEDIR + "tweets_2018-11-23T09:52:04.109501.csv"
         self.columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at',
                         'proportion_spamwords', 'proportion_whitewords', 'orthographe', 'nb_hashtag', 'guillemets',
                         'nb_emoji', 'spam']
