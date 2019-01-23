@@ -66,7 +66,18 @@ class FetchTweets:
         except exceptions.TwythonError:
             return 0, 0
 
+    def fetch_test(self, tweet_id):
+        """
+        Fetch tweet info
+        """
+        try:
+            tweet_info = self.twitter.show_status(id=tweet_id)
+            print(tweet_info)
+        except exceptions.TwythonError:
+            print('Tweet no longer exists')
+
 
 if __name__ == "__main__":
     twitter = FetchTweets(*ACCESS)
-    twitter.retrieve()
+    # twitter.retrieve()
+    # twitter.fetch_test("1055055713146494976")
