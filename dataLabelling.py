@@ -30,7 +30,7 @@ class DataLabelling:
         Retrieve tweets from mongo database and save user's label for the tweets.
         """
         print("=============================================\n")
-        print("Tweets labelling - possible inputs: actu/a/1, reaction/r/2, famous_actu/f/3, famous_spam/g/4, conv/c/5, pub/p/6, "
+        print("Tweets labelling - possible inputs: actu/a/1, reaction/r/2, conv/c/5, pub/p/6, "
               "bot/b/7, other/o/8, skip/next/pass, stop/end, help.\nWhat is the type of the tweet displayed?\n")
         print("=============================================\n")
         for obj in self.db.tweets.find():
@@ -40,10 +40,9 @@ class DataLabelling:
                 classification = self.label(obj)
                 if classification == "stop" or classification == "end" or classification == "x":
                     break
-                elif classification in ["actualité","reaction","actualité par personnalité",
-                                        "spam par personnalité","conversation","publicité","bot","other spam"]:
+                elif classification in ["actualité","reaction","conversation","publicité","bot","other spam"]:
                     spam_value = True
-                    if classification in ["actualité","reaction","actualité par personnalité"] :
+                    if classification in ["actualité","reaction"] :
                         spam_value = False
                     self.db.tweets.update_one({"_id": obj.get("_id")}, {"$set": {"type": classification,"spam":spam_value}})
                     self.count += 1
@@ -58,9 +57,7 @@ class DataLabelling:
         """
         # display tweet and allow input from user true/false
         valid =  {"actu" : "actualité","a" : "actualité","1" : "actualité", "reaction" : "reaction", "r" : "reaction",
-                  "2": "reaction", "famous_actu" : "actualité par personnalité", "f" : "actualité par personnalité",
-                  "3" : "actualité par personnalité", "famous_spam": "spam par personnalité", "g": "spam par personnalité",
-                  "4": "spam par personnalité", "conv": "conversation", "c": "conversation", "5": "conversation",
+                  "2": "reaction","conv": "conversation", "c": "conversation", "5": "conversation",
                   "pub": "publicité","p": "publicité", "6": "publicité", "bot" : "bot", "b": "bot", "7": "bot",
                   "other" : "other spam","o" : "other spam","8" : "other spam"}
 
@@ -73,11 +70,27 @@ class DataLabelling:
             elif choice in other_actions:
                 return choice
             elif choice == "help":
-                print("Possible inputs: actu/a/1, reaction/r/2, factu/f/3, fspam/g/4, conv/c/5, pub/p/6, bot/b/7,"
+                print("Possible inputs: actu/a/1, reaction/r/2, conv/c/5, pub/p/6, bot/b/7,"
                       " other/o/8, skip/next/pass, stop/end, help")
             else:
-                print("Please respond with 'actu'/'a'/'1', 'reaction'/'r'/'2', 'factu'/'f'/'3','fspam'/'g'/'4',"
+                print("Please respond with 'actu'/'a'/'1', 'reaction'/'r'/'2',"
                       "'conv'/'c'/'5','pub'/'p'/'6','bot'/'b'/'7' or 'other'/'o'/'8' .\n")
+
+    def correct(self):
+        """
+        correct tweet previously labelled.
+        """
+        for obj in self.db.tweets.find():
+            if obj["type"] == "actualité par personnalité" :
+                self.db.tweets.update_one({"_id": obj.get("_id")},
+                                          {"$set": {"type": "actualité"}})
+                self.count += 1
+            if obj["type"] == "spam par personnalité" :
+                self.db.tweets.update_one({"_id": obj.get("_id")},
+                                          {"$set": {"type": "conversation"}})
+                self.count += 1
+        logging.info("Total of {} elements with label changed".format(self.count))
+
 
 
 if __name__ == "__main__":
