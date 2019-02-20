@@ -191,4 +191,10 @@ Run `features.featuresBuilder.py`.
 
 Run `features_analysis.py`.
 
-### X. Classification
+### 4. Classification
+
+Run `classification.scikit_classification.py` to compare different scikit-learn classifiers.
+
+### 5. Clustering
+
+Run `testClustering.py`.
