@@ -7,6 +7,7 @@ Created on Mon Oct 29 09:35 2018
 
 import logging
 from datetime import datetime, timezone
+sys.path.append('..')
 from config import FILEDIR, FILEBREAK, MONGODB
 from spamKeywords import keywords_blacklist
 from whitelistKeywords import keywords_whitelist
@@ -33,7 +34,7 @@ class FeaturesBuilder:
         self.do_continue = True
         self.count = 0
         self.line_count = 0
-        self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
+        self.current_file = FILEDIR + "tweets_newtypes.csv"
         # connect to MongoDB
         client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
@@ -56,18 +57,18 @@ class FeaturesBuilder:
             if self.line_count == 0:
                 f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"posted_at\","
                         "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
-                        "\"guillemets\",\"nb_emoji\",\"named_id\",\"retweet_count\",\"favorite_count\",\"spam\"\n")
+                        "\"guillemets\",\"nb_emoji\",\"named_id\",\"retweet_count\",\"favorite_count\",\"type\",\"spam\"\n")
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
                 self.information_contenu(data) +
-                "," + ("\"true\"" if data["spam"] else "\"false\"") +
+                "," + data["type"] +","+("\"true\"" if data["spam"] else "\"false\"") +
                 "\n")
         self.line_count += 1
 
         if self.line_count > FILEBREAK:
             logging.info("Closing file {}".format(self.current_file))
-            self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
+            self.current_file = FILEDIR + "tweets_newtype2.csv"
             self.line_count = 0
 
     @staticmethod
