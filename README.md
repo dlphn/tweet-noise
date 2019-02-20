@@ -8,6 +8,8 @@
 
 Python school project developed by 3 students from CentraleSupélec : Hélène, Valentin, and Delphine.
 
+We consider as spam anything that is not related to a news event or a reaction to one.
+
 ## Installation
 
 Install dependencies using pip (preferably in a virtual environment):
@@ -73,8 +75,35 @@ MONGODB = {
 - Clustering :
     - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
     - `clusteringTest.py` : tests [to be removed]
-    
-## Features stores in database
+
+
+## Steps
+
+### 1. Data Acquisition
+
+Fetch data from Twitter API.
+
+Run `streamingAPI.py`.
+
+### 2. Data Preprocessing
+
+Build features file.
+
+Run `features.featuresBuilder.py`.
+
+### 3. Visualization
+
+Run `features_analysis.py`.
+
+### 4. Classification
+
+Run `classification.scikit_classification.py` to compare different scikit-learn classifiers.
+
+### 5. Clustering
+
+Run `testClustering.py`.
+
+## Features stored in database
 
 \* : used for analysis
 
@@ -154,7 +183,7 @@ MONGODB = {
 - retweet_count : int
 - favorite_count : int
 - entities : object °
-    - hashtags : list
+    - hashtags : list *
         - text : str
         - indices : list
     - urls : list
@@ -179,28 +208,3 @@ MONGODB = {
 - spam : bool *
 - type : str *
 
-## Steps
-
-### 1. Data Acquisition
-
-Fetch data from Twitter API.
-
-Run `streamingAPI.py`.
-
-### 2. Data Preprocessing
-
-Build features file.
-
-Run `features.featuresBuilder.py`.
-
-### 3. Visualization
-
-Run `features_analysis.py`.
-
-### 4. Classification
-
-Run `classification.scikit_classification.py` to compare different scikit-learn classifiers.
-
-### 5. Clustering
-
-Run `testClustering.py`.
