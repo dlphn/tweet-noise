@@ -62,7 +62,7 @@ class FeaturesBuilder:
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
-                self.information_contenu(data) +
+                self.information_content(data) +
                 "," + ("\"true\"" if data["spam"] else "\"false\"") +
                 "\n")
         self.line_count += 1
@@ -95,12 +95,12 @@ class FeaturesBuilder:
         return result
 
     @staticmethod
-    def information_contenu(data):
+    def information_content(data):
         message = data['text']
         message_min = message.lower()
         message_min_sansaccent = unidecode.unidecode(message_min)
-        liste_mot = re.sub("[,.#]",'', message_min).split()
-        emojiList = emojilist
+        liste_mot = re.sub("[,.#]", '', message_min).split()
+        emoji_list = emojilist
         emoji = 0
         spamwords = keywords_blacklist
         whitewords = keywords_whitelist
@@ -120,13 +120,14 @@ class FeaturesBuilder:
             if spell_dict.check(mot):
                 mot_bien_orth += 1
         ratio_orth = mot_bien_orth/len(liste_mot)
-        nb_hashtag = message.count('#')
+        # nb_hashtag = message.count('#')
+        nb_hashtag = len(data['entities']['hashtags']) or 0
         guillemets = message.count('\"')
-        for j in emojiList:
+        for j in emoji_list:
             if j in message:
                 emoji += 1
 
-        #On transforme le message en format compatible avec nlp
+        # On transforme le message en format compatible avec nlp
         doc = nlp(message_min_sansaccent)
 
         result = "," + ("%.2f" % round(ratio_spamword, 2))

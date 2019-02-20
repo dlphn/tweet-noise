@@ -77,7 +77,7 @@ MONGODB = {
 
 
 - _id
-- created_at : str *
+- created_at : str
 - id : int
 - id_str : str *
 - text : str *
@@ -133,6 +133,17 @@ MONGODB = {
 - place
 - contributors
 - is_quote_status : bool
+- extended_tweet : object
+    - full_text : str
+    - display_text_range : list
+    - entities : object
+        - hashtags : list
+        - urls : list
+        - user_mentions : list
+        - symbols : list
+        - media : list
+    - extended_entities : object
+        - media : list
 - quote_count : int
 - reply_count : int
 - retweet_count : int
@@ -158,7 +169,7 @@ MONGODB = {
 - possibly_sensitive : bool
 - filter_level : str
 - lang : str
-- timestamp_ms : str
+- timestamp_ms : str *
 - spam : bool *
 - type : str *
 
