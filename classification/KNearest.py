@@ -15,14 +15,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score,confusion_matrix
 import matplotlib.pyplot as plt
-from features_analysis import PCA
+#from features_analysis import PCA
 
-from classification.classification2 import Classification
+import sys
+sys.path.append('..')
+from config import FILEDIR
 
-classif = Classification()
-dataset = classif.create_dataframe()
-HEADERS = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'time', 'proportion_spamwords',
-       'orthographe', 'RT', 'spam']
+
+dataset = pd.read_csv(FILEDIR+'newtypes_categorized.csv')
+HEADERS = dataset.columns.values.tolist()
+print(HEADERS)
+
 
 
 def euclidean_distance(x, y):
@@ -36,11 +39,16 @@ def split_dataset(dataset, train_percentage, feature_headers, target_header):
 
 def Score(y, predicted_y):
     acc =accuracy_score(y, predicted_y)
-    cm = pd.DataFrame(confusion_matrix(y, predicted_y), columns=[0, 1], index=[0, 1])
-    precision = cm[0][0]/(cm[0][0]+cm[0][1])
-    recall = cm[0][0]/(cm[0][0]+cm[1][0])
+    cm = pd.DataFrame(confusion_matrix(y, predicted_y), columns=[ 1,2,5,6,7,8], index=[1,2,5,6,7,8])
+    print(cm)
+    #print(cm[1][8])
+    alpha = cm[1][1]+cm[1][2]+cm[2][1]+cm[2][2]
+    beta = cm[2][8]+cm[2][1]+cm[2][2]+cm[2][5] +cm[2][6]+cm[2][7]+cm[1][8]+cm[1][1]+cm[1][2]+cm[1][5] +cm[1][6]+cm[1][7]
+    gamma = cm[8][2]+cm[1][2]+cm[2][2]+cm[5][2] +cm[6][2]+cm[7][2]+cm[8][1]+cm[1][1]+cm[2][1]+cm[5][1] +cm[6][1]+cm[7][1]
+    precision = alpha/beta
+    recall = alpha/gamma
     if precision == 0 and recall == 0 :
-        F_score = 50
+        F_score = 0
     else :
         F_score = 2*precision*recall / (precision+ recall)
     return F_score
@@ -56,22 +64,23 @@ def KNeighbors (dataset):
     for K in range(10):
         K_value = K+1
         r =0
-        for i in range(100):
-            train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7,['principal component 1','principal component 2'],['spam'])
+        for i in range(10):
+            train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7,HEADERS[1:-2],['type'])
             #print(val_y)
             neigh = K_Neighbors_classifier(K_value, train_x, train_y)
             pred_y = neigh.predict(test_x)
-            r = r + Score(test_y,pred_y)/100
+            r = r + Score(test_y,pred_y)/10
         y_plot.append(r)
         #print(y_plot)
     plt.plot(y_plot)
-    plt.axis(ymax=0.3, ymin =0.1)
+    print(y_plot)
+    plt.axis(ymax=0.5, ymin =0)
     plt.show()
 
 
-dataset_pca = PCA(dataset.iloc[:,:-1],dataset.iloc[:,-1])
-print(dataset_pca.head())
-KNeighbors(dataset_pca)
+#dataset_pca = PCA(dataset.iloc[:,:-1],dataset.iloc[:,-1])
+#print(dataset_pca.head())
+KNeighbors(dataset)
 
 """
 def choose_features ():
