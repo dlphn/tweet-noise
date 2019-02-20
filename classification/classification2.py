@@ -5,13 +5,12 @@ Created on Wed Oct 31 14:28 2018
 @author: dshi, hbaud, vlefranc
 """
 
+from sklearn.preprocessing import LabelEncoder, robust_scale
 import pandas as pd
 import datetime
 from config import current_file, FILEDIR
 import sys
 sys.path.append('..')
-import os
-from sklearn.preprocessing import LabelEncoder, robust_scale
 
 pd.set_option('display.width', None)
 

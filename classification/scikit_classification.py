@@ -146,7 +146,7 @@ def compare_classifiers(labels='spam'):
             model = dict_classifiers[name]
             kfold = KFold(n_splits=10, random_state=seed)
             cv_results = cross_val_score(model, train_x, train_y, cv=kfold, scoring=scoring)
-            if scoring == 'f1_weighted':
+            if scoring == 'f1_weighted':  # because the labels are False when the tweet is relevant, we need to study it as True in our case by doing 1-f1_score
                 cv_results = np.array([1 - f1_score for f1_score in cv_results])
             results.append(cv_results)
             names.append(name)
