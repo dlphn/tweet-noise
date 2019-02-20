@@ -10,6 +10,12 @@ Python school project developed by 3 students from CentraleSupélec : Hélène, 
 
 ## Installation
 
+Install dependencies using pip (preferably in a virtual environment):
+
+```bash
+pip install -r requirements.txt
+``
+
 Add a `config.py` file which contains Twitter API and MongoDB keys.
 ```python
 # OAuth authentification keys to Twitter API
