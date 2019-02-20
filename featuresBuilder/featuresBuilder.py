@@ -33,7 +33,9 @@ class FeaturesBuilder:
         self.do_continue = True
         self.count = 0
         self.line_count = 0
-        self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
+        self.file_count = 1
+        self.date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
         # connect to MongoDB
         client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
@@ -67,7 +69,8 @@ class FeaturesBuilder:
 
         if self.line_count > FILEBREAK:
             logging.info("Closing file {}".format(self.current_file))
-            self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
+            self.file_count += 1
+            self.current_file = FILEDIR + "tweets_" + self.date + "_" + self.file_count + ".csv"
             self.line_count = 0
 
     @staticmethod
