@@ -10,7 +10,7 @@ from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import arrayBuilder
-# from featuresBuilder import stopKeywords
+# from features import stopKeywords
 
 
 class TextClustering:

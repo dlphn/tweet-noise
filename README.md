@@ -164,6 +164,7 @@ MONGODB = {
         - id_str : str
         - indices : list
     - symbols : list
+    - media : list
 - favorited : bool
 - retweeted : bool
 - possibly_sensitive : bool

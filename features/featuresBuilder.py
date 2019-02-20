@@ -8,15 +8,14 @@ Created on Mon Oct 29 09:35 2018
 import logging
 from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
-from spamKeywords import keywords_blacklist
-from whitelistKeywords import keywords_whitelist
-from Emojilist import emojilist
+from features import spamKeywords
+from features import whitelistKeywords
+from features import Emojilist
 from pymongo import MongoClient
 import enchant
 import unidecode
 import time
 import re
-import spacy
 import fr_core_news_md
 nlp = fr_core_news_md.load()
 
@@ -56,14 +55,16 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"posted_at\","
-                        "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
-                        "\"guillemets\",\"nb_emoji\",\"named_id\",\"retweet_count\",\"favorite_count\",\"spam\"\n")
+                f.write('"id","nb_follower","nb_following","verified","reputation","age","nb_tweets","posted_at",'
+                        '"proportion_spamwords","proportion_whitewords","orthographe","nb_hashtag",'
+                        '"guillemets","nb_emoji","named_id","retweet_count","favorite_count",'
+                        '"type","spam"\n')
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
                 self.information_content(data) +
-                "," + ("\"true\"" if data["spam"] else "\"false\"") +
+                "," + data["type"] +
+                "," + ('"true"' if data["spam"] else '"false"') +
                 "\n")
         self.line_count += 1
 
@@ -100,10 +101,10 @@ class FeaturesBuilder:
         message_min = message.lower()
         message_min_sansaccent = unidecode.unidecode(message_min)
         liste_mot = re.sub("[,.#]", '', message_min).split()
-        emoji_list = emojilist
+        emoji_list = Emojilist.emojilist
         emoji = 0
-        spamwords = keywords_blacklist
-        whitewords = keywords_whitelist
+        spamwords = spamKeywords.keywords_blacklist
+        whitewords = whitelistKeywords.keywords_whitelist
         spamword_count = 0
         whiteword_count = 0
         spell_dict = enchant.Dict('fr_FR')
