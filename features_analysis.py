@@ -48,6 +48,11 @@ def categorize_bool(x):
         return 0
 
 
+def categorize_type(tweet_type):
+    types = ['actualité', 'reaction', 'conversation', 'other spam', 'publicité', 'bot']
+    return types.index(tweet_type)
+
+
 df_tweets.spam = df_tweets.spam.apply(categorize_bool)
 df_tweets_bool = pd.concat([df_tweets.iloc[:, 1:7], df_tweets.iloc[:, 8:]], axis=1)
 
@@ -63,6 +68,15 @@ for column_index, column in enumerate(df_tweets_bool.columns):
         continue
     plt.subplot(4, 4, column_index + 1)
     sns.violinplot(x='spam', y=column, data=df_tweets_bool)
+
+
+df_tweets_bool.type = df_tweets.type.apply(categorize_type)
+plt.figure(figsize=(10, 10))
+for column_index, column in enumerate(df_tweets_bool.columns):
+    if column == 'spam' or column == 'type':
+        continue
+    plt.subplot(4, 4, column_index + 1)
+    sns.violinplot(x='type', y=column, data=df_tweets_bool)
 plt.show()
 
 
