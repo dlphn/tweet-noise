@@ -75,7 +75,6 @@ class TextClustering:
             print("Cluster %d:" % i),
             for ind in order_centroids[i, :10]:
                 print(' %s' % terms[ind]),
-            print
 
         for idx, label in enumerate(self.km_model.labels_):
             clustering[label].append(idx)
