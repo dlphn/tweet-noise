@@ -7,9 +7,9 @@ Created on Wed Oct 31 14:28 2018
 
 import pandas as pd
 import datetime
+from config import current_file, FILEDIR
 import sys
 sys.path.append('..')
-from config import FILEDIR
 import os
 from sklearn.preprocessing import LabelEncoder, robust_scale
 
@@ -18,16 +18,19 @@ pd.set_option('display.width', None)
 
 class Classification:
 
-    def __init__(self):
-        self.current_file = FILEDIR + "tweets_newtypes.csv"
+    def __init__(self, labels='spam'):
         self.columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at',
                         'proportion_spamwords', 'proportion_whitewords', 'orthographe', 'nb_hashtag', 'guillemets',
-                        'nb_emoji','named_id', 'type' ,'spam']
+                        'nb_emoji']
         self.df_tweets = None
         self.df_tweets_categorized = None
+        self.labels = labels
+        self.columns.append(labels)
 
     def create_dataframe(self, categorize=True):
-        df = pd.read_csv(self.current_file, encoding="utf-8")
+        df = pd.read_csv(current_file, encoding="utf-8")
+        # print(df.head())
+        # print(df.describe())
         df['nb_follower'] = self.normalisation(df['nb_follower'])
         df['nb_following'] = self.normalisation(df['nb_following'])
         df['age'] = self.normalisation(df['age'])
@@ -38,16 +41,22 @@ class Classification:
         self.categorize_columns(['posted_at'], self.categorize_time)
         if categorize:
             self.categorize_columns(['verified'], self.categorize_bool)
-            self.categorize_columns(['spam'], self.categorize_bool)
-            self.categorize_columns(['type'], self.categorize_type)
+            # self.categorize_columns(['nb_emoji'], self.categorize_emoji)
+            if self.labels == 'spam':
+                self.categorize_columns(['spam'], self.categorize_bool)
+            if self.labels == 'type':
+                self.categorize_columns(['type'], self.categorize_type)
+            # self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
+            # self.categorize_columns(['age'], self.categorize_age)
+            # self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
         # print(self.df_tweets_categorized.head())
         # print(type(df_tweets_categorized))
         self.df_tweets_categorized.to_csv(FILEDIR+'newtypes_categorized.csv')
         return 'Finished'
 
     def normalisation(self,X):
-        NormX = robust_scale(X)
-        return NormX
+        norm_x = robust_scale(X)
+        return norm_x
 
     def categorize_bool(self, x):
         if x:
@@ -55,19 +64,9 @@ class Classification:
         else:
             return 0
 
-    def categorize_type(self, x):
-        if x == "actualité" :
-            return 1
-        if x == "reaction" :
-            return 2
-        if x == "conversation" :
-            return 5
-        if x == "publicité" :
-            return 6
-        if x == "bot" :
-            return 7
-        if x == "other spam" :
-            return 8
+    def categorize_type(self, tweet_type):
+        types = ['actualité', 'reaction', 'conversation', 'other spam', 'publicité', 'bot']
+        return types.index(tweet_type)
 
     def categorize_time(self, x):
         now = datetime.datetime.now()
@@ -97,11 +96,9 @@ class Classification:
 
 if __name__ == "__main__":
 
-    classification = Classification()
-    classification.create_dataframe()
-    #df = pd.read_csv('C:\\Users\\Public\\Documents\\tweets_newtypes.csv')
-    #print(df.head())
-    #print(df.groupby('type').id.count())
+    classification = Classification('type')
+    df = classification.create_dataframe()
+    print(df.head())
 
 
 

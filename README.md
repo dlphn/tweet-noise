@@ -10,6 +10,12 @@ Python school project developed by 3 students from CentraleSupélec : Hélène, 
 
 ## Installation
 
+Install dependencies using pip (preferably in a virtual environment):
+
+```bash
+pip install -r requirements.txt
+``
+
 Add a `config.py` file which contains Twitter API and MongoDB keys.
 ```python
 # OAuth authentification keys to Twitter API
@@ -55,8 +61,7 @@ MONGODB = {
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
 - Data Visualization :
-    - `features_analysis.py` : matplotlib
-    - `dataVisualization.py` : seaborn tests
+    - `features_analysis.py` : matplotlib and seaborn
     - `dataViz.py` : matplotlib tests
 - Classification :
     - `IfClassification.py` : simple if/else classification
@@ -68,5 +73,134 @@ MONGODB = {
 - Clustering :
     - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
     - `clusteringTest.py` : tests [to be removed]
+    
+## Features stores in database
+
+\* : used for analysis
+
+° : to be considered
 
 
+- _id
+- created_at : str
+- id : int
+- id_str : str *
+- text : str *
+- source : str
+- truncated : bool
+- in_reply_to_status_id
+- in_reply_to_status_id_str
+- in_reply_to_user_id
+- in_reply_to_user_id_str
+- in_reply_to_screen_name
+- user : object
+    - id : int
+    - id_str : str
+    - name : str
+    - screen_name : str
+    - location : str
+    - url : str
+    - description : str
+    - translator_type : str
+    - protected : bool
+    - verified : bool *
+    - followers_count : int *
+    - friends_count : int *
+    - listed_count : int
+    - favourites_count : int
+    - statuses_count : int *
+    - created_at : str *
+    - utc_offset
+    - time_zone
+    - geo_enabled : bool
+    - lang : str
+    - contributors_enabled : bool
+    - is_translator : bool
+    - profile_background_color : str
+    - profile_background_image_url : str
+    - profile_background_image_url_https : str
+    - profile_background_tile : bool
+    - profile_link_color : str
+    - profile_sidebar_border_color : str
+    - profile_sidebar_fill_color : str
+    - profile_text_color : str
+    - profile_use_background_image : bool
+    - profile_image_url : str
+    - profile_image_url_https : str
+    - profile_banner_url : str
+    - default_profile : bool
+    - default_profile_image : bool
+    - following
+    - follow_request_sent
+    - notifications
+- geo
+- coordinates
+- place
+- contributors
+- is_quote_status : bool
+- extended_tweet : object
+    - full_text : str
+    - display_text_range : list
+    - entities : object
+        - hashtags : list
+        - urls : list
+        - user_mentions : list
+        - symbols : list
+        - media : list
+    - extended_entities : object
+        - media : list
+- quote_count : int
+- reply_count : int
+- retweet_count : int
+- favorite_count : int
+- entities : object °
+    - hashtags : list
+        - text : str
+        - indices : list
+    - urls : list
+        - url : str
+        - extended_url : str
+        - display_irl : str
+        - indices : list
+    - user_mentions : list
+        - screen_name : str
+        - name : str
+        - id : int
+        - id_str : str
+        - indices : list
+    - symbols : list
+    - media : list
+- favorited : bool
+- retweeted : bool
+- possibly_sensitive : bool
+- filter_level : str
+- lang : str
+- timestamp_ms : str *
+- spam : bool *
+- type : str *
+
+## Steps
+
+### 1. Data Acquisition
+
+Fetch data from Twitter API.
+
+Run `streamingAPI.py`.
+
+### 2. Data Preprocessing
+
+Build features file.
+
+Run `features.featuresBuilder.py`.
+
+### 3. Visualization
+
+Run `features_analysis.py`.
+
+### 4. Classification
+
+Run `classification.scikit_classification.py` to compare different scikit-learn classifiers.
+
+### 5. Clustering
+
+Run `testClustering.py`.

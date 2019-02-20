@@ -7,17 +7,15 @@ Created on Mon Oct 29 09:35 2018
 
 import logging
 from datetime import datetime, timezone
-sys.path.append('..')
 from config import FILEDIR, FILEBREAK, MONGODB
-from spamKeywords import keywords_blacklist
-from whitelistKeywords import keywords_whitelist
-from Emojilist import emojilist
+from features import spamKeywords
+from features import whitelistKeywords
+from features import Emojilist
 from pymongo import MongoClient
 import enchant
 import unidecode
 import time
 import re
-import spacy
 import fr_core_news_md
 nlp = fr_core_news_md.load()
 
@@ -34,7 +32,9 @@ class FeaturesBuilder:
         self.do_continue = True
         self.count = 0
         self.line_count = 0
-        self.current_file = FILEDIR + "tweets_newtypes.csv"
+        self.file_count = 1
+        self.date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
         # connect to MongoDB
         client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
@@ -55,20 +55,23 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"posted_at\","
-                        "\"proportion_spamwords\",\"proportion_whitewords\",\"orthographe\",\"nb_hashtag\","
-                        "\"guillemets\",\"nb_emoji\",\"named_id\",\"retweet_count\",\"favorite_count\",\"type\",\"spam\"\n")
+                f.write('"id","nb_follower","nb_following","verified","reputation","age","nb_tweets","posted_at",'
+                        '"proportion_spamwords","proportion_whitewords","orthographe","nb_hashtag",'
+                        '"guillemets","nb_emoji","named_id","retweet_count","favorite_count",'
+                        '"type","spam"\n')
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
-                self.information_contenu(data) +
-                "," + data["type"] +","+("\"true\"" if data["spam"] else "\"false\"") +
+                self.information_content(data) +
+                "," + data["type"] +
+                "," + ('"true"' if data["spam"] else '"false"') +
                 "\n")
         self.line_count += 1
 
         if self.line_count > FILEBREAK:
             logging.info("Closing file {}".format(self.current_file))
-            self.current_file = FILEDIR + "tweets_newtype2.csv"
+            self.file_count += 1
+            self.current_file = FILEDIR + "tweets_" + self.date + "_" + self.file_count + ".csv"
             self.line_count = 0
 
     @staticmethod
@@ -93,15 +96,15 @@ class FeaturesBuilder:
         return result
 
     @staticmethod
-    def information_contenu(data):
+    def information_content(data):
         message = data['text']
         message_min = message.lower()
         message_min_sansaccent = unidecode.unidecode(message_min)
-        liste_mot = re.sub("[,.#]",'', message_min).split()
-        emojiList = emojilist
+        liste_mot = re.sub("[,.#]", '', message_min).split()
+        emoji_list = Emojilist.emojilist
         emoji = 0
-        spamwords = keywords_blacklist
-        whitewords = keywords_whitelist
+        spamwords = spamKeywords.keywords_blacklist
+        whitewords = whitelistKeywords.keywords_whitelist
         spamword_count = 0
         whiteword_count = 0
         spell_dict = enchant.Dict('fr_FR')
@@ -118,13 +121,14 @@ class FeaturesBuilder:
             if spell_dict.check(mot):
                 mot_bien_orth += 1
         ratio_orth = mot_bien_orth/len(liste_mot)
-        nb_hashtag = message.count('#')
+        # nb_hashtag = message.count('#')
+        nb_hashtag = len(data['entities']['hashtags']) or 0
         guillemets = message.count('\"')
-        for j in emojiList:
+        for j in emoji_list:
             if j in message:
                 emoji += 1
 
-        #On transforme le message en format compatible avec nlp
+        # On transforme le message en format compatible avec nlp
         doc = nlp(message_min_sansaccent)
 
         result = "," + ("%.2f" % round(ratio_spamword, 2))

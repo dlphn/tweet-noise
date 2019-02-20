@@ -5,16 +5,39 @@ import numpy as np
 from collections import Counter
 from sklearn import decomposition
 from sklearn.preprocessing import StandardScaler
-import seaborn as sb
+import seaborn as sns
 
-from config import FILEDIR
+from config import current_file
 
 # Data frame original
-current_file = FILEDIR + "tweets_2019-01-23T14:26:33.598574.csv"
-dataframe = pd.read_csv(current_file, encoding="utf-8")
+df_tweets = pd.read_csv(current_file, encoding="utf-8")
+
+# print(df_tweets.head())
+# print(df_tweets.columns.tolist())
+# print(df_tweets.describe())
+
+print("Âge moyen des comptes : {} jours".format(df_tweets['age'].mean()))
+
+# Répartition de spams/actualités
+nb_spam = df_tweets.groupby(['spam']).spam.count()[True]
+nb_info = df_tweets.groupby(['spam']).spam.count()[False]
+print("Il y a {} tweets de spam.".format(nb_spam))
+print("Il y a {} tweets d'actualité.".format(nb_info))
+
+sns.set_context("notebook", font_scale=1)
+plt.figure(1)
+fig1 = sns.countplot(x="spam", data=df_tweets)
 
 
-# print(dataframe.head())
+# Types de tweets
+liste_types = Counter(df_tweets['type'])
+
+liste_types_tri = liste_types.most_common()
+print(liste_types_tri)
+
+fig, ax = plt.subplots()
+fig.set_size_inches(15.7, 15, 7)
+sns.countplot(y="type", data=df_tweets)
 
 
 # Normalisation du df
@@ -25,29 +48,42 @@ def categorize_bool(x):
         return 0
 
 
-# print(dataframe.verified)
-dataframe.spam = dataframe.spam.apply(categorize_bool)
-df2 = pd.concat([dataframe.iloc[:, 1:7], dataframe.iloc[:, 8:]], axis=1)
-# print(dataframe.columns.tolist())
-# print(dataframe.describe())
+def categorize_type(tweet_type):
+    types = ['actualité', 'reaction', 'conversation', 'other spam', 'publicité', 'bot']
+    return types.index(tweet_type)
+
+
+df_tweets.spam = df_tweets.spam.apply(categorize_bool)
+df_tweets_bool = pd.concat([df_tweets.iloc[:, 1:7], df_tweets.iloc[:, 8:]], axis=1)
+
 
 """for i in range (5):
-    df2.iloc[:,i] = ((df2.iloc[:,i] - df2.iloc[:,i].mean()) / (df2.iloc[:,i].max() - df2.iloc[:,i].min()))
-sb.pairplot(df2.iloc[:,:i])
+    df_tweets_bool.iloc[:,i] = ((df_tweets_bool.iloc[:,i] - df_tweets_bool.iloc[:,i].mean()) / (df_tweets_bool.iloc[:,i].max() - df_tweets_bool.iloc[:,i].min()))
+sns.pairplot(df_tweets_bool.iloc[:,:i])
 plt.show()"""
 
 plt.figure(figsize=(10, 10))
-for column_index, column in enumerate(df2.columns):
+for column_index, column in enumerate(df_tweets_bool.columns):
     if column == 'spam':
         continue
     plt.subplot(4, 4, column_index + 1)
-    sb.violinplot(x='spam', y=column, data=df2)
+    sns.violinplot(x='spam', y=column, data=df_tweets_bool)
+
+
+df_tweets_bool.type = df_tweets.type.apply(categorize_type)
+plt.figure(figsize=(10, 10))
+for column_index, column in enumerate(df_tweets_bool.columns):
+    if column == 'spam' or column == 'type':
+        continue
+    plt.subplot(4, 4, column_index + 1)
+    sns.violinplot(x='type', y=column, data=df_tweets_bool)
 plt.show()
 
 
-# Data frame classifié
+""" ----- Data frame classifié ----- """
 # classif = Classification()
 # dataframe = classif.create_dataframe()
+
 
 def show_features(dataset):
     columns = dataset.columns.values.tolist()
@@ -60,7 +96,7 @@ def show_features(dataset):
             plt.axis(xmin=0, xmax=500000)
         if j == 2:
             plt.axis(xmax=4000)
-        X = dataframe.iloc[:, i]
+        X = df_tweets.iloc[:, i]
         plt.scatter(X, y)
         plt.xlabel('Paramètre {}'.format(columns[i]))
         plt.ylabel('Spam')
@@ -69,7 +105,7 @@ def show_features(dataset):
     j = 0
     for i in [6, 7]:
         j += 1
-        X = dataframe.iloc[:, i]
+        X = df_tweets.iloc[:, i]
         plt.subplot(2, 1, j)
         if i == 6:
             plt.axis(xmax=100000)
@@ -81,7 +117,7 @@ def show_features(dataset):
     i = 0
     for n in [3, 8, 9, 10]:
         i += 1
-        x = dataframe.iloc[:, n]
+        x = df_tweets.iloc[:, n]
         c = Counter(zip(x, y))
         a = Counter(y)
         s = [60 * c[(xx, yy)] / a[(yy)] for xx, yy in zip(x, y)]
@@ -94,7 +130,7 @@ def show_features(dataset):
     i = 0
     for n in [11, 12, 13]:
         i += 1
-        x = dataframe.iloc[:, n]
+        x = df_tweets.iloc[:, n]
         c = Counter(zip(x, y))
         a = Counter(y)
         s = [30 * c[(xx, yy)] / a[(yy)] for xx, yy in zip(x, y)]
@@ -107,7 +143,7 @@ def show_features(dataset):
     i = 0
     for n in [11, 12]:
         i += 1
-        x = dataframe.iloc[:, n]
+        x = df_tweets.iloc[:, n]
         c = Counter(zip(x, y))
         a = Counter(y)
         s = [30 * c[(xx, yy)] / a[(yy)] for xx, yy in zip(x, y)]
@@ -197,9 +233,9 @@ def visualisation_multi(dataframe):
                 plt.scatter(desag_finale[pp_k, arguments[x]], desag_finale[pp_k, arguments[y]], color=col)
 
 
-X = pd.concat([dataframe.iloc[:, 3:7], dataframe.iloc[:, 8:-1]], axis=1)
+X = pd.concat([df_tweets.iloc[:, 3:7], df_tweets.iloc[:, 8:-1]], axis=1)
 # X = dataframe.iloc[:,1:-1]
-y = dataframe.iloc[:, -1]
+y = df_tweets.iloc[:, -1]
 # print(X.head())
 
 # df2 = dataframe[['nb_follower', 'nb_following', 'verified', 'nb_tweets', 'proportion_spamwords', 'proportion_whitewords',  'orthographe',  'nb_emoji']]
