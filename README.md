@@ -16,7 +16,7 @@ Install dependencies using pip (preferably in a virtual environment):
 
 ```bash
 pip install -r requirements.txt
-``
+```
 
 Add a `config.py` file which contains Twitter API and MongoDB keys.
 ```python
