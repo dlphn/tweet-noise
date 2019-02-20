@@ -52,7 +52,7 @@ class Classification:
         # print(self.df_tweets_categorized.head())
         # print(type(df_tweets_categorized))
         self.df_tweets_categorized.to_csv(FILEDIR+'newtypes_categorized.csv')
-        return 'Finished'
+        return self.df_tweets_categorized
 
     def normalisation(self,X):
         norm_x = robust_scale(X)

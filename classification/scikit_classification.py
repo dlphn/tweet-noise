@@ -137,12 +137,17 @@ def compare_classifiers(labels='spam'):
         """
         results = []
         names = []
+        # https://scikit-learn.org/stable/modules/model_evaluation.html
         scoring = 'accuracy'
+        # scoring = 'f1_weighted'
         train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[1:-1], HEADERS[-1])
+        print(scoring)
         for name in dict_classifiers.keys():
             model = dict_classifiers[name]
             kfold = KFold(n_splits=10, random_state=seed)
             cv_results = cross_val_score(model, train_x, train_y, cv=kfold, scoring=scoring)
+            if scoring == 'f1_weighted':
+                cv_results = np.array([1 - f1_score for f1_score in cv_results])
             results.append(cv_results)
             names.append(name)
             msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
@@ -150,7 +155,7 @@ def compare_classifiers(labels='spam'):
 
         # boxplot algorithm comparison
         fig = plt.figure()
-        fig.suptitle('Algorithm Comparison ({})'.format(labels))
+        fig.suptitle('Algorithm Comparison ({0}) - {1}'.format(labels, scoring))
         ax = fig.add_subplot(111)
         plt.boxplot(results)
         ax.set_xticklabels(names)
