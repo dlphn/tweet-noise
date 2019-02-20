@@ -7,7 +7,7 @@ Created on Wed Oct 31 14:28 2018
 
 import pandas as pd
 import datetime
-from config import FILEDIR
+from config import current_file
 import os
 
 from sklearn.preprocessing import LabelEncoder
@@ -17,16 +17,17 @@ pd.set_option('display.width', None)
 
 class Classification:
 
-    def __init__(self):
-        self.current_file = FILEDIR + "tweets_2018-11-23T09:17:21.577598.csv"
+    def __init__(self, labels='spam'):
         self.columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at',
                         'proportion_spamwords', 'proportion_whitewords', 'orthographe', 'nb_hashtag', 'guillemets',
-                        'nb_emoji', 'spam']
+                        'nb_emoji']
         self.df_tweets = None
         self.df_tweets_categorized = None
+        self.labels = labels
+        self.columns.append(labels)
 
     def create_dataframe(self, categorize=True):
-        df = pd.read_csv(self.current_file, encoding="utf-8")
+        df = pd.read_csv(current_file, encoding="utf-8")
         # print(df.head())
         # print(df.describe())
         self.df_tweets = df[self.columns]
@@ -40,7 +41,10 @@ class Classification:
             self.categorize_columns(['proportion_whitewords'], self.categorize_whiteword)
             self.categorize_columns(['verified'], self.categorize_bool)
             self.categorize_columns(['nb_emoji'], self.categorize_emoji)
-            self.categorize_columns(['spam'], self.categorize_bool)
+            if self.labels == 'spam':
+                self.categorize_columns(['spam'], self.categorize_bool)
+            if self.labels == 'type':
+                self.categorize_columns(['type'], self.categorize_type)
             self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
             self.categorize_columns(['age'], self.categorize_age)
             self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
@@ -71,6 +75,10 @@ class Classification:
             return 1
         else:
             return 0
+
+    def categorize_type(self, tweet_type):
+        types = ['actualité', 'reaction', 'conversation', 'other spam', 'publicité', 'bot']
+        return types.index(tweet_type)
 
     def categorize_time(self, x):
         now = datetime.datetime.now()
@@ -141,8 +149,9 @@ class Classification:
 
 if __name__ == "__main__":
 
-    classification = Classification()
-    classification.create_dataframe()
+    classification = Classification('type')
+    df = classification.create_dataframe()
+    print(df.head())
 
 
 # for col in df_tweets_categorized.columns.values:

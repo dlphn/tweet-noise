@@ -189,6 +189,6 @@ Run `features.featuresBuilder.py`.
 
 ### 3. Visualization
 
-
+Run `features_analysis.py`.
 
 ### X. Classification
