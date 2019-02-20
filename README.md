@@ -55,8 +55,7 @@ MONGODB = {
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
 - Data Visualization :
-    - `features_analysis.py` : matplotlib
-    - `dataVisualization.py` : seaborn tests
+    - `features_analysis.py` : matplotlib and seaborn
     - `dataViz.py` : matplotlib tests
 - Classification :
     - `IfClassification.py` : simple if/else classification
@@ -174,4 +173,22 @@ MONGODB = {
 - spam : bool *
 - type : str *
 
+## Steps
 
+### 1. Data Acquisition
+
+Fetch data from Twitter API.
+
+Run `streamingAPI.py`.
+
+### 2. Data Preprocessing
+
+Build features file.
+
+Run `features.featuresBuilder.py`.
+
+### 3. Visualization
+
+
+
+### X. Classification

@@ -7,14 +7,13 @@ Created on Thu Nov 1 18:06 2018
 
 import pandas as pd
 import datetime
-from config import FILEDIR
+from config import current_file
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 pd.set_option('display.width', None)
 
-current_file = FILEDIR + "tweets_2018-10-31T14:25:32.735253.csv"
 df = pd.read_csv(current_file, encoding="utf-8")
 # print(df.head())
 # print(df.describe())
