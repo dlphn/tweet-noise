@@ -68,5 +68,98 @@ MONGODB = {
 - Clustering :
     - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
     - `clusteringTest.py` : tests [to be removed]
+    
+## Features stores in database
+
+\* : used for analysis
+
+° : to be considered
+
+
+- _id
+- created_at : str *
+- id : int
+- id_str : str *
+- text : str *
+- source : str
+- truncated : bool
+- in_reply_to_status_id
+- in_reply_to_status_id_str
+- in_reply_to_user_id
+- in_reply_to_user_id_str
+- in_reply_to_screen_name
+- user : object
+    - id : int
+    - id_str : str
+    - name : str
+    - screen_name : str
+    - location : str
+    - url : str
+    - description : str
+    - translator_type : str
+    - protected : bool
+    - verified : bool *
+    - followers_count : int *
+    - friends_count : int *
+    - listed_count : int
+    - favourites_count : int
+    - statuses_count : int *
+    - created_at : str *
+    - utc_offset
+    - time_zone
+    - geo_enabled : bool
+    - lang : str
+    - contributors_enabled : bool
+    - is_translator : bool
+    - profile_background_color : str
+    - profile_background_image_url : str
+    - profile_background_image_url_https : str
+    - profile_background_tile : bool
+    - profile_link_color : str
+    - profile_sidebar_border_color : str
+    - profile_sidebar_fill_color : str
+    - profile_text_color : str
+    - profile_use_background_image : bool
+    - profile_image_url : str
+    - profile_image_url_https : str
+    - profile_banner_url : str
+    - default_profile : bool
+    - default_profile_image : bool
+    - following
+    - follow_request_sent
+    - notifications
+- geo
+- coordinates
+- place
+- contributors
+- is_quote_status : bool
+- quote_count : int
+- reply_count : int
+- retweet_count : int
+- favorite_count : int
+- entities : object °
+    - hashtags : list
+        - text : str
+        - indices : list
+    - urls : list
+        - url : str
+        - extended_url : str
+        - display_irl : str
+        - indices : list
+    - user_mentions : list
+        - screen_name : str
+        - name : str
+        - id : int
+        - id_str : str
+        - indices : list
+    - symbols : list
+- favorited : bool
+- retweeted : bool
+- possibly_sensitive : bool
+- filter_level : str
+- lang : str
+- timestamp_ms : str
+- spam : bool *
+- type : str *
 
 
