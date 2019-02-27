@@ -11,6 +11,8 @@ from config import FILEDIR, FILEBREAK, MONGODB
 from pymongo import MongoClient
 import time
 import json
+import os
+import csv
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -82,17 +84,17 @@ class ArrayBuilder:
         logging.info("Retrieving data...")
         tweets = self.db.tweets.find()
         logging.info("Building tweets csv...")
-        # TODO : delete file if already exists
-        with open(self.current_file, "a+", encoding='utf-8') as f:
-            f.write('id,label,text\n')
-            for obj in tweets:
-                f.write(
-                    obj["id_str"] +
-                    "," + ('spam' if obj["spam"] else 'actualité') +
-                    "," + obj["text"].replace("\n", " ") +
-                    "," + obj["type"] +
-                    "\n")
-                self.line_count += 1
+        try:
+            os.remove(self.current_file)
+        except OSError:
+            pass
+        writer = csv.writer(open(self.current_file, 'w'))
+        writer.writerow(['id', 'label', 'text'])
+
+        for obj in tweets:
+            line = [obj["id_str"], 'spam' if obj["spam"] else 'actualité', obj["text"]]
+            writer.writerow(line)
+            self.line_count += 1
         end = time.time()
         logging.info("Total of {0} elements retrieved in {1} seconds".format(self.line_count, end - start))
 
