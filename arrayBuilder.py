@@ -42,7 +42,7 @@ class ArrayBuilder:
         logging.info("Building text array...")
         for obj in tweets:
             self.count += 1
-            self.data.append(obj['text'])
+            self.data.append(obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"])
         end = time.time()
         logging.info("Total of {0} elements retrieved in {1} seconds".format(self.count, end - start))
         return self.data
@@ -55,7 +55,7 @@ class ArrayBuilder:
         texts, labels = [], []
         for obj in tweets:
             self.count += 1
-            texts.append(obj['text'])
+            texts.append(obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"])
             #if 'spam' in obj:
             #    labels.append('spam' if obj['spam'] else 'actualité')
             #else:
@@ -71,7 +71,7 @@ class ArrayBuilder:
                     labels.append('type pub')
                 if obj['type'] == "bot":
                     labels.append('type bot')
-                if  obj['type'] == "other spam":
+                if obj['type'] == "other spam":
                     labels.append('type autre')
             else:
                 labels.append('type ?')
@@ -80,6 +80,9 @@ class ArrayBuilder:
         return texts, labels
 
     def write(self):
+        """
+        Retrieve MongoDB tweets and save id, label, text in csv file
+        """
         start = time.time()
         logging.info("Retrieving data...")
         tweets = self.db.tweets.find()
@@ -92,7 +95,11 @@ class ArrayBuilder:
         writer.writerow(['id', 'label', 'text'])
 
         for obj in tweets:
-            line = [obj["id_str"], 'spam' if obj["spam"] else 'actualité', obj["text"]]
+            line = [
+                obj["id_str"],
+                'spam' if obj["spam"] else 'actualité',
+                obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"]
+            ]
             writer.writerow(line)
             self.line_count += 1
         end = time.time()
