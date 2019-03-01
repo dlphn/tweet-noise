@@ -19,7 +19,6 @@ from sklearn.cluster import KMeans
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=getattr(logging, LOG_LEVEL))
 
 
-
 if __name__ == "__main__":
 
     """t = 0.4

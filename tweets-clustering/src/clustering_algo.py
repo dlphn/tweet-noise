@@ -14,7 +14,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import logging
 
-class ClusteringAlgo():
+
+class ClusteringAlgo:
 
     def __init__(self, threshold=0.65, window_size=300000, batch_size=2500, distance="cosine"):
         self.M = None

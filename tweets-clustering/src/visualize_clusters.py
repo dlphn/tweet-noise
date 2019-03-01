@@ -15,7 +15,8 @@ import matplotlib.pyplot as plt
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
-class Visu():
+
+class Visu:
 
     def __init__(self, data, labels, display="all"):
 

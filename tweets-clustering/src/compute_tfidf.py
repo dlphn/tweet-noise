@@ -117,7 +117,6 @@ class W2V(Vectorizer):
                 self.model = Word2Vec.load(path + "_" + "w2v")
                 self.vocab = self.model.wv.vocab
 
-
     def save(self, path, vectors=True):
         if vectors:
             self.model.wv.save(path + ".kv")

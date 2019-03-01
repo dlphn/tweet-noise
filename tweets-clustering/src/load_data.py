@@ -6,19 +6,20 @@ edits by dshi, hbaud, vlefranc
 """
 
 
-#import logging
+# import logging
 import csv
-#from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 import re
-#import pickle
+# import pickle
 import pandas as pd
-#from elasticsearch import Elasticsearch, helpers
+# from elasticsearch import Elasticsearch, helpers
 from docs.config import ES_DATE_FORMAT, ELASTIC, DATA_PATH
 from unidecode import unidecode
-#import os
+# import os
 
 from string import punctuation
 punctuation_fr = "«»…" + punctuation
+
 
 def must_not():
     # returns a list of twitter sources that should be deleted (porn, videogames, bots)
@@ -31,8 +32,9 @@ def must_not():
                 must_not.append({"term": {"source.keyword": row[0]}})
     return must_not
 
+
 def remove_repeted_characters(expr):
-    #limit number of repeted letters to 3. For example loooool --> loool
+    # limit number of repeted letters to 3. For example loooool --> loool
     string_not_repeted = ""
     for item in re.findall(r"((.)\2*)", expr):
         if len(item[0]) <= 3:
@@ -41,9 +43,11 @@ def remove_repeted_characters(expr):
             string_not_repeted += item[0][:3]
     return string_not_repeted
 
+
 def camel_case_split(expr):
     matches = re.finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', expr)
     return " ".join([m.group(0) for m in matches])
+
 
 def format_text(text):
 
@@ -68,6 +72,7 @@ def format_text(text):
     text = remove_repeted_characters(" ".join(new_text))
     return text
 
+
 def format_docs(doc):
     if "extended_tweet" in doc and "full_text" in doc["extended_tweet"]:
         text = format_text(doc["extended_tweet"]["full_text"])
@@ -77,7 +82,7 @@ def format_docs(doc):
          text = text + " " + format_text(doc["quoted_status_text"])
 
     in_event = {}
-    if "human" in doc: #or "machine" in doc:
+    if "human" in doc:  # or "machine" in doc:
         annotation = doc["human"]["annotated"] if "human" in doc else doc["machine"]["annotated"]
         for user in annotation:
             for event in annotation[user]:
@@ -91,6 +96,7 @@ def format_docs(doc):
             label = event
 
     return {"text": text, "id": doc["id_str"], "label": label}
+
 
 def body(start, end, with_retweets):
     body = {
@@ -110,6 +116,7 @@ def body(start, end, with_retweets):
     if with_retweets == False:
         body["query"]["bool"]["filter"].append({"term": {"is_retweet": False}})
     return body
+
 
 def load_data(path):
     data = pd.read_csv(DATA_PATH + path, dtype={"label": "str", "id": "str", "text": "str"})
