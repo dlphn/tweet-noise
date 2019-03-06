@@ -51,6 +51,6 @@ if __name__ == "__main__":
     data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}.csv".format(day, t, w, batch_size), index=False)
 
     visualization = Visu(data, labels)
-    visualization.plot("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
+    visualization.plot("{0}_{1}_{2}_{3}".format(day, t, w, batch_size), "category")
     visualization.write_html("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
     visualization.open_html("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
