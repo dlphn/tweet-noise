@@ -92,12 +92,13 @@ class ArrayBuilder:
         except OSError:
             pass
         writer = csv.writer(open(self.current_file, 'w'))
-        writer.writerow(['id', 'label', 'text'])
+        writer.writerow(['id', 'label', 'category', 'text'])
 
         for obj in tweets:
             line = [
                 obj["id_str"],
                 'spam' if obj["spam"] else 'actualité',
+                obj["type"],
                 obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"]
             ]
             writer.writerow(line)

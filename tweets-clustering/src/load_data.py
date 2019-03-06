@@ -119,7 +119,7 @@ def body(start, end, with_retweets):
 
 
 def load_data(path):
-    data = pd.read_csv(DATA_PATH + path, dtype={"label": "str", "id": "str", "text": "str"})
+    data = pd.read_csv(DATA_PATH + path, dtype={"label": "str", "category": "str", "id": "str", "text": "str"})
     data = data.fillna("")
     data["text"] = data.text.map(format_text)
-    return data[["id", "text", "label"]].sort_values("id").reset_index(drop=True)
+    return data[["id", "text", "label", "category"]].sort_values("id").reset_index(drop=True)

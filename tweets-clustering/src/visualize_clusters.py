@@ -83,29 +83,40 @@ class Visu:
     #         self.html += """</div></ul></div>\n"""
     #     self.html += """</body></html>\n"""
 
-    def plot(self, path):
+    def plot(self, path, label="label"):
+        if label == 'category':
+            categories = ['actualité', 'reaction', 'conversation', 'publicité', 'bot', 'other spam']
+            colors = ['#368bf9', '#9dc7f9', '#fc7e00', '#ffbf00', '#ffe900', '#f74036']
+        else:
+            categories = ['actualité', 'spam']
+            colors = ['#368bf9', '#fc7e00']
         f, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(30, 15))
-        df = self.data.groupby(["label", "pred"]).size().unstack().fillna(0)
-        head = df.reindex(df.sum().sort_values(ascending=False).index, axis=1).T[:100]
+        df = self.data.groupby([label, "pred"]).size().unstack().fillna(0)
+        data = df.reindex(df.sum().sort_values(ascending=False).index, axis=1)
+        data = data.reindex(categories)
+        head = data.T[1:100]  # Don't display cluster -1
         head.plot(kind="bar",
                   ax=ax1,
                   stacked=True,
-                  legend=False
+                  legend=True,
+                  color=colors
                   )
-        middle = df.reindex(df.sum().sort_values(ascending=False).index, axis=1).T[100:200]
+        middle = data.T[100:200]
         middle.plot(kind="bar",
                     ax=ax2,
                     stacked=True,
-                    legend=False
+                    legend=False,
+                    color=colors
                     )
-        middle = df.reindex(df.sum().sort_values(ascending=False).index, axis=1).T[-100:]
+        middle = data.T[-100:]
         middle.plot(kind="bar",
                     ax=ax3,
                     stacked=True,
-                    legend=False
+                    legend=False,
+                    color=colors
                     )
 
-        plt.savefig("./tmp/barplot_" + path + ".pdf", bbox_inches='tight')
+        plt.savefig("./tmp/barplot_" + label + "_" + path + ".pdf", bbox_inches='tight')
         logging.info("Saved pdf file")
 
     def compute_proportions(self, row):
@@ -127,7 +138,7 @@ class Visu:
                                 <ul><div class="dropdown-content">\n""".format(row["pred"], row["size"], nb_spam, nb_actualite, nb_other)
             for _, tweet in self.data[self.data["pred"] == row["pred"]].iterrows():
                 text = tweet["text"].replace("\n", "\\n")
-                self.html += "<li>id {}, label {}, text: {}</li>\n".format(tweet["id"], tweet["label"], text)
+                self.html += "<li>id {}, label {}, category {}, text: {}</li>\n".format(tweet["id"], tweet["label"], tweet["category"], text)
             self.html += """</div></ul></div>\n"""
         self.html += """</body></html>\n"""
 
