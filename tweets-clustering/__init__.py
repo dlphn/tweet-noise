@@ -31,6 +31,8 @@ if __name__ == "__main__":
     # day = "2018-07-30"
     # day = "2019-03-01"
     day = "2019-03-06"
+    # embedding_day = "base_fr"
+    embedding_day = "2018-07-30"
 
     logging.info("loading data")
     data = load_data("tweets_{}.csv".format(day))
@@ -38,7 +40,7 @@ if __name__ == "__main__":
 
     clustering = ClusteringAlgo(threshold=t, window_size=w, batch_size=batch_size, distance=distance)
     transformer = TfIdf()
-    count_vectors = transformer.load_history(DATA_PATH + day).add_new_samples(data)
+    count_vectors = transformer.load_history(DATA_PATH + embedding_day).add_new_samples(data)
     # print(count_vectors)
     vectors = transformer.compute_vectors(count_vectors, min_df=10)
     clustering.add_vectors(vectors)
@@ -48,13 +50,13 @@ if __name__ == "__main__":
 
     data["pred"] = pd.Series(labels, dtype=data.label.dtype)
 
-    data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}.csv".format(day, t, w, batch_size), index=False)
+    data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}_{4}.csv".format(day, t, w, batch_size, embedding_day), index=False)
 
     visualization = Visu(data, labels)
-    visualization.plot("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
-    visualization.plot("{0}_{1}_{2}_{3}".format(day, t, w, batch_size), "category")
-    visualization.write_html("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
-    visualization.open_html("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
+    visualization.plot("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
+    visualization.plot("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day), "category")
+    visualization.write_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
+    visualization.open_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
 
     """ Save embedding """
-    transformer.save(day)
+    # transformer.save(day)
