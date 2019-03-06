@@ -31,8 +31,11 @@ class Vectorizer:
 
     def load_history(self, path):
         for attr in ["df", "features_names", "n_samples"]:
-            with open(path + "_" + attr, "rb") as f:
-                setattr(self, attr, pickle.load(f))
+            try:
+                with open(path + "_" + attr, "rb") as f:
+                    setattr(self, attr, pickle.load(f))
+            except IOError:
+                print('Clustering from scratch')
 
         # print(self.df)
         # print(self.features_names)

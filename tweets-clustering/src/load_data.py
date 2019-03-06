@@ -33,15 +33,15 @@ def must_not():
     return must_not
 
 
-def remove_repeted_characters(expr):
-    # limit number of repeted letters to 3. For example loooool --> loool
-    string_not_repeted = ""
+def remove_repeated_characters(expr):
+    # limit number of repeated letters to 3. For example loooool --> loool
+    string_not_repeated = ""
     for item in re.findall(r"((.)\2*)", expr):
         if len(item[0]) <= 3:
-            string_not_repeted += item[0]
+            string_not_repeated += item[0]
         else:
-            string_not_repeted += item[0][:3]
-    return string_not_repeted
+            string_not_repeated += item[0][:3]
+    return string_not_repeated
 
 
 def camel_case_split(expr):
@@ -69,7 +69,7 @@ def format_text(text):
                 new_text.append(camel_case_split(word[1:]))
             else:
                 new_text.append(word)
-    text = remove_repeted_characters(" ".join(new_text))
+    text = remove_repeated_characters(" ".join(new_text))
     return text
 
 

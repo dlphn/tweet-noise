@@ -29,7 +29,8 @@ if __name__ == "__main__":
     batch_size = 100
     distance = "cosine"
     # day = "2018-07-30"
-    day = "2019-03-01"
+    # day = "2019-03-01"
+    day = "2019-03-06"
 
     logging.info("loading data")
     data = load_data("tweets_{}.csv".format(day))
