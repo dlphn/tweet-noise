@@ -21,12 +21,12 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=ge
 
 if __name__ == "__main__":
 
-    """t = 0.4
+    t = 0.4
     w = 100000
-    batch_size = 100"""
-    t = 0.7  # < 0.8
-    w = 1000
     batch_size = 100
+    """t = 0.7  # < 0.8
+    w = 1000
+    batch_size = 100"""
     distance = "cosine"
     # day = "2018-07-30"
     # day = "2019-03-01"
