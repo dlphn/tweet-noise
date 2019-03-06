@@ -31,8 +31,10 @@ if __name__ == "__main__":
     # day = "2018-07-30"
     # day = "2019-03-01"
     day = "2019-03-06"
+    # day = "base_fr"
     # embedding_day = "base_fr"
-    embedding_day = "2018-07-30"
+    embedding_day = "base_fr_2"
+    # embedding_day = "2018-07-30"
 
     logging.info("loading data")
     data = load_data("tweets_{}.csv".format(day))
