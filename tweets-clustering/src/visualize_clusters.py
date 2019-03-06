@@ -116,7 +116,7 @@ class Visu:
                     color=colors
                     )
 
-        plt.savefig("./tmp/barplot_" + label + "_" + path + "_2.pdf", bbox_inches='tight')
+        plt.savefig("./tmp/barplot_" + label + "_" + path + ".pdf", bbox_inches='tight')
         logging.info("Saved pdf file")
 
     def compute_proportions(self, row):
