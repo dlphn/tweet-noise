@@ -33,7 +33,7 @@ class ArrayBuilder:
         self.line_count = 0
         self.file_count = 1
         self.date = datetime.now().strftime("%Y-%m-%d")
-        self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
+        self.current_file = FILEDIR + "tweets_all_" + self.date + ".csv"
 
     def retrieve(self):
         start = time.time()
@@ -92,12 +92,13 @@ class ArrayBuilder:
         except OSError:
             pass
         writer = csv.writer(open(self.current_file, 'w'))
-        writer.writerow(['id', 'label', 'text'])
+        writer.writerow(['id', 'label', 'category', 'text'])
 
         for obj in tweets:
             line = [
                 obj["id_str"],
                 'spam' if obj["spam"] else 'actualité',
+                obj["type"],
                 obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"]
             ]
             writer.writerow(line)

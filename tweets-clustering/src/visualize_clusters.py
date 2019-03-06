@@ -127,7 +127,7 @@ class Visu:
                                 <ul><div class="dropdown-content">\n""".format(row["pred"], row["size"], nb_spam, nb_actualite, nb_other)
             for _, tweet in self.data[self.data["pred"] == row["pred"]].iterrows():
                 text = tweet["text"].replace("\n", "\\n")
-                self.html += "<li>id {}, label {}, text: {}</li>\n".format(tweet["id"], tweet["label"], text)
+                self.html += "<li>id {}, label {}, category {}, text: {}</li>\n".format(tweet["id"], tweet["label"], tweet["category"], text)
             self.html += """</div></ul></div>\n"""
         self.html += """</body></html>\n"""
 
