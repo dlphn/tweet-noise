@@ -33,7 +33,7 @@ class ArrayBuilder:
         self.line_count = 0
         self.file_count = 1
         self.date = datetime.now().strftime("%Y-%m-%d")
-        self.current_file = FILEDIR + "tweets_all_" + self.date + ".csv"
+        self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
 
     def retrieve(self):
         start = time.time()

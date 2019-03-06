@@ -33,7 +33,7 @@ if __name__ == "__main__":
     day = "2019-03-06"
 
     logging.info("loading data")
-    data = load_data("tweets_all_{}.csv".format(day))  # TODO: put back to tweets_{}.csv
+    data = load_data("tweets_{}.csv".format(day))
     logging.info("loaded {} tweets".format(len(data)))
 
     clustering = ClusteringAlgo(threshold=t, window_size=w, batch_size=batch_size, distance=distance)
