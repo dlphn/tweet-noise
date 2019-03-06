@@ -55,3 +55,6 @@ if __name__ == "__main__":
     visualization.plot("{0}_{1}_{2}_{3}".format(day, t, w, batch_size), "category")
     visualization.write_html("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
     visualization.open_html("{0}_{1}_{2}_{3}".format(day, t, w, batch_size))
+
+    """ Save embedding """
+    transformer.save(day)

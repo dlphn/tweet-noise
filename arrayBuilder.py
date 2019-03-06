@@ -34,6 +34,7 @@ class ArrayBuilder:
         self.file_count = 1
         self.date = datetime.now().strftime("%Y-%m-%d")
         self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
+        # self.current_file = FILEDIR + "tweets_base_fr.csv"
 
     def retrieve(self):
         start = time.time()
@@ -97,8 +98,8 @@ class ArrayBuilder:
         for obj in tweets:
             line = [
                 obj["id_str"],
-                'spam' if obj["spam"] else 'actualité',
-                obj["type"],
+                ('spam' if obj["spam"] else 'actualité') if 'spam' in obj else '?',
+                obj["type"] if 'type' in obj else '',
                 obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"]
             ]
             writer.writerow(line)
