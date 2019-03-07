@@ -135,8 +135,8 @@ class FeaturesBuilder:
         result += "," + str(emoji)
         # On récupère le nombre d'entites nommees
         result += "," + str(len(doc.ents))
-        result += "," + str(data['favorite_count'])
         result += "," + str(data['retweet_count'])
+        result += "," + str(data['favorite_count'])
         return result
 
 
