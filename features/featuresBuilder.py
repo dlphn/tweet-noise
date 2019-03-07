@@ -8,9 +8,7 @@ Created on Mon Oct 29 09:35 2018
 import logging
 from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
-from features import spamKeywords
-from features import whitelistKeywords
-from features import Emojilist
+from features import Keywords
 from pymongo import MongoClient
 import enchant
 import unidecode
@@ -56,8 +54,8 @@ class FeaturesBuilder:
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
                 f.write('"id","nb_follower","nb_following","verified","reputation","age","nb_tweets","posted_at",'
-                        '"proportion_spamwords","proportion_whitewords","orthographe","nb_hashtag",'
-                        '"guillemets","nb_emoji","named_id","retweet_count","favorite_count",'
+                        '"text","length","proportion_spamwords","proportion_whitewords","orthographe","nb_hashtag",'
+                        '"nb_urls","guillemets","nb_emoji","named_id","retweet_count","favorite_count",'
                         '"type","spam"\n')
             f.write(
                 data["id_str"] +
@@ -97,50 +95,50 @@ class FeaturesBuilder:
 
     @staticmethod
     def information_content(data):
-        message = data['text']
-        message_min = message.lower()
-        message_min_sansaccent = unidecode.unidecode(message_min)
-        liste_mot = re.sub("[,.#]", '', message_min).split()
-        emoji_list = Emojilist.emojilist
-        emoji = 0
-        spamwords = spamKeywords.keywords_blacklist
-        whitewords = whitelistKeywords.keywords_whitelist
-        spamword_count = 0
-        whiteword_count = 0
+        message = data['text'].lower()
+        doc = nlp(message)
+        # On récupère une liste de tous les mots qui composent les tweet et on les compare au dictionnaire pour voir s'ils sont bien orthographies/existent
+        liste = [str(token) for token in doc]
         spell_dict = enchant.Dict('fr_FR')
         mot_bien_orth = 0
-
+        for mot in liste:
+            if spell_dict.check(mot):
+                mot_bien_orth += 1
+        ratio_orth = mot_bien_orth / len(liste)
+        #On compte le nombre de spamwords
+        spamword_count = 0
         for i in spamwords:
             if i in message_min_sansaccent:
                 spamword_count += 1
         ratio_spamword = spamword_count/len(liste_mot)
+        #On compte le nombre de whitewords
+        whiteword_count =0
         for i in whitewords:
             if i in message_min_sansaccent:
                 whiteword_count += 1
-        for mot in liste_mot:
-            if spell_dict.check(mot):
-                mot_bien_orth += 1
-        ratio_orth = mot_bien_orth/len(liste_mot)
-        # nb_hashtag = message.count('#')
-        nb_hashtag = len(data['entities']['hashtags']) or 0
-        guillemets = message.count('\"')
-        for j in emoji_list:
+
+        # On compte le nombre d'emoji dans le tweet
+        emojiList = emojilist
+        emoji = 0
+        for j in emojiList:
             if j in message:
                 emoji += 1
 
-        # On transforme le message en format compatible avec nlp
-        doc = nlp(message_min_sansaccent)
-
-        result = "," + ("%.2f" % round(ratio_spamword, 2))
-        result += "," + ("%.2f" % round(whiteword_count, 2))
+        result = ",\"" + str(data['text']) + "\""
+        result += "," + str(len(data['text']))
+        result += "," + str(ratio_spamword)
+        result += "," + str(whiteword_count)
         result += "," + ("%.2f" % round(ratio_orth, 2))
-        result += "," + str(nb_hashtag)
-        result += "," + str(guillemets)
+        result += "," + str(len(data['entities']['urls']))
+        # On compte le nb de hashtag
+        result += "," + str(message.count('#'))
         result += "," + str(emoji)
+        # On récupère le nombre d'entites nommees
         result += "," + str(len(doc.ents))
         result += "," + str(data['retweet_count'])
         result += "," + str(data['favorite_count'])
         return result
+
 
 
 if __name__ == "__main__":
