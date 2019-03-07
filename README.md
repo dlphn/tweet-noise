@@ -60,7 +60,7 @@ MONGODB = {
 - `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
-- Data Visualization :
+- Data Visualisation :
     - `features_analysis.py` : matplotlib and seaborn
     - `dataViz.py` : matplotlib tests
 - Classification :
@@ -92,6 +92,8 @@ Fetch data from Twitter API.
 
 Run `streamingAPI.py`.
 
+Or upload a json file of tweets by running `loadLocalTweets.py`.
+
 ### 2. Data Preprocessing
 
 Build features file.
@@ -100,7 +102,7 @@ Run `features.featuresBuilder.py`.
 
 ### 3. Visualization
 
-Run `features_analysis.py`.
+Run `features_analysis.py` from `Data Visualisation/`.
 
 ### 4. Classification
 
@@ -108,7 +110,7 @@ Run `classification.scikit_classification.py` to compare different scikit-learn 
 
 ### 5. Clustering
 
-Run `testClustering.py`.
+Run `testClustering.py` or `tweets-clustering/__init__.py`.
 
 ## Features stored in database
 
