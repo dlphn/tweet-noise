@@ -79,3 +79,42 @@ def evaluate(data, pred):
     logging.info("nb of events in annotated tweets: {}".format(data.label.unique().size))
     logging.info("nb of detected clusters in annotated tweets: {}".format(data.pred.unique().size))
     logging.info("V-measure: {}".format(metrics.v_measure_score(data["label"], data["pred"])))
+
+
+def compute_proportions(data, row):
+    count_spam, count_actualite, count_other = 0, 0, 0
+    for _, tweet in data[data["pred"] == row["pred"]].iterrows():
+        if tweet["label"] == 'spam':
+            count_spam += 1
+        elif tweet["label"] == 'actualité':
+            count_actualite += 1
+        else:
+            count_other += 1
+    return count_spam, count_actualite, count_other
+
+
+def evaluate_classification(data):
+    df = data.groupby(["label", "pred"]).size().unstack().fillna(0)
+    clusters = df.reindex(df.sum().sort_values(ascending=False).index, axis=1)
+    clusters = clusters.T[:]
+    # print(clusters.head())
+
+    nb_unit_clusters = 0
+    nb_only_spam = 0
+    nb_only_actualité = 0
+    other = 0
+    for index, cluster in clusters.iterrows():
+        if cluster.name == -1:
+            pass
+        elif cluster['spam'] + cluster['actualité'] == 1:
+            nb_unit_clusters += 1
+        elif cluster['spam'] == cluster['spam'] + cluster['actualité']:
+            nb_only_spam += 1
+        elif cluster['actualité'] == cluster['spam'] + cluster['actualité']:
+            nb_only_actualité += 1
+        else:
+            other += 1
+    logging.info("nb of spam-only clusters: {}".format(nb_only_spam))
+    logging.info("nb of actualité-only clusters: {}".format(nb_only_actualité))
+    logging.info("nb of unit clusters: {}".format(nb_unit_clusters))
+    logging.info("nb of other clusters: {}".format(other))

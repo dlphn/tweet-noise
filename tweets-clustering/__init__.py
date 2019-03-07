@@ -8,7 +8,7 @@ edits by dshi, hbaud, vlefranc
 import logging
 from src.clustering_algo import ClusteringAlgo
 from src.compute_tfidf import TfIdf, W2V, ResNetLayer
-from src.eval import evaluate, cluster_event_match, average_distances
+from src.eval import evaluate, cluster_event_match, average_distances, evaluate_classification
 from src.load_data import load_data
 from src.visualize_clusters import Visu
 from docs.config import LOG_LEVEL, DATA_PATH
@@ -52,13 +52,17 @@ if __name__ == "__main__":
 
     data["pred"] = pd.Series(labels, dtype=data.label.dtype)
 
-    data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}_{4}.csv".format(day, t, w, batch_size, embedding_day), index=False)
+    """data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}_{4}.csv".format(day, t, w, batch_size, embedding_day), index=False)
 
     visualization = Visu(data, labels)
     visualization.plot("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
     visualization.plot("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day), "category")
     visualization.write_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
-    visualization.open_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
+    visualization.open_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))"""
+
+    # cluster_event_match(data, labels)
+    # evaluate(data, labels)
+    evaluate_classification(data)
 
     """ Save embedding """
     # transformer.save(day)
