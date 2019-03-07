@@ -8,9 +8,7 @@ Created on Mon Oct 29 09:35 2018
 import logging
 from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
-from features import spamKeywords
-from features import whitelistKeywords
-from features import Emojilist
+from features import Keywords
 from pymongo import MongoClient
 import enchant
 import unidecode
