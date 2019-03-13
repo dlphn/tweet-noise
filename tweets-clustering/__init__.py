@@ -22,12 +22,9 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=ge
 
 if __name__ == "__main__":
 
-    t = 0.4
+    t = 0.7
     w = 100000
     batch_size = 100
-    """t = 0.7  # < 0.8
-    w = 1000
-    batch_size = 100"""
     distance = "cosine"
     # day = "2018-07-30"
     # day = "2019-03-01"
@@ -54,18 +51,17 @@ if __name__ == "__main__":
 
     data["pred"] = pd.Series(labels, dtype=data.label.dtype)
 
-    """data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}_{4}.csv".format(day, t, w, batch_size, embedding_day), index=False)
+    data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}_{4}.csv".format(day, t, w, batch_size, embedding_day), index=False)
 
     visualization = Visu(data, labels)
     visualization.plot("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
     visualization.plot("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day), "category")
     visualization.write_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
-    visualization.open_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))"""
+    visualization.open_html("{0}_{1}_{2}_{3}_{4}".format(day, t, w, batch_size, embedding_day))
 
     # cluster_event_match(data, labels)
     # evaluate(data, labels)
     stats = evaluate_classification(data)
-    print(stats)
 
     """ Save stats in Google SpreadSheet
     setup = [

@@ -23,7 +23,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=ge
 
 embedding_days = ['2018-07-30', 'base_fr', 'base_fr_2']
 thresholds = np.arange(0.2, 0.9, 0.1)
-window_sizes = [1000, 10000, 10000]
+window_sizes = [1000, 10000, 100000]
 batch_sizes = [10, 100]
 
 if __name__ == "__main__":
