@@ -1,3 +1,5 @@
+gspread
+google-api-python-client
 scipy
 matplotlib
 seaborn
