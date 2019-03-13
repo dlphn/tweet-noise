@@ -7,6 +7,8 @@ edits by dshi, hbaud, vlefranc
 
 import logging
 import numpy as np
+import time
+
 from src.clustering_algo import ClusteringAlgo
 from src.compute_tfidf import TfIdf, W2V, ResNetLayer
 from src.eval import evaluate, cluster_event_match, average_distances, evaluate_classification
@@ -25,11 +27,14 @@ window_sizes = [1000, 10000, 10000]
 batch_sizes = [10, 100]
 
 if __name__ == "__main__":
+
+    start = time.time()
+
     spreadsheet_api = SpreadSheet("Tests clustering")
     row_id = 1 if spreadsheet_api.read_cell(4, 1) == '' else int(spreadsheet_api.read_cell(4, 1)) + 1
 
     distance = "cosine"
-    
+
     # day = "2018-07-30"
     # day = "2019-03-01"
     day = "2019-03-06"
@@ -90,3 +95,6 @@ if __name__ == "__main__":
 
                     """ Save embedding """
                     # transformer.save(day)
+
+    end = time.time()
+    logging.info("Tested different params in {} seconds".format(end - start))
