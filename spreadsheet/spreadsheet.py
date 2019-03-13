@@ -24,6 +24,14 @@ class SpreadSheet:
         print(list_of_hashes)
         print(list_of_lists)
 
+    def get_next_row_id(self):
+        list_of_lists = self.sheet.get_all_values()
+        if len(list_of_lists) > 4:
+            self.row_id = len(list_of_lists) + 1
+            return int(list_of_lists[-1][0]) + 1
+        else:
+            return 1
+
     def read_cell(self, row, col):
         return self.sheet.cell(row, col).value
 
@@ -39,4 +47,5 @@ if __name__ == '__main__':
     spreadsheet_api = SpreadSheet("Tests clustering")
     spreadsheet_api.read()
     # spreadsheet_api.write(["I'm", "inserting", "a", "row", "into", "a,", "Spreadsheet", "with", "Python"])
-    print(int(spreadsheet_api.read_cell(4, 1)) + 1)
+    # print(int(spreadsheet_api.read_cell(4, 1)) + 1)
+    print(spreadsheet_api.get_next_row_id())

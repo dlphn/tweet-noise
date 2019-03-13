@@ -22,7 +22,7 @@ from spreadsheet.spreadsheet import SpreadSheet
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=getattr(logging, LOG_LEVEL))
 
 embedding_days = ['2018-07-30', '2019-03-01', 'base_fr', 'base_fr_2']
-thresholds = np.arange(0.1, 1, 0.1)
+thresholds = np.arange(0.2, 0.9, 0.1)
 window_sizes = [1000, 10000, 10000]
 batch_sizes = [10, 100]
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     start = time.time()
 
     spreadsheet_api = SpreadSheet("Tests clustering")
-    row_id = 1 if spreadsheet_api.read_cell(4, 1) == '' else int(spreadsheet_api.read_cell(4, 1)) + 1
+    row_id = spreadsheet_api.get_next_row_id()
 
     distance = "cosine"
 
@@ -85,7 +85,9 @@ if __name__ == "__main__":
                         len(unique_clusters),  # nb of unique clusters
                         labels.count(-1),  # cluster -1
                         stats['spam_only'],
+                        stats['spam_only_tweets'],
                         stats['actualité_only'],
+                        stats['actualité_only_tweets'],
                         stats['unit']
                     ]
 

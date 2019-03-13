@@ -103,15 +103,23 @@ def evaluate_classification(data):
     nb_only_spam = 0
     nb_only_actualité = 0
     other = 0
+
+    nb_only_spam_tweets = 0
+    nb_only_actualité_tweets = 0
+
     for index, cluster in clusters.iterrows():
         if cluster.name == -1:
             pass
         elif cluster['spam'] + cluster['actualité'] == 1:
             nb_unit_clusters += 1
         elif cluster['spam'] == cluster['spam'] + cluster['actualité']:
+            # spam-only cluster
             nb_only_spam += 1
+            nb_only_spam_tweets += cluster['spam']
         elif cluster['actualité'] == cluster['spam'] + cluster['actualité']:
+            # actualité-only cluster
             nb_only_actualité += 1
+            nb_only_actualité_tweets += cluster['actualité']
         else:
             other += 1
     logging.info("nb of spam-only clusters: {}".format(nb_only_spam))
@@ -120,7 +128,9 @@ def evaluate_classification(data):
     logging.info("nb of other clusters: {}".format(other))
     return {
         'spam_only': nb_only_spam,
+        'spam_only_tweets': nb_only_spam_tweets,
         'actualité_only': nb_only_actualité,
+        'actualité_only_tweets': nb_only_actualité_tweets,
         'unit': nb_unit_clusters,
         'other': other
     }

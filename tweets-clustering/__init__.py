@@ -65,8 +65,9 @@ if __name__ == "__main__":
     # cluster_event_match(data, labels)
     # evaluate(data, labels)
     stats = evaluate_classification(data)
+    print(stats)
 
-    """ Save stats in Google SpreadSheet """
+    """ Save stats in Google SpreadSheet
     setup = [
         embedding_day,
         t,
@@ -82,7 +83,7 @@ if __name__ == "__main__":
 
     spreadsheet_api = SpreadSheet("Tests clustering")
     print(setup)
-    # spreadsheet_api.write(setup)
+    # spreadsheet_api.write(setup) """
 
     """ Save embedding """
     # transformer.save(day)
