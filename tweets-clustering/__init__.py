@@ -14,6 +14,7 @@ from src.visualize_clusters import Visu
 from docs.config import LOG_LEVEL, DATA_PATH
 import pandas as pd
 from sklearn.cluster import KMeans
+from spreadsheet.spreadsheet import SpreadSheet
 
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=getattr(logging, LOG_LEVEL))
@@ -48,7 +49,8 @@ if __name__ == "__main__":
     clustering.add_vectors(vectors)
     labels = clustering.incremental_clustering(method="brute")
 
-    logging.info("Nb unique clusters: {}".format(len(set(labels))))
+    unique_clusters = set(labels)
+    logging.info("Nb unique clusters: {}".format(len(unique_clusters)))
 
     data["pred"] = pd.Series(labels, dtype=data.label.dtype)
 
@@ -62,7 +64,26 @@ if __name__ == "__main__":
 
     # cluster_event_match(data, labels)
     # evaluate(data, labels)
-    evaluate_classification(data)
+    stats = evaluate_classification(data)
+    print(stats)
+
+    """ Save stats in Google SpreadSheet
+    setup = [
+        embedding_day,
+        t,
+        w,
+        batch_size,
+        distance,
+        len(unique_clusters),  # nb of unique clusters
+        labels.count(-1),  # cluster -1
+        stats['spam_only'],
+        stats['actualité_only'],
+        stats['unit']
+    ]
+
+    spreadsheet_api = SpreadSheet("Tests clustering")
+    print(setup)
+    # spreadsheet_api.write(setup) """
 
     """ Save embedding """
     # transformer.save(day)
