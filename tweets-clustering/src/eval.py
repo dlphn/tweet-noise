@@ -118,3 +118,9 @@ def evaluate_classification(data):
     logging.info("nb of actualité-only clusters: {}".format(nb_only_actualité))
     logging.info("nb of unit clusters: {}".format(nb_unit_clusters))
     logging.info("nb of other clusters: {}".format(other))
+    return {
+        'spam_only': nb_only_spam,
+        'actualité_only': nb_only_actualité,
+        'unit': nb_unit_clusters,
+        'other': other
+    }

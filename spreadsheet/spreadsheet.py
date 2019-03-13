@@ -1,5 +1,6 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from config import google_api_key_file
 
 
 class SpreadSheet:
@@ -8,7 +9,7 @@ class SpreadSheet:
         # use creds to create a client to interact with the Google Drive API
         self.scope = ['https://spreadsheets.google.com/feeds',
                       'https://www.googleapis.com/auth/drive']
-        self.creds = ServiceAccountCredentials.from_json_keyfile_name('spreadsheet-api/client_secret.json', self.scope)
+        self.creds = ServiceAccountCredentials.from_json_keyfile_name(google_api_key_file, self.scope)
         self.client = gspread.authorize(self.creds)
 
         # Find a workbook by name and open the first sheet
@@ -23,6 +24,9 @@ class SpreadSheet:
         print(list_of_hashes)
         print(list_of_lists)
 
+    def read_cell(self, row, col):
+        return self.sheet.cell(row, col).value
+
     def write(self, row):
         # self.sheet.update_cell(19, 3, "I just wrote to a spreadsheet using Python!")
         # row = ["I'm", "inserting", "a", "row", "into", "a,", "Spreadsheet", "with", "Python"]
@@ -35,3 +39,4 @@ if __name__ == '__main__':
     spreadsheet_api = SpreadSheet("Tests clustering")
     spreadsheet_api.read()
     # spreadsheet_api.write(["I'm", "inserting", "a", "row", "into", "a,", "Spreadsheet", "with", "Python"])
+    print(int(spreadsheet_api.read_cell(4, 1)) + 1)
