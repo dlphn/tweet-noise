@@ -1,4 +1,6 @@
+scipy
 matplotlib
+seaborn
 nltk
 spacy
 pandas

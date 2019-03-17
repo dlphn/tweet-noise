@@ -8,11 +8,14 @@ Created on Mon Oct 29 09:35 2018
 import logging
 from datetime import datetime, timezone
 from config import FILEDIR, FILEBREAK, MONGODB
+from features import Keywords
 from pymongo import MongoClient
 import enchant
 import unidecode
 import time
 import re
+import fr_core_news_md
+nlp = fr_core_news_md.load()
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -27,7 +30,9 @@ class FeaturesBuilder:
         self.do_continue = True
         self.count = 0
         self.line_count = 0
-        self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
+        self.file_count = 1
+        self.date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
         # connect to MongoDB
         client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
@@ -48,18 +53,23 @@ class FeaturesBuilder:
     def write(self, data):
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
-                f.write("\"id\",\"nb_follower\",\"nb_following\",\"verified\",\"reputation\",\"age\",\"nb_tweets\",\"time\",\"proportion_spamwords\",\"orthographe\",\"nb_emoji\",\"RT\",\"spam\"\n")
+                f.write('"id","nb_follower","nb_following","verified","reputation","age","nb_tweets","posted_at",'
+                        '"text","length","proportion_spamwords","proportion_whitewords","orthographe","nb_hashtag",'
+                        '"nb_urls","guillemets","nb_emoji","named_id","retweet_count","favorite_count",'
+                        '"type","spam"\n')
             f.write(
                 data["id_str"] +
                 self.user_features(data) +
-                self.information_contenu(data) +
-                "," + ("\"true\"" if data["spam"] else "\"false\"") +
+                self.information_content(data) +
+                "," + data["type"] +
+                "," + ('"true"' if data["spam"] else '"false"') +
                 "\n")
         self.line_count += 1
 
         if self.line_count > FILEBREAK:
             logging.info("Closing file {}".format(self.current_file))
-            self.current_file = FILEDIR + "tweets_" + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".csv"
+            self.file_count += 1
+            self.current_file = FILEDIR + "tweets_" + self.date + "_" + self.file_count + ".csv"
             self.line_count = 0
 
     @staticmethod
@@ -84,51 +94,53 @@ class FeaturesBuilder:
         return result
 
     @staticmethod
-    def information_contenu(data):
-        message = data['text']
-        message_min = message.lower()
-        message_min_sansaccent = unidecode.unidecode(message_min)
-        liste_mot = re.sub("[,.#]",'', message_min).split()
-        emojiList = [":)", ":(", ":P", ":-*", "XD", "^^", "😂","💀","👍" ]
-        emoji = 0
-        spamwords = ["sexe", "hot", "sexy", "chaud", "viagra", "cure", "sexuel", "hormone", "perdre du poids", "regime",
-             "rides", "agrandissez votre penis", "performance", "celibataires","casino", "blackjack", "poker", "jetons", "roulette",
-             "opportunite", "sans frais", "cb", "carte bancaire", "paypal", "interet", "taux d'interet",
-             "carte de credit", "bonne affaire", "pas de frais", "facture", "cartes acceptees", "cheque",
-             "meilleur prix", "prix les plus bas", "promotion speciale", "pour seulement", "gratuit", "100% gratuit",
-             "installation gratuite", "acces gratuit", "echantillon gratuit", "essai gratuit", "cadeau",
-             "réduction", "free", "duree limite", "annulation à tout moment", "inscrivez-vous gratuitement aujourd’hui",
-             "nouveaux clients uniquement", "obtenez-le maintenant", "agissez des maintenant",
-             "commandez aujourd’hui", "quantites limitees", "temps limite", "cliquez ici", "cliquez",
-             "profitez aujourd'hui", "postulez", "devenez membre", "appelez", "annulez à tout moment", "certifie",
-             "doublez", "gagnez", "offre exclusive", "aucun cout", "pas de frais", "aucun engagement",
-             "sans engagement", "commandez maintenant","aucun risque", "bon plan", "felicitations", "incroyable", "spam", "escroquerie", "unique"]
-        spamword_count = 0
-        rt = 0
+    def information_content(data):
+        message = data['text'].lower()
+        doc = nlp(message)
+        # On récupère une liste de tous les mots qui composent les tweet et on les compare au dictionnaire pour voir s'ils sont bien orthographies/existent
+        liste = [str(token) for token in doc]
         spell_dict = enchant.Dict('fr_FR')
         mot_bien_orth = 0
-
+        for mot in liste:
+            if spell_dict.check(mot):
+                mot_bien_orth += 1
+        ratio_orth = mot_bien_orth / len(liste)
+        #On compte le nombre de spamwords
+        spamword_count = 0
         for i in spamwords:
             if i in message_min_sansaccent:
                 spamword_count += 1
         ratio_spamword = spamword_count/len(liste_mot)
-        for mot in liste_mot:
-            if spell_dict.check(mot):
-                mot_bien_orth += 1
-        ratio_orth = mot_bien_orth/len(liste_mot)
+        #On compte le nombre de whitewords
+        whiteword_count =0
+        for i in whitewords:
+            if i in message_min_sansaccent:
+                whiteword_count += 1
+
+        # On compte le nombre d'emoji dans le tweet
+        emojiList = emojilist
+        emoji = 0
         for j in emojiList:
             if j in message:
                 emoji += 1
-        if 'RT @' in message:
-            rt = 1
 
-        result = "," + ("%.2f" % round(ratio_spamword, 2))
+        result = ",\"" + str(data['text']) + "\""
+        result += "," + str(len(data['text']))
+        result += "," + str(ratio_spamword)
+        result += "," + str(whiteword_count)
         result += "," + ("%.2f" % round(ratio_orth, 2))
+        result += "," + str(len(data['entities']['urls']))
+        # On compte le nb de hashtag
+        result += "," + str(message.count('#'))
         result += "," + str(emoji)
-        result += "," + str(rt)
+        # On récupère le nombre d'entites nommees
+        result += "," + str(len(doc.ents))
+        result += "," + str(data['retweet_count'])
+        result += "," + str(data['favorite_count'])
         return result
 
 
+
 if __name__ == "__main__":
-    mongo = FeaturesBuilder()
-    mongo.retrieve()
+    features = FeaturesBuilder()
+    features.retrieve()
