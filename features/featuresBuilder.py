@@ -7,14 +7,17 @@ Created on Mon Oct 29 09:35 2018
 
 import logging
 from datetime import datetime, timezone
-from config import FILEDIR, FILEBREAK, MONGODB
-from features import Keywords
+from Keywords import keywords_blacklist, keywords_whitelist_freq, emojilist
 from pymongo import MongoClient
 import enchant
 import unidecode
 import time
 import re
 import fr_core_news_md
+import sys
+sys.path.append('..')
+from config import FILEDIR, FILEBREAK, MONGODB
+
 nlp = fr_core_news_md.load()
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
@@ -32,7 +35,7 @@ class FeaturesBuilder:
         self.line_count = 0
         self.file_count = 1
         self.date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
-        self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
+        self.current_file = FILEDIR + "tweets_data2.csv"
         # connect to MongoDB
         client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
@@ -54,8 +57,8 @@ class FeaturesBuilder:
         with open(self.current_file, "a+", encoding='utf-8') as f:
             if self.line_count == 0:
                 f.write('"id","nb_follower","nb_following","verified","reputation","age","nb_tweets","posted_at",'
-                        '"text","length","proportion_spamwords","proportion_whitewords","orthographe","nb_hashtag",'
-                        '"nb_urls","guillemets","nb_emoji","named_id","retweet_count","favorite_count",'
+                        '"length","proportion_spamwords","proportion_whitewords","orthographe","nb_hashtag",'
+                        '"nb_urls","nb_emoji","named_id",'
                         '"type","spam"\n')
             f.write(
                 data["id_str"] +
@@ -107,25 +110,24 @@ class FeaturesBuilder:
         ratio_orth = mot_bien_orth / len(liste)
         #On compte le nombre de spamwords
         spamword_count = 0
-        for i in spamwords:
-            if i in message_min_sansaccent:
+        for i in liste :
+            if i in  keywords_blacklist:
                 spamword_count += 1
-        ratio_spamword = spamword_count/len(liste_mot)
+        ratio_spamword = spamword_count/len(liste)
         #On compte le nombre de whitewords
         whiteword_count =0
-        for i in whitewords:
-            if i in message_min_sansaccent:
+        for i in liste :
+            if i in keywords_whitelist_freq:
                 whiteword_count += 1
 
         # On compte le nombre d'emoji dans le tweet
-        emojiList = emojilist
         emoji = 0
-        for j in emojiList:
+        for j in emojilist:
             if j in message:
                 emoji += 1
 
-        result = ",\"" + str(data['text']) + "\""
-        result += "," + str(len(data['text']))
+        #result = ",\"" + str(data['text']) + "\""
+        result = "," + str(len(data['text']))
         result += "," + str(ratio_spamword)
         result += "," + str(whiteword_count)
         result += "," + ("%.2f" % round(ratio_orth, 2))
@@ -135,8 +137,6 @@ class FeaturesBuilder:
         result += "," + str(emoji)
         # On récupère le nombre d'entites nommees
         result += "," + str(len(doc.ents))
-        result += "," + str(data['retweet_count'])
-        result += "," + str(data['favorite_count'])
         return result
 
 

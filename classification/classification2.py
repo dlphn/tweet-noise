@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Oct 31 14:28 2018
-
 @author: dshi, hbaud, vlefranc
 """
 
 from sklearn.preprocessing import LabelEncoder, robust_scale
 import pandas as pd
 import datetime
-from config import current_file, FILEDIR
 import sys
 sys.path.append('..')
+from config import current_file, FILEDIR
+
 
 pd.set_option('display.width', None)
 
@@ -18,9 +18,9 @@ pd.set_option('display.width', None)
 class Classification:
 
     def __init__(self, labels='spam'):
-        self.columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at',
-                        'proportion_spamwords', 'proportion_whitewords', 'orthographe', 'nb_hashtag', 'guillemets',
-                        'nb_emoji']
+        self.columns = ['id','nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at',
+                        'length','proportion_spamwords', 'orthographe', 'nb_hashtag','nb_urls',
+                        'nb_emoji','spam']
         self.df_tweets = None
         self.df_tweets_categorized = None
         self.labels = labels
@@ -39,10 +39,9 @@ class Classification:
         self.df_tweets_categorized = self.df_tweets.copy(deep=True)
         self.categorize_columns(['posted_at'], self.categorize_time)
         if categorize:
-            self.categorize_columns(['verified'], self.categorize_bool)
             # self.categorize_columns(['nb_emoji'], self.categorize_emoji)
-            if self.labels == 'spam':
-                self.categorize_columns(['spam'], self.categorize_bool)
+            #if self.labels == 'spam':
+            self.categorize_columns(['spam'], self.categorize_bool)
             if self.labels == 'type':
                 self.categorize_columns(['type'], self.categorize_type)
             # self.categorize_columns(['nb_follower', 'nb_following'], self.categorize_follower_following)
@@ -50,7 +49,7 @@ class Classification:
             # self.categorize_columns(['nb_tweets'], self.categorize_nb_tweets)
         # print(self.df_tweets_categorized.head())
         # print(type(df_tweets_categorized))
-        self.df_tweets_categorized.to_csv(FILEDIR+'newtypes_categorized.csv')
+        self.df_tweets_categorized.to_csv(FILEDIR+'tweets_data2_categorized_spam.csv')
         return self.df_tweets_categorized
 
     def normalisation(self,X):
@@ -59,9 +58,9 @@ class Classification:
 
     def categorize_bool(self, x):
         if x:
-            return 1
-        else:
             return 0
+        else:
+            return 1
 
     def categorize_type(self, tweet_type):
         types = ['actualité', 'reaction', 'conversation', 'other spam', 'publicité', 'bot']
@@ -98,6 +97,3 @@ if __name__ == "__main__":
     classification = Classification('type')
     df = classification.create_dataframe()
     print(df.head())
-
-
-
