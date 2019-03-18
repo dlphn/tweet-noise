@@ -12,14 +12,15 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=lo
 if __name__ == "__main__":
 
     day = "2019-03-06"
+    # day = "test"
     logging.info("loading data")
     data = load_data("./data/tweets_{}.csv".format(day))
     logging.info("loaded {} tweets".format(len(data)))
 
     # Split data in train/test
-    train, test = train_test_split(data, test_size=0.3)
+    """train, test = train_test_split(data, test_size=0.3)
     train = train.copy()
-    test = test.copy()
+    test = test.copy()"""
 
     # Build clusters for train
     t = 0.7
@@ -31,7 +32,8 @@ if __name__ == "__main__":
 
     clustering = ClusteringAlgo(threshold=t, window_size=w, batch_size=batch_size, distance=distance)
     transformer = TfIdf()
-    count_vectors = transformer.load_history(DATA_PATH + embedding_day).add_new_samples(train)
+    # count_vectors = transformer.load_history(DATA_PATH + embedding_day).add_new_samples(train)
+    count_vectors = transformer.load_history(DATA_PATH + embedding_day).add_new_samples(data)
     vectors = transformer.compute_vectors(count_vectors, min_df=10)
     clustering.add_vectors(vectors)
     labels = clustering.incremental_clustering(method="brute")
@@ -39,7 +41,25 @@ if __name__ == "__main__":
     unique_clusters = set(labels)
     logging.info("Nb unique clusters: {}".format(len(unique_clusters)))
 
-    train["pred"] = pd.Series(labels, dtype=train.label.dtype)
+    data["pred"] = pd.Series(labels, dtype=data.label.dtype)
+    print(data.head())
+
+    # Split data in train/test
+    train, test = train_test_split(data, test_size=0.3)
+    train = train.copy()
+    test = test.copy()
+    train['dataset'] = 'train'
+    test['dataset'] = 'test'
+
+    df_new = pd.concat([train, test]).sort_index()
+    print(df_new.head())
+
+    # send train to RF
+
+    # send test one by one
+    for row in test.iterrows():
+        # analysis
+        print(row)
 
     # For each tweet in test :
     #   1. Predict cluster
@@ -50,21 +70,4 @@ if __name__ == "__main__":
     #   4. Predict tweet class with random forest
     #   (5. Update clusters)
     #   6. Validation
-    # for row in test.iterrows():
-    row = test.iloc[0]
-    print(row)
-    test_row = train.copy().append(row)
-    count_vectors_test = transformer.add_new_samples(test_row)
-    vectors_test = transformer.compute_vectors(count_vectors_test, min_df=10)
-    clustering.add_vectors(vectors_test)
-    labels = clustering.incremental_clustering(method="brute")
-
-    test_row["pred"] = pd.Series(labels, dtype=test_row.label.dtype)
-
-    print(train.head())
-    print(test_row.head())
-    print(test_row[test_row["id"] == row["id"]])
-
-    # train["pred"] = pd.Series(labels, dtype=train.label.dtype)
-    # print(train.head())
 
