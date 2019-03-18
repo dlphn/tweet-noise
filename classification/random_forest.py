@@ -20,11 +20,15 @@ from config import FILEDIR
 dataset = pd.read_csv(FILEDIR+'tweets_data2_categorized_spam.csv')
 
 def train_model(dataset) :
-    trained_model = random_forest_classifier(dataset.drop(['type','label'], axis=1), dataset['label'])
+    trained_model = random_forest_classifier(dataset[dataset['nb_follower', 'nb_following', 'verified', 'reputation', 'age',
+                                                     'nb_tweets', 'posted_at', 'length', 'proportion_spamwords',
+                                                     'orthographe', 'nb_hashtag', 'nb_urls', 'nb_emoji']], dataset['label'])
     return trained_model
 
 def predict_rf(trained_model,tweet):
-    prediction = trained_model.predict(tweet.drop('type',axis=1))
+    tweet = tweet[tweet['nb_follower', 'nb_following', 'verified', 'reputation', 'age','nb_tweets', 'posted_at',
+                        'length', 'proportion_spamwords','orthographe', 'nb_hashtag', 'nb_urls', 'nb_emoji']]
+    prediction = trained_model.predict(tweet)
     return prediction
 
 

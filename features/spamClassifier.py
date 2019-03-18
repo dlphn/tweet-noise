@@ -7,7 +7,7 @@ Created on Thu Mar 18 16:35 2019
 
 import pandas as pd
 from pymongo import MongoClient
-from Medias import MEDIAS, listemedias
+from features.Medias import MEDIAS, listemedias
 from classification.random_forest import predict_rf
 import sys
 
@@ -20,19 +20,14 @@ pd.set_option('max_columns', 10)
 
 class Classification:
 
-    #On initialise la classe pour donne le dataframe de base
+    #On initialise chaque tweet avec le dataframe et le modele entraine
     def __init__(self, dataframe, tweet, trained_model):
         self.tweet = tweet
         self.trained_model = trained_model
         self.df = dataframe
-        # connect to MongoDB
-        client = MongoClient(
-            "mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB[
-                "DATABASE"] + "?retryWrites=true")
-        self.db = client[MONGODB["DATABASE"]]
-        self.count = 0
 
-    #P
+
+    #On regarde les parametres du cluster pour voir si on peut classer directement le tweet comme spam
     def classify_bycluster(self):
         num_cluster = self.tweet['prediction']
         if num_cluster == -1:
