@@ -19,6 +19,15 @@ from config import FILEDIR
 
 dataset = pd.read_csv(FILEDIR+'tweets_data2_categorized_spam.csv')
 
+def train_model(dataset) :
+    trained_model = random_forest_classifier(dataset.drop(['type','label'], axis=1), dataset['label'])
+    return trained_model
+
+def predict_rf(trained_model,tweet):
+    prediction = trained_model.predict(tweet.drop('type',axis=1))
+    return prediction
+
+
 def split_dataset(dataset, train_percentage, feature_headers, target_header):
     # Split dataset into train and test dataset
     train_x, test_x, train_y, test_y = train_test_split(dataset[feature_headers], dataset[target_header],
@@ -47,7 +56,6 @@ def randomtree(dataset):
     test_x['prediction'] = predictions
     print(Score_spam(test_y, predictions))
     return test_x
-
 
 def Score_type(y, predicted_y):
     acc =accuracy_score(y, predicted_y)
@@ -94,8 +102,6 @@ def gridsearch_rf(train_x,train_y):
     grid_search.fit(train_x, train_y)
     return grid_search.best_params_
 
-#gridsearch_rf()
-df = randomtree(dataset)
-print(df.groupby(['prediction','type']).nb_urls.count())
-#print('ok')
-#randomtree(df)
+
+
+
