@@ -40,7 +40,6 @@ if __name__ == "__main__":
     logging.info("Nb unique clusters: {}".format(len(unique_clusters)))
 
     train["pred"] = pd.Series(labels, dtype=train.label.dtype)
-    print(train.head())
 
     # For each tweet in test :
     #   1. Predict cluster
@@ -51,4 +50,21 @@ if __name__ == "__main__":
     #   4. Predict tweet class with random forest
     #   (5. Update clusters)
     #   6. Validation
+    # for row in test.iterrows():
+    row = test.iloc[0]
+    print(row)
+    test_row = train.copy().append(row)
+    count_vectors_test = transformer.add_new_samples(test_row)
+    vectors_test = transformer.compute_vectors(count_vectors_test, min_df=10)
+    clustering.add_vectors(vectors_test)
+    labels = clustering.incremental_clustering(method="brute")
+
+    test_row["pred"] = pd.Series(labels, dtype=test_row.label.dtype)
+
+    print(train.head())
+    print(test_row.head())
+    print(test_row[test_row["id"] == row["id"]])
+
+    # train["pred"] = pd.Series(labels, dtype=train.label.dtype)
+    # print(train.head())
 

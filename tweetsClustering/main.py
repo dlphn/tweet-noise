@@ -35,10 +35,10 @@ if __name__ == "__main__":
     # embedding_day = "2018-07-30"
 
     logging.info("loading data")
-    data = load_data("./data/tweets_{}.csv".format(day))
+    data = load_data("./data/tweets_{}.csv".format(day))[:200]
     logging.info("loaded {} tweets".format(len(data)))
 
-    """clustering = ClusteringAlgo(threshold=t, window_size=w, batch_size=batch_size, distance=distance)
+    clustering = ClusteringAlgo(threshold=t, window_size=w, batch_size=batch_size, distance=distance)
     transformer = TfIdf()
     count_vectors = transformer.load_history(DATA_PATH + embedding_day).add_new_samples(data)
     # print(count_vectors)
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     logging.info("Nb unique clusters: {}".format(len(unique_clusters)))
 
     data["pred"] = pd.Series(labels, dtype=data.label.dtype)
-
+    """
     data.to_csv(DATA_PATH + "clustering_{0}_{1}_{2}_{3}_{4}.csv".format(day, t, w, batch_size, embedding_day), index=False)
 
     visualization = Visu(data, labels)
