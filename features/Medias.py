@@ -298,3 +298,8 @@ MEDIAS = {
                   "F24Afrique"],
     'TV5 Monde': ['TV5MONDE', "TV5MONDEAsia", "TV5MONDEINFO", "TV5MONDEAfrique"]
 }
+
+listemedias = []
+for media in MEDIAS.keys() :
+    for elt in MEDIAS[media] :
+        listemedias.append(elt)
