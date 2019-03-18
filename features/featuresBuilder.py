@@ -39,7 +39,7 @@ def user_features(data, as_array=False):
             user["followers_count"],
             user["friends_count"],
             1 if user["verified"] else 0,
-            "%.2f" % round(reputation, 2),
+            round(reputation, 2),
             age,
             user["statuses_count"],
             posted_at,
