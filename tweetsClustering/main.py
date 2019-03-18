@@ -35,10 +35,10 @@ if __name__ == "__main__":
     # embedding_day = "2018-07-30"
 
     logging.info("loading data")
-    data = load_data("tweets_{}.csv".format(day))
+    data = load_data("./data/tweets_{}.csv".format(day))
     logging.info("loaded {} tweets".format(len(data)))
 
-    clustering = ClusteringAlgo(threshold=t, window_size=w, batch_size=batch_size, distance=distance)
+    """clustering = ClusteringAlgo(threshold=t, window_size=w, batch_size=batch_size, distance=distance)
     transformer = TfIdf()
     count_vectors = transformer.load_history(DATA_PATH + embedding_day).add_new_samples(data)
     # print(count_vectors)
@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     # cluster_event_match(data, labels)
     # evaluate(data, labels)
-    stats = evaluate_classification(data)
+    stats = evaluate_classification(data)"""
 
     """ Save stats in Google SpreadSheet
     setup = [
