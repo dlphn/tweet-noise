@@ -89,7 +89,7 @@ def information_content(data, as_array=False):
             len(data['text']),
             ratio_spamword,
             whiteword_count,
-            "%.2f" % round(ratio_orth, 2),
+            round(ratio_orth, 2),
             len(data['entities']['urls']),
             # On compte le nb de hashtag
             message.count('#'),

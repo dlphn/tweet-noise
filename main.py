@@ -2,7 +2,7 @@
 import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from tweetsClustering.src.load_data import load_data
+from tweetsClustering.src.load_data import load_data, load_all_data
 from tweetsClustering.src.clustering_algo import ClusteringAlgo
 from tweetsClustering.src.compute_tfidf import TfIdf
 
@@ -11,10 +11,11 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=lo
 
 if __name__ == "__main__":
 
-    day = "2019-03-06"
+    # day = "2019-03-06"
+    day = "2019-03-18"
     # day = "test"
     logging.info("loading data")
-    data = load_data("./data/tweets_{}.csv".format(day))
+    data = load_all_data("./data/tweets_{}.csv".format(day))
     logging.info("loaded {} tweets".format(len(data)))
 
     # Split data in train/test

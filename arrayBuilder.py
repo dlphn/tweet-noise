@@ -135,11 +135,14 @@ class ArrayBuilder:
                 ('spam' if obj["spam"] else 'actualité') if 'spam' in obj else '?',
                 obj["type"] if 'type' in obj else '',
                 obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"],
+                obj["user"]["screen_name"]
             ]
             line += user_features(obj, as_array=True)
             line += information_content(obj, as_array=True)
             writer.writerow(line)
             self.line_count += 1
+            if self.line_count % 100 == 0:
+                logging.info("Total of {} elements added in the csv file".format(self.line_count))
         end = time.time()
         logging.info("Total of {0} elements retrieved in {1} seconds".format(self.line_count, end - start))
 
