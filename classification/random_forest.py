@@ -8,20 +8,16 @@ Created on Sun Nov 11 10:55 2018
 # Required Python Packages
 import time
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 import seaborn as sns
 import datetime
 import sys
 sys.path.append('..')
 from config import FILEDIR
 
-
-"""Ce modèle sur représente les spams. Trop de faux positif (1 au lieu de 0).
-j'ai donné un poids 5 fois plus important aux données d'entrainement où y == 0. Peu concluant..."""
-
-dataset = pd.read_csv(FILEDIR+'newtypes_categorized.csv')
+dataset = pd.read_csv(FILEDIR+'tweets_data2_categorized_spam.csv')
 
 def split_dataset(dataset, train_percentage, feature_headers, target_header):
     # Split dataset into train and test dataset
@@ -29,9 +25,9 @@ def split_dataset(dataset, train_percentage, feature_headers, target_header):
                                                         train_size=train_percentage)
     return train_x, test_x, train_y, test_y
 
-def random_forest_classifier(features, target):
+def random_forest_classifier( features, target):
     t_start = time.clock()
-    clf = RandomForestClassifier(class_weight={1:10,2:10,5:1,6:1,7:1,8:1})
+    clf = RandomForestClassifier(class_weight= {0: 1, 1: 5}, max_depth= 10, min_samples_leaf= 5, min_samples_split= 20)
     clf.fit(features, target)
     t_end = time.clock()
     t_diff = t_end - t_start
@@ -40,13 +36,20 @@ def random_forest_classifier(features, target):
 
 def randomtree(dataset):
     HEADERS = dataset.columns.values.tolist()
-    train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, HEADERS[1:-2], HEADERS[-2])
-    trained_model = random_forest_classifier(train_x, train_y)
-    #print("Trained model :: ", trained_model)
-    predictions = trained_model.predict(test_x)
-    print(Score(test_y, predictions))
+    #print(HEADERS)
+    train_x, test_x, train_y, test_y = split_dataset(dataset, 0.7, [ 'nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at', 'length', 'proportion_spamwords', 'orthographe', 'nb_hashtag', 'nb_urls', 'nb_emoji', 'type']
+, HEADERS[-2])
+    #param = gridsearch_rf(train_x, train_y)
+    #print(param)
+    print(train_x.head())
+    trained_model = random_forest_classifier(train_x.drop('type',axis=1), train_y)
+    predictions = trained_model.predict(test_x.drop('type',axis=1))
+    test_x['prediction'] = predictions
+    print(Score_spam(test_y, predictions))
+    return test_x
 
-def Score(y, predicted_y):
+
+def Score_type(y, predicted_y):
     acc =accuracy_score(y, predicted_y)
     cm = pd.DataFrame(confusion_matrix(y, predicted_y), columns=[ 1,2,5,6,7,8], index=[1,2,5,6,7,8])
     print(cm)
@@ -62,6 +65,37 @@ def Score(y, predicted_y):
         F_score = 2*precision*recall / (precision+ recall)
     return "Precision = {} \n Recall = {} \n F_score ={} ".format(precision, recall, F_score)
 
-randomtree(dataset)
+def Score_spam(y, predicted_y):
+    acc =accuracy_score(y, predicted_y)
+    cm = pd.DataFrame(confusion_matrix(y, predicted_y), columns=[ 0,1], index=[0,1])
+    precision =cm[1][1]/(cm[1][0]+cm[1][1])
+    recall = cm[1][1]/(cm[0][1]+cm[1][1])
+    print(cm)
+    if precision == 0 and recall == 0 :
+        F_score = 0
+    else :
+        F_score = 2*precision*recall / (precision+ recall)
+    return "Precision = {} \n Recall = {} \n F_score ={} ".format(precision, recall, F_score)
+
+def gridsearch_rf(train_x,train_y):
+    #fonction pour trouver les parametres a choisir pour optimiser le score de notre random forest
+    max_depth = [10, 15, 20, None]
+    min_samples_split = [ 5, 10, 20, 30, 45]
+    min_samples_leaf = [2, 5, 10, 15]
+    class_weight = [{0:1,1:5},{0:1,1:10},{0:1,1:15}]
+    param_grid = {'max_depth': max_depth,
+                   'min_samples_split': min_samples_split,
+                   'min_samples_leaf': min_samples_leaf,
+                  'class_weight' : class_weight}
+
+    rf = RandomForestClassifier()
+    grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, scoring='f1',
+                               cv=3, n_jobs=-1, verbose=2)
+    grid_search.fit(train_x, train_y)
+    return grid_search.best_params_
+
+#gridsearch_rf()
+df = randomtree(dataset)
+print(df.groupby(['prediction','type']).nb_urls.count())
 #print('ok')
 #randomtree(df)

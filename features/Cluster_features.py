@@ -6,14 +6,14 @@ Created on Thu Feb 27 16:35 2019
 """
 
 import pandas as pd
-from Medias import MEDIAS, listemedias
 from pymongo import MongoClient
 import sys
+from Medias import MEDIAS, listemedias
 
 sys.path.append('..')
 from config import FILEDIR, FILEBREAK, MONGODB
 
-pd.set_option('max_columns', 5)
+pd.set_option('max_columns', 10)
 
 
 class Classification:
@@ -25,39 +25,51 @@ class Classification:
             "mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB[
                 "DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
+        self.count = 0
 
     def create_dataframe(self):
         df = pd.read_csv(self.filepath)
+        df.label = df.label.apply(self.categorize_label)
         df = df[df['pred'] != -1]
-        df2 = df.groupby('pred').agg({'id': lambda x: list(x)})
+        df2 = df.groupby('pred').agg({'id': lambda x: list(x),'label' : sum})
+        #print(df2)
+        df_cluster = pd.DataFrame(columns=['nb_of_cluster','nb_tweets', 'nb_tweets_actu','hashtag','url','media','contains_media','list_media'])
         for index, row in df2.iterrows():
             # print(row)
-            if len(row['id']) > 1:
-                print(len(row['id']), self.get_features(row['id'], index))
+            if len(row['id']) > 2:
+                self.count +=1
+                self.get_features(row['id'], index)
+                df_cluster.loc[self.count] = [index, len(row['id']), row['label'],self.medias, self.hashtags, self.urls, self.actu_source, self.sources]
+        df_cluster.to_csv(FILEDIR+'cluster_data.csv')
 
     # print(self.get_features(row[1]),index)
 
     def get_features(self, cluster, cluster_number):
-        medias = dict()
-        hashtags = dict()
-        urls = dict()
-        sources = []
+        self.medias = dict()
+        self.hashtags = dict()
+        self.urls = dict()
+        self.sources = []
         for tweet_id in cluster:
             tweets = self.db.tweets.find({"id_str": tweet_id})
             # print(tweets)
             for tweet in tweets:
                 # print(tweet)
-                self.get_medias(tweet, medias)
-                self.get_hashtags(tweet, hashtags)
-                self.get_urls(tweet, urls)
-                self.get_mediasource(tweet, sources)
+                self.get_medias(tweet, self.medias)
+                self.get_hashtags(tweet, self.hashtags)
+                self.get_urls(tweet, self.urls)
+                self.get_mediasource(tweet, self.sources)
         # On cree une variable booleene qui nous dit si il y a au moins un media dans le cluster
-        if len(sources) > 0:
-            actu_source = True
+        if len(self.sources) > 0:
+            self.actu_source = True
         else:
-            actu_source = False
+            self.actu_source = False
 
-        return medias, hashtags, urls, sources, actu_source
+    def categorize_label(self,x):
+        if x == 'spam' :
+            return 0
+        else :
+            return 1
+
 
     def get_medias(self, tweet, medias):
         if 'extended_tweet' in tweet.keys():
@@ -110,5 +122,5 @@ class Classification:
 
 
 if __name__ == "__main__":
-    classif = Classification('clustering_2019-03-06')
+    classif = Classification('clustering_2019-03-06_0.7_100000_100_base_fr_2')
     classif.create_dataframe()

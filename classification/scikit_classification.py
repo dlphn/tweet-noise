@@ -21,7 +21,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 # from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
 
-from classification.classification2 import Classification
+from classification2 import Classification
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -32,9 +32,11 @@ seed = 7
 def compare_classifiers(labels='spam'):
 
     # Categorized data frame
-    classif = Classification(labels)
-    df_tweets_categorized = classif.create_dataframe()
+    #classif = Classification(labels)
+    #df_tweets_categorized = classif.create_dataframe()
     # df_tweets_categorized = classif.create_dataframe(False)
+    df_tweets_categorized = pd.read_csv('C:\\Users\\Public\\Documents\\tweets_data2_categorized_spam.csv', encoding="utf-8")
+
     k_value = 7
     dict_classifiers = {
         "Logistic Regression": LogisticRegression(),
@@ -173,4 +175,4 @@ def compare_classifiers(labels='spam'):
 
 if __name__ == "__main__":
     compare_classifiers('spam')
-    compare_classifiers('type')
+    #compare_classifiers('type')
