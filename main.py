@@ -55,12 +55,12 @@ if __name__ == "__main__":
     df_new = pd.concat([train, test]).sort_index()
     print(df_new.head())
 
-    # send train to RF
+    # TODO: send train to Random Forest classifier
 
-    # send test one by one
+    # TODO: send test one by one
     for row in test.iterrows():
-        # analysis
-        print(row)
+        # TODO: send to analysis
+        pass
 
     # For each tweet in test :
     #   1. Predict cluster
