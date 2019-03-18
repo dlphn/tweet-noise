@@ -1,4 +1,6 @@
 config.py
+client_secret.json
+credentials.json
 
 data/*
 

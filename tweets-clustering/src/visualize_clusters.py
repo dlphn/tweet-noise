@@ -10,6 +10,7 @@ import webbrowser
 import pandas as pd
 import logging
 import matplotlib.pyplot as plt
+from src.eval import compute_proportions
 
 # code adapté de celui des centraliens
 
@@ -119,20 +120,9 @@ class Visu:
         plt.savefig("./tmp/barplot_" + label + "_" + path + ".pdf", bbox_inches='tight')
         logging.info("Saved pdf file")
 
-    def compute_proportions(self, row):
-        count_spam, count_actualite, count_other = 0, 0, 0
-        for _, tweet in self.data[self.data["pred"] == row["pred"]].iterrows():
-            if tweet["label"] == 'spam':
-                count_spam += 1
-            elif tweet["label"] == 'actualité':
-                count_actualite += 1
-            else:
-                count_other += 1
-        return count_spam, count_actualite, count_other
-
     def write_html(self, path):
-        for _, row in self.clusters[self.clusters["size"]>2].iterrows():
-            nb_spam, nb_actualite, nb_other = self.compute_proportions(row)
+        for _, row in self.clusters[self.clusters["size"] > 2].iterrows():
+            nb_spam, nb_actualite, nb_other = compute_proportions(self.data, row)
             self.html += """<div class="dropdown" onClick="toggleList(this)">
                                 <h4 class="unselectable">Cluster {} (size {}): {} spam, {} actualité, {} other</h4>\n
                                 <ul><div class="dropdown-content">\n""".format(row["pred"], row["size"], nb_spam, nb_actualite, nb_other)
