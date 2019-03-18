@@ -35,7 +35,7 @@ def compare_classifiers(labels='spam'):
     #classif = Classification(labels)
     #df_tweets_categorized = classif.create_dataframe()
     # df_tweets_categorized = classif.create_dataframe(False)
-    df_tweets_categorized = pd.read_csv('C:\\Users\\Public\\Documents\\tweets_data2_categorized_spam.csv', encoding="utf-8")
+    df_tweets_categorized = pd.read_csv(current_file, encoding="utf-8")
 
     k_value = 7
     dict_classifiers = {
