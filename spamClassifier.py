@@ -29,32 +29,41 @@ class Classification:
 
     #On regarde les parametres du cluster pour voir si on peut classer directement le tweet comme spam
     def classify_bycluster(self):
-        num_cluster = self.tweet['pred'][0]
-        print(num_cluster)
+        #print(type(self.tweet))
+        num_cluster = self.tweet['pred']
+        #print(num_cluster)
         if num_cluster == -1:
-            self.set_cluster_spam(True)
+            cluster_class, rf_class = self.set_cluster_spam(True)
+            return cluster_class,rf_class
         else :
             df_pred = self.df[self.df['pred']== num_cluster]
             length = df_pred.shape[0]
             if length < 4 :
-                self.set_cluster_spam(False)
+                cluster_class, rf_class = self.set_cluster_spam(False)
+                return cluster_class,rf_class
             else :
-                df_pred.apply(self.categorize_label)
-                if df.label.sum(axis = 0)/length > 0.1 :
-                    self.set_cluster_spam(False)
+                df_pred.label.apply(self.categorize_label)
+                if df_pred.label.sum(axis = 0)/length > 0.1 :
+                    cluster_class, rf_class = self.set_cluster_spam(False)
+                    return cluster_class,rf_class
                 else :
                     if self.contains_media(df_pred) :
-                        self.set_cluster_spam(False)
+                        cluster_class, rf_class = self.set_cluster_spam(False)
+                        return cluster_class,rf_class
                     else :
-                        self.set_cluster_spam(True)
+                        cluster_class, rf_class = self.set_cluster_spam(True)
+                        return cluster_class,rf_class
 
 
     def set_cluster_spam(self, bool):
         if bool:
-            self.tweet += 'spam,undefined'
+            cluster_class = '0'
+            rf_class = 'undefined'
+            return cluster_class,rf_class
         else:
-            self.tweet += 'undefined,'
-            self.tweet += str(self.classify_byrandomforest())
+            cluster_class = 'undefined'
+            rf_class = str(self.classify_byrandomforest())
+            return cluster_class,rf_class
 
     def classify_byrandomforest(self):
         return predict_rf(self.trained_model, self.tweet)
@@ -74,10 +83,5 @@ class Classification:
 
 
 
-df = pd.read_csv(FILEDIR+'clustering_2019-03-06_0.7_100000_100_base_fr_2.csv')
-tweet = pd.read_csv(FILEDIR+'tweet.csv')
 
-
-classif = Classification(df,tweet,'clf')
-classif.classify_bycluster()
 

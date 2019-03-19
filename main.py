@@ -5,6 +5,10 @@ from sklearn.model_selection import train_test_split
 from tweetsClustering.src.load_data import load_data, load_all_data
 from tweetsClustering.src.clustering_algo import ClusteringAlgo
 from tweetsClustering.src.compute_tfidf import TfIdf
+from classification.random_forest import train_model
+from spamClassifier import Classification
+import numpy as np
+pd.options.display.max_columns = 25
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -43,7 +47,7 @@ if __name__ == "__main__":
     logging.info("Nb unique clusters: {}".format(len(unique_clusters)))
 
     data["pred"] = pd.Series(labels, dtype=data.label.dtype)
-    print(data.head())
+    #print(data.head())
 
     # Split data in train/test
     train, test = train_test_split(data, test_size=0.3)
@@ -51,16 +55,28 @@ if __name__ == "__main__":
     test = test.copy()
     train['dataset'] = 'train'
     test['dataset'] = 'test'
+    test['classification cluster'] = None
+    test['classification random forest'] = None
+
 
     df_new = pd.concat([train, test]).sort_index()
-    print(df_new.head())
+    #print(train.head())
 
     # TODO: send train to Random Forest classifier
+    trained_rf = train_model(train)
+    #print(trained_rf.feature_importances_)
 
     # TODO: send test one by one
-    for row in test.iterrows():
+    for index,row in test.iterrows():
         # TODO: send to analysis
-        pass
+        #print(row)
+        classification = Classification(train,row,trained_rf)
+        cluster_class, rf_class = classification.classify_bycluster()
+        test.loc[index,'classification cluster'] = cluster_class
+        test.loc[index,'classification random forest'] = rf_class
+
+    print(test.head())
+    print(test.groupby(['category','classification random forest']).id.count())
 
     # For each tweet in test :
     #   1. Predict cluster

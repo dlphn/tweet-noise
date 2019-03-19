@@ -20,32 +20,38 @@ from config import FILEDIR
 dataset = pd.read_csv(FILEDIR+'tweets_data2_categorized_spam.csv')
 
 def train_model(dataset) :
-    trained_model = random_forest_classifier(dataset[dataset['nb_follower', 'nb_following', 'verified', 'reputation', 'age',
-                                                     'nb_tweets', 'posted_at', 'length', 'proportion_spamwords',
+    #print(dataset[dataset['nb_follower','verified']])
+    #print(dataset.dtypes)
+    dataset.label = dataset.label.apply(categorize_label)
+    trained_model = random_forest_classifier(dataset[['nb_follower', 'nb_following', 'verified', 'reputation', 'age',
+                                                     'nb_tweets', 'length', 'proportion_spamwords',
                                                      'orthographe', 'nb_hashtag', 'nb_urls', 'nb_emoji']], dataset['label'])
     return trained_model
 
 def predict_rf(trained_model,tweet):
-    tweet = tweet[tweet['nb_follower', 'nb_following', 'verified', 'reputation', 'age','nb_tweets', 'posted_at',
+    tweet = tweet[['nb_follower', 'nb_following', 'verified', 'reputation', 'age','nb_tweets',
                         'length', 'proportion_spamwords','orthographe', 'nb_hashtag', 'nb_urls', 'nb_emoji']]
-    prediction = trained_model.predict(tweet)
-    return prediction
+    tweet = tweet.tolist()
+    prediction = trained_model.predict([tweet])
+    return prediction[0]
 
+
+def random_forest_classifier( features, target):
+    t_start = time.clock()
+    clf = RandomForestClassifier(class_weight= {0: 1, 1: 5}, max_depth= 10, min_samples_leaf= 5, min_samples_split= 20)
+    #print(features.head())
+    #print(target.head())
+    clf.fit(features, target)
+    t_end = time.clock()
+    t_diff = t_end - t_start
+    #print("trained {c} in {f:.2f} s".format(c="Random Forest", f=t_diff))
+    return clf
 
 def split_dataset(dataset, train_percentage, feature_headers, target_header):
     # Split dataset into train and test dataset
     train_x, test_x, train_y, test_y = train_test_split(dataset[feature_headers], dataset[target_header],
                                                         train_size=train_percentage)
     return train_x, test_x, train_y, test_y
-
-def random_forest_classifier( features, target):
-    t_start = time.clock()
-    clf = RandomForestClassifier(class_weight= {0: 1, 1: 5}, max_depth= 10, min_samples_leaf= 5, min_samples_split= 20)
-    clf.fit(features, target)
-    t_end = time.clock()
-    t_diff = t_end - t_start
-    print("trained {c} in {f:.2f} s".format(c="Random Forest", f=t_diff))
-    return clf
 
 def randomtree(dataset):
     HEADERS = dataset.columns.values.tolist()
@@ -105,6 +111,12 @@ def gridsearch_rf(train_x,train_y):
                                cv=3, n_jobs=-1, verbose=2)
     grid_search.fit(train_x, train_y)
     return grid_search.best_params_
+
+def categorize_label(x):
+    if x == 'spam':
+        return 0
+    else:
+        return 1
 
 
 
