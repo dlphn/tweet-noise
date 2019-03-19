@@ -45,7 +45,6 @@ class ClusteringAlgo:
             self.index = NearestNeighbors(n_neighbors=1, algorithm='brute', metric=self.distance).fit(data)
 
     def brute_NN(self, tweets):
-
         distance, neighbor_exact = self.index.kneighbors(tweets)
         return distance.transpose()[0], neighbor_exact.transpose()[0]
 
@@ -94,5 +93,3 @@ class ClusteringAlgo:
         total_threads_with_zeros_vectors[self.zeros_vectors] = -1
         total_threads_with_zeros_vectors[~self.zeros_vectors] = total_threads
         return total_threads_with_zeros_vectors.tolist()
-
-
