@@ -29,14 +29,15 @@ class Classification:
 
     #On regarde les parametres du cluster pour voir si on peut classer directement le tweet comme spam
     def classify_bycluster(self):
-        num_cluster = self.tweet['prediction']
+        num_cluster = self.tweet['pred'][0]
+        print(num_cluster)
         if num_cluster == -1:
             self.set_cluster_spam(True)
         else :
-            df_pred = self.df[self.df['prediction']== num_cluster]
+            df_pred = self.df[self.df['pred']== num_cluster]
             length = df_pred.shape[0]
             if length < 4 :
-                set_cluster_spam(False)
+                self.set_cluster_spam(False)
             else :
                 df_pred.apply(self.categorize_label)
                 if df.label.sum(axis = 0)/length > 0.1 :
@@ -70,3 +71,13 @@ class Classification:
             if row['screen_name'] in listemedias :
                 return True
         return False
+
+
+
+df = pd.read_csv(FILEDIR+'clustering_2019-03-06_0.7_100000_100_base_fr_2.csv')
+tweet = pd.read_csv(FILEDIR+'tweet.csv')
+
+
+classif = Classification(df,tweet,'clf')
+classif.classify_bycluster()
+
