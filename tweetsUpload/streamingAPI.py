@@ -4,16 +4,14 @@ Created on Tue May 17 17:31:33 2016
 
 @author: bmazoyer, dshi, hbaud, vlefranc
 """
-# import json
+
 import logging
 import requests
-# from datetime import datetime
 from twython import TwythonStreamer
 from config import ACCESS, PROXY, LANG, MONGODB
 from pymongo import MongoClient
 
 # connect to MongoDB
-# client = MongoClient("mongodb://localhost:27017/")
 client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
 db = client[MONGODB["DATABASE"]]
 
@@ -22,7 +20,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=lo
 
 class SampleStreamer(TwythonStreamer):
     """
-    Retrieve data from the Twitter Streaming API.
+    Retrieve data from the Twitter Streaming API and save in Mongo database.
 
     The streaming API requires
     `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
@@ -33,7 +31,6 @@ class SampleStreamer(TwythonStreamer):
         self.do_continue = True
         self.count = 0
         self.line_count = 0
-        # self.current_file = FILEDIR + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
         if PROXY:
             client_args = {
                 'proxies': PROXY
@@ -49,21 +46,10 @@ class SampleStreamer(TwythonStreamer):
         :param data: response from Twitter API (one tweet in json format)
         """
 
-        if 'RT @' not in data["text"] :
+        if 'RT @' not in data["text"]:
             db.tweets.insert_one(data)
             self.count += 1
             logging.info("Total of {} elements added".format(self.count))
-
-
-        # with open(self.current_file, "a+", encoding='utf-8') as f:
-        #     json.dump(data, f)
-        #     f.write("\n")
-        # self.line_count += 1
-        #
-        # if self.line_count > FILEBREAK:
-        #     logging.info("Closing file {}".format(self.current_file))
-        #     self.current_file = FILEDIR + datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f") + ".txt"
-        #     self.line_count = 0
 
         if not self.do_continue:
             logging.info("disconnect")
@@ -83,8 +69,7 @@ class SampleStreamer(TwythonStreamer):
         Wrapper for 'statuses / sample' API call
         """
         while self.do_continue:
-
-        # Stream in an endless loop
+            # Stream in an endless loop
             try:
                 self.statuses.sample(language=lang)
             except requests.exceptions.ChunkedEncodingError as e:

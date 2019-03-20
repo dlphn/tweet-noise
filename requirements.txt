@@ -1,3 +1,4 @@
+requests
 gspread
 google-api-python-client
 scipy

@@ -37,6 +37,8 @@ LANG = 'fr'
 
 # Directory where tweets files are stored
 FILEDIR = str
+PROJECT_DIR = "/path/to/tweet-noise/"
+DATA_DIR = PROJECT_DIR + "data/"
 
 # Number of tweets in each file
 FILEBREAK = 1000
@@ -65,8 +67,10 @@ google_api_key_file = ROOT_DIR + '/client_secret.json'
 
 ## Project structure
 
-- 'main.py' : from a dataset split the dataset into test and train. 
-- `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
+- `main.py` : from a dataset split the dataset into test and train. 
+- Save tweets in MongoDB - tweetsUpload :
+    - `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
+    - `loadLocalTweets.py`: save tweets from json file in MongoDB
 - `JSONBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
 - `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)
 - `dataLabelling.py`: small algorithm to ease the data labelling process

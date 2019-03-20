@@ -1,7 +1,7 @@
 
 import json
 import logging
-from config import MONGODB
+from config import MONGODB, DATA_DIR
 from pymongo import MongoClient
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)
@@ -13,7 +13,7 @@ class LocalTweetsLoader:
     """
 
     def __init__(self, file_name):
-        self.data_file_name = "./data/" + file_name
+        self.data_file_name = DATA_DIR + file_name
         self.count = 0
         self.data = []
         client = MongoClient("mongodb+srv://"
