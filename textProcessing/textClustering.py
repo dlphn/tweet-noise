@@ -9,7 +9,9 @@ from nltk.corpus import stopwords
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-import arrayBuilder
+from features import arrayBuilder
+
+
 # from features import stopKeywords
 
 

@@ -7,7 +7,7 @@ import spacy
 from math import log, sqrt
 from itertools import combinations
 
-import arrayBuilder
+from features import arrayBuilder
 
 nlp = spacy.load('fr_core_news_md')
 

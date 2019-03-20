@@ -108,15 +108,16 @@ google_api_key_file = ROOT_DIR + '/client_secret.json'
 
 Fetch data from Twitter API.
 
-Run `streamingAPI.py`.
+Run `tweetsUpload/streamingAPI.py`.
 
-Or upload a json file of tweets by running `loadLocalTweets.py`.
+Or upload a json file of tweets by running `tweetsUpload/loadLocalTweets.py`.
 
 ### 2. Data Preprocessing
 
-Build features file.
+Build features file by running `features/featuresBuilder.py`.
 
-Run `features.featuresBuilder.py`.
+Or build csv file with text by running `arrayBuilder.py`.
+
 
 ### 3. Visualization
 

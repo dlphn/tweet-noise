@@ -21,7 +21,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=lo
 
 class ArrayBuilder:
     """
-    Retrieve data from the MongoDB database (text and label only).
+    Retrieve data from the MongoDB database and save in csv file.
 
     """
     def __init__(self):
@@ -36,9 +36,11 @@ class ArrayBuilder:
         self.file_count = 1
         self.date = datetime.now().strftime("%Y-%m-%d")
         self.current_file = FILEDIR + "tweets_" + self.date + ".csv"
-        # self.current_file = FILEDIR + "tweets_base_fr.csv"
 
     def retrieve(self):
+        """
+        Retrieve only tweets text
+        """
         start = time.time()
         logging.info("Retrieving data...")
         tweets = self.db.tweets.find()
@@ -59,18 +61,18 @@ class ArrayBuilder:
         for obj in tweets:
             self.count += 1
             texts.append(obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"])
-            #if 'spam' in obj:
+            # if 'spam' in obj:
             #    labels.append('spam' if obj['spam'] else 'actualité')
-            #else:
+            # else:
             #    labels.append('?')
-            if 'type' in obj :
+            if 'type' in obj:
                 if obj['type'] == "actualité":
-                    labels.append('type actu' )
-                if obj['type'] == "reaction" :
+                    labels.append('type actu')
+                if obj['type'] == "reaction":
                     labels.append('type reaction')
-                if obj['type'] == "conversation" :
+                if obj['type'] == "conversation":
                     labels.append('type conversation')
-                if obj['type'] == "publicité" :
+                if obj['type'] == "publicité":
                     labels.append('type pub')
                 if obj['type'] == "bot":
                     labels.append('type bot')
@@ -111,7 +113,6 @@ class ArrayBuilder:
 
     def write_all(self):
         """
-        Retrieve MongoDB tweets and save id, label, text in csv file
         Retrieve MongoDB tweets and save 'id', 'label', 'type', 'text', 'screen_name', 'nb_follower', 'nb_following', 'verified', 'reputation',
         'age', 'nb_tweets', 'posted_at', 'length', 'proportion_spamwords', 'proportion_whitewords', 'orthographe', 'nb_hashtag', 'nb_urls',
         'nb_emoji', 'named_id' in csv file
@@ -125,8 +126,10 @@ class ArrayBuilder:
         except OSError:
             pass
         writer = csv.writer(open(self.current_file, 'w'))
-        writer.writerow(['id', 'label', 'category', 'text', 'screen_name', 'nb_follower', 'nb_following', 'verified',
-                         'reputation', 'age', 'nb_tweets', 'posted_at', 'length', 'proportion_spamwords',
+        writer.writerow(['id', 'label', 'category', 'text',
+                         'screen_name', 'nb_follower', 'nb_following', 'verified',
+                         'reputation', 'age', 'nb_tweets',
+                         'posted_at', 'length', 'proportion_spamwords',
                          'proportion_whitewords', 'orthographe',
                          'nb_hashtag', 'nb_urls', 'nb_emoji', 'named_id'])
 
@@ -150,9 +153,12 @@ class ArrayBuilder:
 
 if __name__ == "__main__":
     mongo = ArrayBuilder()
+    # print(mongo.retrieve())
+
     # data = mongo.retrieve_text_and_labels()
     # print(data[0])
     # print(data[1])
+
     # mongo.write()
     mongo.write_all()
 
