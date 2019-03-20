@@ -22,7 +22,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import accuracy_score, confusion_matrix
 from config import current_file
 
-from classification2 import Classification
+from classification import Classification
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -33,10 +33,11 @@ seed = 7
 def compare_classifiers(labels='spam'):
 
     # Categorized data frame
-    #classif = Classification(labels)
-    #df_tweets_categorized = classif.create_dataframe()
+    classif = Classification(labels)
+    df_tweets_categorized = classif.create_dataframe()
     # df_tweets_categorized = classif.create_dataframe(False)
-    df_tweets_categorized = pd.read_csv(current_file, encoding="utf-8")
+    # df_tweets_categorized = pd.read_csv(current_file, encoding="utf-8")
+    # print(df_tweets_categorized.head())
 
     k_value = 7
     dict_classifiers = {
@@ -97,8 +98,8 @@ def compare_classifiers(labels='spam'):
             'train_time': t_diff
         }
 
-        # if verbose:
-        #     print("trained {c} in {f:.2f} s".format(c=classifier_name, f=t_diff))
+        if verbose:
+            print("trained {c} in {f:.2f} s".format(c=classifier_name, f=t_diff))
         return classifier
 
     def display_dict_models(dict, sort_by='test_score'):
@@ -175,5 +176,5 @@ def compare_classifiers(labels='spam'):
 
 
 if __name__ == "__main__":
-    compare_classifiers('spam')
-    #compare_classifiers('type')
+    # compare_classifiers('spam')
+    compare_classifiers('type')

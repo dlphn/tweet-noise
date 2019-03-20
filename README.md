@@ -119,18 +119,23 @@ Build features file by running `features/featuresBuilder.py`.
 
 Or build csv file with text by running `arrayBuilder.py`.
 
-
 ### 3. Visualization
 
 Run `features_analysis.py` from `Data Visualisation/`.
 
 ### 4. Classification
 
-Run `classification.scikit_classification.py` to compare different scikit-learn classifiers.
+Run `classification.scikitClassification.py` to compare different scikit-learn classifiers.
 
 ### 5. Clustering
 
 Run `testClustering.py` or `tweets-clustering/__init__.py`.
+
+### 6. Clustering + Classification
+
+Run `main.py`.
+
+### 7. Deep Learning
 
 ## Features stored in database
 

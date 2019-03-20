@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score,confusion_matrix
 from sklearn.model_selection import train_test_split
 
 
-from classification.classification2 import Classification
+from classification.classification import Classification
 
 
 classif = Classification()
