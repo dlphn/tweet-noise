@@ -13,7 +13,7 @@ import re
 # import pickle
 import pandas as pd
 # from elasticsearch import Elasticsearch, helpers
-from docs.config import ES_DATE_FORMAT, ELASTIC, DATA_PATH
+from tweetsClustering.docs.config import ES_DATE_FORMAT, ELASTIC, DATA_PATH
 from unidecode import unidecode
 # import os
 

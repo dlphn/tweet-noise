@@ -28,7 +28,7 @@ if __name__ == "__main__":
     distance = "cosine"
     # day = "2018-07-30"
     # day = "2019-03-01"
-    day = "2019-03-06"
+    day = "2019-03-18"
     # day = "base_fr"
     # embedding_day = "base_fr"
     embedding_day = "base_fr_2"
