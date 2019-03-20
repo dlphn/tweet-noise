@@ -20,6 +20,8 @@ pip install -r requirements.txt
 
 Add a `config.py` file which contains Twitter API and MongoDB keys.
 ```python
+import os
+
 # OAuth authentification keys to Twitter API
 ACCESS = (
     # consumer_key,
@@ -50,6 +52,14 @@ MONGODB = {
     "PORT": 27017,
     "DATABASE": str
 }
+
+current_file = FILEDIR + "tweets_data.csv"
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# For reading/writing in Google Spreadsheet
+google_api_key_file = ROOT_DIR + '/client_secret.json'
+
 ```
 
 
@@ -62,22 +72,25 @@ MONGODB = {
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
 - Data Visualisation :
-    - `features_analysis.py` : matplotlib and seaborn
+    - `featuresAnalysis.py` : matplotlib and seaborn
     - `dataViz.py` : matplotlib tests
+    - `randomForestVisualization.py` : plot randome forest tree
+    - `retweetFavoriteAnalysis.py`
 - Classification :
     - `IfClassification.py` : simple if/else classification
-    - `scikit_classification.py` : test and compare different scikitlearn classifiers
+    - `scikitClassification.py` : test and compare different scikitlearn classifiers
     - `KNearest.py` : K Nearest Neighbours classifier
-    - `random_forest.py` : Random Forest classifier
-    - `Support_Vector_Machine.py` : Support Vector Machine classifier
+    - `randomForest.py` : Random Forest classifier
+    - `supportVectorMachine.py` : Support Vector Machine classifier
+    - `classification2.py`
 - Classification (npm) `bayesnpm/` : implement a simple text classifier with the Bayes NPM package
 - Features :
-	- 'dictBuilder.py' :
+	- `dictBuilder.py`
 	- `featuresBuilder.py`: fetch data from MongoDB and build the features table
 	- `Keywords.py`: list of key words considered as spamwords, whitewords, stopwords and list of emojis
-	- 'Medias.py' : list of media twitter account
-	- 'Cluster_features.py' : from a csv of clusterized tweet return the number of medias, urls and hashtags per cluster
-- Textprocessing :
+	- `Medias.py` : list of media twitter account
+	- `clusterFeatures.py` : from a csv of clusterized tweet return the number of medias, urls and hashtags per cluster
+- Text Processing :
 	- `textProcessing.py` : petits test de Delphine [to be removed ??] 
     - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
 	- `doc2vect.py` : build a csv of vectorized (300x300) tweets fetch from the data base
