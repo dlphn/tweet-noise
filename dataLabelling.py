@@ -17,12 +17,15 @@ class DataLabelling:
     Retrieve data from the MongoDB database and let the user label the tweets.
 
     """
+
     def __init__(self):
 
         self.do_continue = True
         self.count = 0
         # connect to MongoDB
-        client = MongoClient("mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB["DATABASE"] + "?retryWrites=true")
+        client = MongoClient(
+            "mongodb+srv://" + MONGODB["USER"] + ":" + MONGODB["PASSWORD"] + "@" + MONGODB["HOST"] + "/" + MONGODB[
+                "DATABASE"] + "?retryWrites=true")
         self.db = client[MONGODB["DATABASE"]]
 
     def retrieve(self):
@@ -40,11 +43,12 @@ class DataLabelling:
                 classification = self.label(obj)
                 if classification == "stop" or classification == "end" or classification == "x":
                     break
-                elif classification in ["actualité","reaction","conversation","publicité","bot","other spam"]:
+                elif classification in ["actualité", "reaction", "conversation", "publicité", "bot", "other spam"]:
                     spam_value = True
-                    if classification in ["actualité","reaction"] :
+                    if classification in ["actualité", "reaction"]:
                         spam_value = False
-                    self.db.tweets.update_one({"_id": obj.get("_id")}, {"$set": {"type": classification,"spam":spam_value}})
+                    self.db.tweets.update_one({"_id": obj.get("_id")},
+                                              {"$set": {"type": classification, "spam": spam_value}})
                     self.count += 1
         logging.info("Total of {} elements labelled".format(self.count))
 
@@ -56,10 +60,10 @@ class DataLabelling:
         :return: the user's answer (True, False, or an action to skip or stop)
         """
         # display tweet and allow input from user true/false
-        valid =  {"actu" : "actualité","a" : "actualité","1" : "actualité", "reaction" : "reaction", "r" : "reaction",
-                  "2": "reaction","conv": "conversation", "c": "conversation", "5": "conversation",
-                  "pub": "publicité","p": "publicité", "6": "publicité", "bot" : "bot", "b": "bot", "7": "bot",
-                  "other" : "other spam","o" : "other spam","8" : "other spam"}
+        valid = {"actu": "actualité", "a": "actualité", "1": "actualité", "reaction": "reaction", "r": "reaction",
+                 "2": "reaction", "conv": "conversation", "c": "conversation", "5": "conversation",
+                 "pub": "publicité", "p": "publicité", "6": "publicité", "bot": "bot", "b": "bot", "7": "bot",
+                 "other": "other spam", "o": "other spam", "8": "other spam"}
 
         other_actions = ["stop", "end", "x", "skip", "next", "pass"]
         while True:
@@ -81,16 +85,15 @@ class DataLabelling:
         correct tweet previously labelled.
         """
         for obj in self.db.tweets.find():
-            if obj["type"] == "actualité par personnalité" :
+            if obj["type"] == "actualité par personnalité":
                 self.db.tweets.update_one({"_id": obj.get("_id")},
                                           {"$set": {"type": "actualité"}})
                 self.count += 1
-            if obj["type"] == "spam par personnalité" :
+            if obj["type"] == "spam par personnalité":
                 self.db.tweets.update_one({"_id": obj.get("_id")},
                                           {"$set": {"type": "conversation"}})
                 self.count += 1
         logging.info("Total of {} elements with label changed".format(self.count))
-
 
 
 if __name__ == "__main__":
