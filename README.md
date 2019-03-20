@@ -55,6 +55,7 @@ MONGODB = {
     "DATABASE": str
 }
 
+# features file
 current_file = FILEDIR + "tweets_data.csv"
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -77,7 +78,7 @@ google_api_key_file = ROOT_DIR + '/client_secret.json'
 - `classification.py`: fetch the features tables and categorize the different features
 - Data Visualisation :
     - `featuresAnalysis.py` : matplotlib and seaborn
-    - `dataViz.py` : matplotlib tests
+    - `dataViz.py` : matplotlib tests - **TO BE REMOVED**
     - `randomForestVisualization.py` : plot randome forest tree
     - `retweetFavoriteAnalysis.py`
 - Classification :

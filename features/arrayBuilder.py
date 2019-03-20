@@ -6,14 +6,12 @@ Created on Thu Nov 22 09:51 2018
 """
 
 import logging
-from datetime import datetime, timezone
-from config import FILEDIR, FILEBREAK, MONGODB
+from datetime import datetime
+from config import FILEDIR, MONGODB
 from pymongo import MongoClient
 import time
-import json
 import os
 import csv
-import numpy as np
 from features.featuresBuilder import user_features, information_content
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=logging.INFO)

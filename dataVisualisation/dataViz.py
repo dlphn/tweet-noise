@@ -18,8 +18,8 @@ df = pd.read_csv(current_file, encoding="utf-8")
 # print(df.head())
 # print(df.describe())
 
-columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'time', 'proportion_spamwords',
-       'orthographe', 'nb_emoji', 'RT', 'spam']
+columns = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at', 'proportion_spamwords',
+       'orthographe', 'nb_emoji', 'spam']
 df_tweets = df[columns]
 # print(df_tweets.dtypes)
 
@@ -93,7 +93,7 @@ def split(feature, categorize):
 df_tweets_categorized = df_tweets.copy(deep=True)
 # categorize_columns(['reputation', 'proportion_spamwords', 'orthographe'], categorize_proportion)
 # categorize_columns(['verified', 'RT', 'spam'], categorize_bool)
-categorize_columns(['time'], categorize_time)
+categorize_columns(['posted_at'], categorize_time)
 # print(df_tweets_categorized.head())
 
 # df2 = pd.DataFrame(df_tweets_categorized, columns=['time', 'spam'])
