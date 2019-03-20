@@ -14,7 +14,7 @@ from sklearn.preprocessing import normalize
 from scipy import sparse
 import numpy as np
 import re
-from docs.config import STOP_WORDS, BINARY_COUNT
+from tweetsClustering.docs.config import STOP_WORDS, BINARY_COUNT
 import os.path
 # from keras.models import Model
 # from keras.applications.resnet50 import ResNet50, preprocess_input

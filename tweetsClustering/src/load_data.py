@@ -13,7 +13,7 @@ import re
 # import pickle
 import pandas as pd
 # from elasticsearch import Elasticsearch, helpers
-from docs.config import ES_DATE_FORMAT, ELASTIC, DATA_PATH
+from tweetsClustering.docs.config import ES_DATE_FORMAT, ELASTIC, DATA_PATH
 from unidecode import unidecode
 # import os
 
@@ -119,7 +119,21 @@ def body(start, end, with_retweets):
 
 
 def load_data(path):
-    data = pd.read_csv(DATA_PATH + path, dtype={"label": "str", "category": "str", "id": "str", "text": "str"})
+    data = pd.read_csv(path, dtype={"label": "str", "category": "str", "id": "str", "text": "str"})
     data = data.fillna("")
     data["text"] = data.text.map(format_text)
     return data[["id", "text", "label", "category"]].sort_values("id").reset_index(drop=True)
+
+
+def load_all_data(path):
+    data = pd.read_csv(path, dtype={
+        "id": "str",
+        "label": "str",
+        "category": "str",
+        "text": "str",
+    })
+    data = data.fillna("")
+    data["text"] = data.text.map(format_text)
+    return data[['id', 'label', 'category', 'text', 'screen_name', 'nb_follower', 'nb_following', 'verified',
+                 'reputation', 'age', 'nb_tweets', 'posted_at', 'length', 'proportion_spamwords', 'orthographe',
+                 'nb_hashtag', 'nb_urls', 'nb_emoji']].sort_values("id").reset_index(drop=True)
