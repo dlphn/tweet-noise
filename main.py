@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from tweetsClustering.src.load_data import load_data, load_all_data
 from tweetsClustering.src.clustering_algo import ClusteringAlgo
 from tweetsClustering.src.compute_tfidf import TfIdf
-from classification.random_forest import train_model
+from classification.randomForest import train_model
 from spamClassifier import Classification
 import numpy as np
 pd.options.display.max_columns = 25

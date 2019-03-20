@@ -55,6 +55,7 @@ MONGODB = {
 
 ## Project structure
 
+- 'main.py' : from a dataset split the dataset into test and train. 
 - `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
 - `JSONBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
 - `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)

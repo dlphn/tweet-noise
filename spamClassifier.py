@@ -8,7 +8,7 @@ Created on Thu Mar 18 16:35 2019
 import pandas as pd
 from pymongo import MongoClient
 from features.Medias import MEDIAS, listemedias
-from classification.random_forest import predict_rf
+from classification.randomForest import predict_rf
 import sys
 
 

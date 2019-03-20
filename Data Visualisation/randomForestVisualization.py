@@ -2,7 +2,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import export_graphviz
 from subprocess import call
 from IPython.display import Image
-from classification.random_forest import *
+from classification.randomForest import *
 
 HEADERS = dataset.columns.values.tolist()
 feature_headers = ['nb_follower', 'nb_following', 'verified', 'reputation', 'age', 'nb_tweets', 'posted_at', 'length',
