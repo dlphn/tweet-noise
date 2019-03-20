@@ -94,8 +94,9 @@ def gridsearch_rf(train_x,train_y):
     grid_search.fit(train_x, train_y)
     return grid_search.best_params_
 
-#gridsearch_rf()
-df = randomtree(dataset)
-print(df.groupby(['prediction','type']).nb_urls.count())
-#print('ok')
-#randomtree(df)
+if __name__ == "__main__":
+    #gridsearch_rf()
+    df = randomtree(dataset)
+    print(df.groupby(['prediction','type']).nb_urls.count())
+    #print('ok')
+    #randomtree(df)
