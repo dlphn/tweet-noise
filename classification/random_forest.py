@@ -112,12 +112,17 @@ def gridsearch_rf(train_x,train_y):
     grid_search.fit(train_x, train_y)
     return grid_search.best_params_
 
+
 def categorize_label(x):
     if x == 'spam':
         return 0
     else:
         return 1
 
-
-
+if __name__ == "__main__":
+    #gridsearch_rf()
+    df = randomtree(dataset)
+    print(df.groupby(['prediction','type']).nb_urls.count())
+    #print('ok')
+    #randomtree(df)
 
