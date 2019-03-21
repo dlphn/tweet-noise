@@ -165,7 +165,7 @@ class FeaturesBuilder:
                 data["id_str"] +
                 user_features(data) +
                 information_content(data) +
-                "," + data["type"] +
+                "," + (data["type"] if type in data else "") +
                 "," + ('"true"' if data["spam"] else '"false"') +
                 "\n")
         self.line_count += 1
