@@ -50,7 +50,7 @@ class ArrayBuilder:
         logging.info("Total of {0} elements retrieved in {1} seconds".format(self.count, end - start))
         return self.data
 
-    def retrieve_text_and_labels(self):
+    def retrieve_text_and_labels(self, label='type'):
         start = time.time()
         logging.info("Retrieving data...")
         tweets = self.db.tweets.find()
@@ -59,25 +59,28 @@ class ArrayBuilder:
         for obj in tweets:
             self.count += 1
             texts.append(obj["extended_tweet"]["full_text"] if obj["truncated"] else obj["text"])
-            # if 'spam' in obj:
-            #    labels.append('spam' if obj['spam'] else 'actualité')
-            # else:
-            #    labels.append('?')
-            if 'type' in obj:
-                if obj['type'] == "actualité":
-                    labels.append('type actu')
-                if obj['type'] == "reaction":
-                    labels.append('type reaction')
-                if obj['type'] == "conversation":
-                    labels.append('type conversation')
-                if obj['type'] == "publicité":
-                    labels.append('type pub')
-                if obj['type'] == "bot":
-                    labels.append('type bot')
-                if obj['type'] == "other spam":
-                    labels.append('type autre')
+            if label == 'category':
+                if 'type' in obj:
+                    if obj['type'] == "actualité":
+                        labels.append('type actu')
+                    if obj['type'] == "reaction":
+                        labels.append('type reaction')
+                    if obj['type'] == "conversation":
+                        labels.append('type conversation')
+                    if obj['type'] == "publicité":
+                        labels.append('type pub')
+                    if obj['type'] == "bot":
+                        labels.append('type bot')
+                    if obj['type'] == "other spam":
+                        labels.append('type autre')
+                else:
+                    labels.append('type ?')
             else:
-                labels.append('type ?')
+                if 'spam' in obj:
+                    labels.append('spam' if obj['spam'] else 'actualité')
+                else:
+                    labels.append('?')
+
         end = time.time()
         logging.info("Total of {0} elements retrieved in {1} seconds".format(self.count, end - start))
         return texts, labels

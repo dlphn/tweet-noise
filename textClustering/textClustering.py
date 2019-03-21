@@ -107,7 +107,7 @@ class TextClustering:
 
 def get_tweets():
     data = arrayBuilder.ArrayBuilder()
-    return data.retrieve_text_and_labels()
+    return data.retrieve_text_and_labels(label='type')
 
 
 if __name__ == "__main__":
