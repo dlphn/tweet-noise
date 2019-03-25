@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s : %(message)s', level=lo
 
 class JSONBuilder:
     """
-    Retrieve data from the MongoDB database.
+    Retrieve data from the MongoDB database and write tweets in spam and actualité json files.
 
     """
     def __init__(self, category):

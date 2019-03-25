@@ -137,3 +137,10 @@ def load_all_data(path):
     return data[['id', 'label', 'category', 'text', 'screen_name', 'nb_follower', 'nb_following', 'verified',
                  'reputation', 'age', 'nb_tweets', 'posted_at', 'length', 'proportion_spamwords', 'orthographe',
                  'nb_hashtag', 'nb_urls', 'nb_emoji']].sort_values("id").reset_index(drop=True)
+
+
+if __name__ == "__main__":
+    text = "Mais alors @EPhilippePM devrait avoir à cœur de dénoncer @TeamMacronPR pour avoir " \
+           "délibérément fabriqué une FakeNews #SalutNazi Hypocrisie suprême c’est la Rapporteuse de la manipulation " \
+           "de l’information @NaimaMoutchou qui colporte la #FakeNews 🤣"
+    print(format_text(text))

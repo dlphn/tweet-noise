@@ -2,6 +2,8 @@
 """
 Created on Wed Oct 31 14:28 2018
 @author: dshi, hbaud, vlefranc
+
+Categorize features (normalisation, boolean, etc.).
 """
 
 from sklearn.preprocessing import LabelEncoder, robust_scale

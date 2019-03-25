@@ -1,4 +1,4 @@
-# from classification2 import Classification
+# from classification import Classification
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -6,6 +6,7 @@ from collections import Counter
 from sklearn import decomposition
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
+from classification.categorization import categorize_bool, categorize_type
 
 from config import current_file
 
@@ -14,9 +15,9 @@ df_tweets = pd.read_csv(current_file, encoding="utf-8")
 
 # print(df_tweets.head())
 # print(df_tweets.columns.tolist())
-# print(df_tweets.describe())
+print(df_tweets.describe())
 
-print("Âge moyen des comptes : {} jours".format(df_tweets['age'].mean()))
+# print("Âge moyen des comptes : {} jours".format(df_tweets['age'].mean()))
 
 # Répartition de spams/actualités
 nb_spam = df_tweets.groupby(['spam']).spam.count()[True]
@@ -28,6 +29,9 @@ sns.set_context("notebook", font_scale=1)
 plt.figure(1)
 fig1 = sns.countplot(x="spam", data=df_tweets)
 
+liste_classes = Counter(df_tweets['spam'])
+print(liste_classes)
+
 
 # Types de tweets
 liste_types = Counter(df_tweets['type'])
@@ -38,19 +42,6 @@ print(liste_types_tri)
 fig, ax = plt.subplots()
 fig.set_size_inches(15.7, 15, 7)
 sns.countplot(y="type", data=df_tweets)
-
-
-# Normalisation du df
-def categorize_bool(x):
-    if x:
-        return 1
-    else:
-        return 0
-
-
-def categorize_type(tweet_type):
-    types = ['actualité', 'reaction', 'conversation', 'other spam', 'publicité', 'bot']
-    return types.index(tweet_type)
 
 
 df_tweets.spam = df_tweets.spam.apply(categorize_bool)

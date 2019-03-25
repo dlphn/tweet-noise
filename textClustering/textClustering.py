@@ -93,26 +93,31 @@ class TextClustering:
         #     prediction2 = loaded_model.predict(y)
         #     print(prediction2)
 
+    def tokenize_text(self, texts):
+        """ See tokenized texts """
+        self.vectorizer = TfidfVectorizer(
+            tokenizer=self.tokenize,
+            stop_words=stopwords.words('french'),
+            lowercase=True
+        )
+
+        self.vectorizer.fit_transform(texts)
+        print(self.vectorizer.get_feature_names())
+
 
 def get_tweets():
     data = arrayBuilder.ArrayBuilder()
-    return data.retrieve_text_and_labels()
+    return data.retrieve_text_and_labels(label='type')
 
 
 if __name__ == "__main__":
-
-    # French test
-    articles = ["J'aime les frites https://t.co/JkpvrfmC6F oui",
-                "Je suis d'accord, j'aime pas la pluie... #@tropbeaulavie !",
-                "Les frites je les adore",
-                "La taxe d'habitation ne sera pas augmentée annonce le gouvernement",
-                "Cool pas d'augmentation de la taxe d'habitation !!!",
-                "Il fait trop moche aujourd'hui", ]
-    # model = TextClustering()
-    # clusters = model.cluster_texts(articles, 3)
-    # print(dict(clusters))
-    # model.predict("Des manifestants dans la rue pour exprimer leur colère face à l'augmentation de la taxe d'habitation.")
-    # model.predict("Lol je sors sans parapluie trankil et là il pleut.")
+    """model = TextClustering()
+    text = "Mais alors @EPhilippePM devrait avoir à cœur de dénoncer @TeamMacronPR pour avoir " \
+           "délibérément fabriqué une FakeNews #SalutNazi Hypocrisie suprême c’est la Rapporteuse de la manipulation " \
+           "de l’information @NaimaMoutchou qui colporte la #FakeNews 🤣"
+    text2 = "Mais alors  devrait avoir a coeur de denoncer  pour avoir deliberement fabrique une FakeNews Salut Nazi Hypocrisie supreme c est la Rapporteuse de la manipulation de l information  qui colporte la Fake News"
+    # print(model.tokenize(text))
+    model.tokenize_text([text2])"""
 
     # Tweets
     articles, labels = get_tweets()

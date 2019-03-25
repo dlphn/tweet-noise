@@ -72,8 +72,6 @@ google_api_key_file = ROOT_DIR + '/client_secret.json'
 - Save tweets in MongoDB - tweetsUpload :
     - `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
     - `loadLocalTweets.py`: save tweets from json file in MongoDB
-- `JSONBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
-- `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
 - Data Visualisation :
@@ -91,16 +89,17 @@ google_api_key_file = ROOT_DIR + '/client_secret.json'
 - Classification (npm) `bayesnpm/` : implement a simple text classifier with the Bayes NPM package
 - Features :
 	- `dictBuilder.py`
+	- `jsonBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
+	- `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)
 	- `featuresBuilder.py`: fetch data from MongoDB and build the features table
 	- `Keywords.py`: list of key words considered as spamwords, whitewords, stopwords and list of emojis
 	- `Medias.py` : list of media twitter account
 	- `clusterFeatures.py` : from a csv of clusterized tweet return the number of medias, urls and hashtags per cluster
-- Text Processing :
-	- `textProcessing.py` : petits test de Delphine [to be removed ??] 
+- Text Clustering :
     - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
 	- `doc2vect.py` : build a csv of vectorized (300x300) tweets fetch from the data base
 	- `K-means.py` : from a csv of vectorize tweets return prediction of cluster made with K-means
-    - `clusteringTest.py` : tests [to be removed]
+- Tweets Clustering
 
 
 ## Steps

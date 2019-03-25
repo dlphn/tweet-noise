@@ -20,7 +20,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 # from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix
-from config import current_file
+# from config import current_file
 
 from classification import Classification
 
@@ -176,5 +176,5 @@ def compare_classifiers(labels='spam'):
 
 
 if __name__ == "__main__":
-    # compare_classifiers('spam')
+    compare_classifiers('spam')
     compare_classifiers('type')
