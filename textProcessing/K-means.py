@@ -17,9 +17,9 @@ def Draw(pred, dataframe, name="image.png", f1_name="feature 1", f2_name="featur
     ### drawing more than five clusters
     colors = ["b", "c", "k", "m", "g"]
     for ii,pp in enumerate(pred):
-        plt.scatter(dataframe.iloc[:,2][ii],dataframe.iloc[:,3][ii],color = colors[pred[ii]], s = 4)
+        plt.scatter(dataframe.iloc[:,2][ii],dataframe.iloc[:,3][ii],color = colors[pred[ii]], s = 16)
         if dataframe.iloc[:,0][ii] == False:
-            plt.scatter(dataframe.iloc[:,2][ii],dataframe.iloc[:,3][ii], color="y", marker="*", s= 2)
+            plt.scatter(dataframe.iloc[:,2][ii],dataframe.iloc[:,3][ii], color="y", marker="*", s= 20)
     plt.xlabel(f1_name)
     plt.ylabel(f2_name)
     #plt.savefig(name)
@@ -64,7 +64,7 @@ def choose_K(n):
 
 dataframe = shape_df(dataframe)
 df_pca = PCA(dataframe.iloc[:,2:30],dataframe.iloc[:,1],8)
-inertia, pred = Clusterize(df_pca,3)
+inertia, pred = Clusterize(df_pca,5)
 
 try:
     Draw(pred, df_pca, name="clusters.pdf", f1_name='pca 1', f2_name='pca 2')

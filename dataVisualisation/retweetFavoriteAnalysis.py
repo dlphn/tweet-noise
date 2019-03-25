@@ -52,14 +52,17 @@ class FetchTweet:
         self.df.loc[self.count] = [data['id'],data['retweet_count'],data['favorite_count'],data['spam']]
 
 def show(df):
+    i=1
     print(df.dtypes)
+    print(df.columns)
     for column_index, column in enumerate(df.columns):
         if column == 'spam':
             continue
         if column == 'id':
             continue
-        plt.subplot(4, 4, column_index + 1)
+        plt.subplot(1, 2, i)
         sns.violinplot(x='spam', y=column, data=df[df[column]<100])
+        i +=1
     plt.show()
 
 
@@ -70,3 +73,4 @@ if __name__ == "__main__":
     df['retweeted'] = pd.to_numeric(df['retweeted'])
     df['favorite'] = pd.to_numeric(df['favorite'])
     print(df.groupby('spam').describe())
+    show(df)

@@ -75,8 +75,15 @@ if __name__ == "__main__":
         test.loc[index,'classification cluster'] = cluster_class
         test.loc[index,'classification random forest'] = rf_class
 
-    print(test.head())
+    #print(test.head())
     print(test.groupby(['category','classification random forest']).id.count())
+    print(test[(test['category']=='actualité')&(test['classification random forest'] == '0')].id.head())
+    print(test[(test['category']=='reaction')&(test['classification random forest'] == '0')].id.head())
+    print(test[(test['category']=='publicité')&(test['classification random forest'] == '1')].id.head())
+    print(test[(test['category']=='conversation')&(test['classification random forest'] == '1')].id.head())
+
+
+
 
     # For each tweet in test :
     #   1. Predict cluster
