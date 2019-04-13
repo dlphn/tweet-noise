@@ -4,7 +4,7 @@ import os
 import datetime
 import time
 from deepLearning.RNN import TextRNN
-import deepLearning.data_helpers as data_helpers
+import deepLearning.data_helpersBinary as data_helpers
 
 # Parameters
 # ==================================================

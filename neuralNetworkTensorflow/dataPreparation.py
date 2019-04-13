@@ -2,7 +2,7 @@ import csv
 import json
 import random
 
-# Open the CSV
+# Open the CSV : on récupère les tweets avec id + texte non tronqué
 f = open('/home/valentin/Documents/3A/OSY/TweetNoise/tweets_all_2019-03-06.csv', 'r')
 
 reader = csv.DictReader(f)
@@ -23,6 +23,7 @@ text = []
 
 random.shuffle(rows)
 
+#séparation du dataset en deux ensembles apprentissage / test
 for i in range(len(rows)) :
     if i < len(rows)*0.8:
         if rows[i]["category"] == "actualité" :
