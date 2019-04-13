@@ -5,7 +5,7 @@ import numpy as np
 import os
 import time
 import datetime
-import deepLearning.data_helpersBinary as data_helpers
+import deepLearning.data_helpers as data_helpers
 from deepLearning.CNN import TextCNN
 from tensorflow.contrib import learn
 import csv

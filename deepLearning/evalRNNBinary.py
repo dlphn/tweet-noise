@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import os
-import deepLearning.data_helpersBinary as data_helpers
+import deepLearning.data_helpers as data_helpers
 
 
 # Parameters
