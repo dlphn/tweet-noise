@@ -9,6 +9,7 @@ import deepLearning.data_helpersBinary as data_helpers
 from deepLearning.CNN import TextCNN
 from tensorflow.contrib import learn
 import csv
+import json
 
 # Parameters
 # ==================================================
@@ -18,22 +19,25 @@ tf.flags.DEFINE_string("positive_data_file", "test_data_actualite.json", "Data s
 tf.flags.DEFINE_string("negative_data_file", "test_data_spam.json", "Data source for the negative data.")
 
 # Eval Parameters
-tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "./runs/1555143489/checkpoints", "Checkpoint directory from training run")
-tf.flags.DEFINE_string("voc_dir", "./runs/1555143489/vocab", "Checkpoint directory from training run")
+"best run : 1555164573 : dropout 0.9, l2 : 0.0, num_epoch : 500 , batch size : 32"
+tf.flags.DEFINE_integer("batch_size", 1054,"batch Size (default: 64)")
+tf.flags.DEFINE_string("checkpoint_dir", "./runs/1555164573/checkpoints", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("voc_dir", "./runs/1555164573/vocab", "Checkpoint directory from training run")
 tf.flags.DEFINE_boolean("eval_train", False, "Evaluate on all training data")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
 tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
 
-
 FLAGS = tf.flags.FLAGS
-# FLAGS._parse_flags()
-# print("\nParameters:")
-# for attr, value in sorted(FLAGS.__flags.items()):
-#     print("{}={}".format(attr.upper(), value))
-# print("")
+
+jsonFileActu = open("test_data_actualite.json", "r")
+jsonObjActu = json.load(jsonFileActu)
+nbActu = len(jsonObjActu)
+
+jsonFileSpam = open("test_data_spam.json", "r")
+jsonObjSpam = json.load(jsonFileSpam)
+nbSpam = len(jsonObjSpam)
 
 x_raw, y_test = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
 y_test = np.argmax(y_test, axis=1)
@@ -80,12 +84,19 @@ with graph.as_default():
 # Print accuracy if y_test is defined
 if y_test is not None:
     correct_predictions = float(sum(all_predictions == y_test))
+    true_positive = float(sum(all_predictions[: nbActu] == y_test[: nbActu]))
+    precision = true_positive / sum(all_predictions)
+    recall = true_positive / float(len(y_test[: nbActu]))
+    fscore = 2 * precision * recall / (precision + recall)
     print("Total number of test examples: {}".format(len(y_test)))
-    print("Accuracy: {:g}".format(correct_predictions/float(len(y_test))))
+    print("Accuracy: {:g}".format(correct_predictions / float(len(y_test))))
+    print("Precision: {:g}".format(precision))
+    print("Recall: {:g}".format(recall))
+    print("F Score: {:g}".format(fscore))
 
 # Save the evaluation to a csv
 predictions_human_readable = np.column_stack((np.array(x_raw), all_predictions))
-out_path = os.path.join(FLAGS.checkpoint_dir, "..", "prediction.csv")
+out_path = os.path.join(FLAGS.checkpoint_dir, "prediction.csv")
 print("Saving evaluation to {0}".format(out_path))
 
 with open(out_path, 'w') as f:

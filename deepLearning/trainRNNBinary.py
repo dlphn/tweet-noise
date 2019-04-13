@@ -16,16 +16,16 @@ tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training d
 tf.flags.DEFINE_integer("max_sentence_length", 100, "Max sentence length in train/test data (Default: 100)")
 
 # Model Hyperparameters
-tf.flags.DEFINE_string("cell_type", "vanilla", "Type of rnn cell. Choose 'vanilla' or 'lstm' or 'gru' (Default: vanilla)")
+tf.flags.DEFINE_string("cell_type", "gru", "Type of rnn cell. Choose 'vanilla' or 'lstm' or 'gru' (Default: vanilla)")
 tf.flags.DEFINE_string("word2vec", None, "Word2vec file with pre-trained embeddings")
 tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding (Default: 300)")
 tf.flags.DEFINE_integer("hidden_size", 128, "Dimensionality of character embedding (Default: 128)")
-tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (Default: 0.5)")
+tf.flags.DEFINE_float("dropout_keep_prob", 0.9, "Dropout keep probability (Default: 0.5)")
 tf.flags.DEFINE_float("l2_reg_lambda", 3.0, "L2 regularization lambda (Default: 3.0)")
 
 # Training parameters
-tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (Default: 64)")
-tf.flags.DEFINE_integer("num_epochs", 1000, "Number of training epochs (Default: 100)")
+tf.flags.DEFINE_integer("batch_size", 32, "Batch Size (Default: 64)")
+tf.flags.DEFINE_integer("num_epochs", 500, "Number of training epochs (Default: 100)")
 tf.flags.DEFINE_integer("display_every", 10, "Number of iterations to display training info.")
 tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps")
 tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps")
