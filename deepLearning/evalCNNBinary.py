@@ -3,10 +3,7 @@
 import tensorflow as tf
 import numpy as np
 import os
-import time
-import datetime
 import deepLearning.data_helpersBinary as data_helpers
-from deepLearning.CNN import TextCNN
 from tensorflow.contrib import learn
 import csv
 import json
@@ -22,7 +19,7 @@ tf.flags.DEFINE_string("negative_data_file", "test_data_spam.json", "Data source
 "best run : 1555164573 : dropout 0.9, l2 : 0.0, num_epoch : 500 , batch size : 32"
 tf.flags.DEFINE_integer("batch_size", 1054,"batch Size (default: 64)")
 tf.flags.DEFINE_string("checkpoint_dir", "./runs/1555164573/checkpoints", "Checkpoint directory from training run")
-tf.flags.DEFINE_string("voc_dir", "./runs/1555164573/vocab", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("voc_dir", "./runs/1555164573/text_vocab", "Checkpoint directory from training run")
 tf.flags.DEFINE_boolean("eval_train", False, "Evaluate on all training data")
 
 # Misc Parameters

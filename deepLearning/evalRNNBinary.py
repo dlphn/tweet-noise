@@ -3,6 +3,7 @@ import numpy as np
 import os
 import deepLearning.data_helpersBinary as data_helpers
 import json
+import csv
 
 # Parameters
 # ==================================================
@@ -92,6 +93,14 @@ def eval():
             print("Precision: {:g}".format(precision))
             print("Recall: {:g}".format(recall))
             print("F Score: {:g}".format(fscore))
+
+            # Save the evaluation to a csv
+            predictions_human_readable = np.column_stack((np.array(x_text), all_predictions))
+            out_path = os.path.join(FLAGS.checkpoint_dir, "prediction.csv")
+            print("Saving evaluation to {0}".format(out_path))
+
+            with open(out_path, 'w') as f:
+                csv.writer(f).writerows(predictions_human_readable)
 
 def main(_):
     eval()

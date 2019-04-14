@@ -28,6 +28,7 @@ tf.flags.DEFINE_float("l2_reg_lambda", 3.0, "L2 regularization lambda (default: 
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 32, "Batch Size (default: 64)")
 tf.flags.DEFINE_integer("num_epochs", 500, "Number of training epochs (default: 200)")
+tf.flags.DEFINE_integer("display_every", 10, "Number of iterations to display training info.")
 tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
 tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
 tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store (default: 5)")
@@ -42,7 +43,7 @@ FLAGS = tf.flags.FLAGS
 #     print("{}={}".format(attr.upper(), value))
 # print("")
 
-def preprocess():
+def train():
     # Data Preparation
     # ==================================================
 
@@ -70,9 +71,7 @@ def preprocess():
 
     print("Vocabulary Size: {:d}".format(len(vocab_processor.vocabulary_)))
     print("Train/Dev split: {:d}/{:d}".format(len(y_train), len(y_dev)))
-    return x_train, y_train, vocab_processor, x_dev, y_dev
 
-def train(x_train, y_train, vocab_processor, x_dev, y_dev):
     # Training
     # ==================================================
 
@@ -134,12 +133,12 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
             saver = tf.train.Saver(tf.global_variables(), max_to_keep=FLAGS.num_checkpoints)
 
             # Write vocabulary
-            vocab_processor.save(os.path.join(out_dir, "vocab"))
+            vocab_processor.save(os.path.join(out_dir, "text_vocab"))
 
             # Initialize all variables
             sess.run(tf.global_variables_initializer())
 
-            def train_step(x_batch, y_batch):
+            def train_step(x_batch, y_batch, display_every):
                 """
                 A single training step
                 """
@@ -151,8 +150,9 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
                 _, step, summaries, loss, accuracy = sess.run(
                     [train_op, global_step, train_summary_op, cnn.loss, cnn.accuracy],
                     feed_dict)
-                time_str = datetime.datetime.now().isoformat()
-                print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
+                if step % display_every == 0:
+                    time_str = datetime.datetime.now().isoformat()
+                    print("{}: step {}, loss {:g}, acc {:g}".format(time_str, step, loss, accuracy))
                 train_summary_writer.add_summary(summaries, step)
 
             def dev_step(x_batch, y_batch, writer=None):
@@ -178,7 +178,7 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
             # Training loop. For each batch...
             for batch in batches:
                 x_batch, y_batch = zip(*batch)
-                train_step(x_batch, y_batch)
+                train_step(x_batch, y_batch, FLAGS.display_every)
                 current_step = tf.train.global_step(sess, global_step)
                 if current_step % FLAGS.evaluate_every == 0:
                     print("\nEvaluation:")
@@ -189,8 +189,7 @@ def train(x_train, y_train, vocab_processor, x_dev, y_dev):
                     print("Saved model checkpoint to {}\n".format(path))
 
 def main(argv=None):
-    x_train, y_train, vocab_processor, x_dev, y_dev = preprocess()
-    train(x_train, y_train, vocab_processor, x_dev, y_dev)
+    train()
 
 if __name__ == '__main__':
     tf.app.run()
