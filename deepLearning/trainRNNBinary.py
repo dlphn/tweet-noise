@@ -13,24 +13,24 @@ import deepLearning.data_helpersBinary as data_helpers
 tf.flags.DEFINE_string("pos_dir", "train_data_actualite.json", "Data source for the positive data.")
 tf.flags.DEFINE_string("neg_dir", "train_data_spam.json", "Data source for the negative data.")
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_integer("max_sentence_length", 100, "Max sentence length in train/test data (Default: 100)")
+tf.flags.DEFINE_integer("max_sentence_length", 100, "Max sentence length in train_cnn_binary/test data")
 
 # Model Hyperparameters
-tf.flags.DEFINE_string("cell_type", "gru", "Type of rnn cell. Choose 'vanilla' or 'lstm' or 'gru' (Default: vanilla)")
+tf.flags.DEFINE_string("cell_type", "gru", "Type of rnn cell. Choose 'vanilla' or 'lstm' or 'gru'")
 tf.flags.DEFINE_string("word2vec", None, "Word2vec file with pre-trained embeddings")
-tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding (Default: 300)")
-tf.flags.DEFINE_integer("hidden_size", 128, "Dimensionality of character embedding (Default: 128)")
-tf.flags.DEFINE_float("dropout_keep_prob", 0.9, "Dropout keep probability (Default: 0.5)")
-tf.flags.DEFINE_float("l2_reg_lambda", 3.0, "L2 regularization lambda (Default: 3.0)")
+tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding")
+tf.flags.DEFINE_integer("hidden_size", 128, "Dimensionality of character embedding")
+tf.flags.DEFINE_float("dropout_keep_prob", 0.9, "Dropout keep probability")
+tf.flags.DEFINE_float("l2_reg_lambda", 3.0, "L2 regularization lambda")
 
 # Training parameters
-tf.flags.DEFINE_integer("batch_size", 32, "Batch Size (Default: 64)")
-tf.flags.DEFINE_integer("num_epochs", 500, "Number of training epochs (Default: 100)")
+tf.flags.DEFINE_integer("batch_size", 32, "Batch Size")
+tf.flags.DEFINE_integer("num_epochs", 500, "Number of training epochs")
 tf.flags.DEFINE_integer("display_every", 10, "Number of iterations to display training info.")
 tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps")
 tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps")
 tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store")
-tf.flags.DEFINE_float("learning_rate", 1e-3, "Which learning rate to start with. (Default: 1e-3)")
+tf.flags.DEFINE_float("learning_rate", 1e-3, "Which learning rate to start with.")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -39,7 +39,7 @@ tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on 
 
 FLAGS = tf.flags.FLAGS
 
-def train():
+def train_rnn_binary():
     with tf.device('/cpu:0'):
         x_text, y = data_helpers.load_data_and_labels(FLAGS.pos_dir, FLAGS.neg_dir)
 
@@ -57,7 +57,7 @@ def train():
     x_shuffled = x[shuffle_indices]
     y_shuffled = y[shuffle_indices]
 
-    # Split train/test set
+    # Split train_cnn_binary/test set
     dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
     x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
     y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
@@ -94,7 +94,7 @@ def train():
 
             # Train Summaries
             train_summary_op = tf.summary.merge([loss_summary, acc_summary])
-            train_summary_dir = os.path.join(out_dir, "summaries", "train")
+            train_summary_dir = os.path.join(out_dir, "summaries", "train_cnn_binary")
             train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
 
             # Dev summaries
@@ -185,7 +185,7 @@ def train():
 
 
 def main(_):
-    train()
+    train_rnn_binary()
 
 
 if __name__ == "__main__":

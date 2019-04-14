@@ -19,19 +19,19 @@ tf.flags.DEFINE_string("positive_data_file", "train_data_actualite.json", "Data 
 tf.flags.DEFINE_string("negative_data_file", "train_data_spam.json", "Data source for the negative data.")
 
 # Model Hyperparameters
-tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
-tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
-tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
-tf.flags.DEFINE_float("dropout_keep_prob", 0.9, "Dropout keep probability (default: 0.5)")
-tf.flags.DEFINE_float("l2_reg_lambda", 3.0, "L2 regularization lambda (default: 0.0)")
+tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding")
+tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes")
+tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size")
+tf.flags.DEFINE_float("dropout_keep_prob", 0.9, "Dropout keep probability")
+tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda")
 
 # Training parameters
-tf.flags.DEFINE_integer("batch_size", 32, "Batch Size (default: 64)")
-tf.flags.DEFINE_integer("num_epochs", 500, "Number of training epochs (default: 200)")
+tf.flags.DEFINE_integer("batch_size", 32, "Batch Size")
+tf.flags.DEFINE_integer("num_epochs", 500, "Number of training epochs")
 tf.flags.DEFINE_integer("display_every", 10, "Number of iterations to display training info.")
-tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
-tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
-tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store (default: 5)")
+tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps")
+tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps")
+tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store")
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
 tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
@@ -39,7 +39,7 @@ tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on 
 FLAGS = tf.flags.FLAGS
 
 
-def train():
+def train_cnn_binary():
     # Data Preparation
     # ==================================================
 
@@ -58,7 +58,7 @@ def train():
     x_shuffled = x[shuffle_indices]
     y_shuffled = y[shuffle_indices]
 
-    # Split train/test set
+    # Split train_cnn_binary/test set
     dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
     x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
     y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
@@ -113,7 +113,7 @@ def train():
 
             # Train Summaries
             train_summary_op = tf.summary.merge([loss_summary, acc_summary, grad_summaries_merged])
-            train_summary_dir = os.path.join(out_dir, "summaries", "train")
+            train_summary_dir = os.path.join(out_dir, "summaries", "train_cnn_binary")
             train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
 
             # Dev summaries
@@ -185,7 +185,7 @@ def train():
                     print("Saved model checkpoint to {}\n".format(path))
 
 def main(argv=None):
-    train()
+    train_cnn_binary()
 
 if __name__ == '__main__':
     tf.app.run()
