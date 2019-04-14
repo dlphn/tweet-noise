@@ -21,26 +21,27 @@ tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training d
 tf.flags.DEFINE_string("data_file", "train_data_multi.json", "Data source for the training set.")
 
 # Model Hyperparameters
-tf.flags.DEFINE_integer("embedding_dim", 256, "Dimensionality of character embedding (default: 128)")
-tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
-tf.flags.DEFINE_integer("num_filters", 256, "Number of filters per filter size (default: 128)")
-tf.flags.DEFINE_float("dropout_keep_prob", 0.75, "Dropout keep probability (default: 0.5)")
-tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 0.0)")
+tf.flags.DEFINE_integer("embedding_dim", 256, "Dimensionality of character embedding")
+tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes")
+tf.flags.DEFINE_integer("num_filters", 256, "Number of filters per filter size")
+tf.flags.DEFINE_float("dropout_keep_prob", 0.75, "Dropout keep probability")
+tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda")
 
 # Training parameters
-tf.flags.DEFINE_integer("batch_size", 16, "Batch Size (default: 64)")
-tf.flags.DEFINE_integer("num_epochs", 5, "Number of training epochs (default: 200)")
-tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
+tf.flags.DEFINE_integer("batch_size", 16, "Batch Size")
+tf.flags.DEFINE_integer("num_epochs", 5, "Number of training epochs")
+tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps")
 tf.flags.DEFINE_integer("display_every", 10, "Number of iterations to display training info.")
-tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
-tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store (default: 5)")
+tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps")
+tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store")
+
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
 tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
 
 FLAGS = tf.flags.FLAGS
 
-def train_cnn():
+def train_cnn_multi():
 	"""Step 0: load sentences, labels, and training parameters"""
 	x_raw, y_raw, df, labels = data_helpers.load_data_and_labels(FLAGS.data_file)
 
@@ -51,10 +52,10 @@ def train_cnn():
 	x = np.array(list(vocab_processor.fit_transform(x_raw)))
 	y = np.array(y_raw)
 
-	"""Step 2: split the original dataset into train and test sets"""
+	"""Step 2: split the original dataset into train_cnn_binary and test sets"""
 	x_, x_test, y_, y_test = train_test_split(x, y, test_size=0.1, random_state=42)
 
-	"""Step 3: shuffle the train set and split the train set into train and dev sets"""
+	"""Step 3: shuffle the train_cnn_binary set and split the train_cnn_binary set into train_cnn_binary and dev sets"""
 	shuffle_indices = np.random.permutation(np.arange(len(y_)))
 	x_shuffled = x_[shuffle_indices]
 	y_shuffled = y_[shuffle_indices]
@@ -96,7 +97,7 @@ def train_cnn():
 				os.makedirs(checkpoint_dir)
 			saver = tf.train.Saver()
 
-			# One training step: train the model with one batch
+			# One training step: train_cnn_binary the model with one batch
 
 			def train_step(x_batch, y_batch):
 				feed_dict = {
@@ -119,7 +120,7 @@ def train_cnn():
 			train_batches = data_helpers.batch_iter(list(zip(x_train, y_train)), FLAGS.batch_size, FLAGS.num_epochs)
 			best_accuracy, best_at_step = 0, 0
 
-			"""Step 6: train the cnn model with x_train and y_train (batch by batch)"""
+			"""Step 6: train_cnn_binary the cnn model with x_train and y_train (batch by batch)"""
 			for train_batch in train_batches:
 				x_train_batch, y_train_batch = zip(*train_batch)
 				train_step(x_train_batch, y_train_batch)
@@ -165,5 +166,5 @@ def train_cnn():
 			print('The training is complete')
 
 if __name__ == '__main__':
-	# python3 train.py ./data/consumer_complaints.csv.zip ./parameters.json
-    train_cnn()
+	# python3 train_cnn_binary.py ./data/consumer_complaints.csv.zip ./parameters.json
+    train_cnn_multi()
