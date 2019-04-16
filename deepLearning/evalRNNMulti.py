@@ -1,5 +1,4 @@
 import os
-import logging
 import deepLearning.data_helpersMulti as data_helpers
 import numpy as np
 import tensorflow as tf
@@ -7,7 +6,6 @@ from tensorflow.contrib import learn
 import json
 import csv
 
-logging.getLogger().setLevel(logging.INFO)
 
 # Parameters
 # ==================================================
@@ -29,7 +27,6 @@ FLAGS = tf.flags.FLAGS
 
 def eval_rnn_multi():
     checkpoint_file = tf.train.latest_checkpoint(FLAGS.model_dir + "checkpoints")
-    logging.critical('Loaded the trained model: {}'.format(checkpoint_file))
 
     test_examples = json.loads(open(FLAGS.test_data_file).read())
 
@@ -41,13 +38,11 @@ def eval_rnn_multi():
 
     x_raw = [example['text'] for example in test_examples]
     x_eval = [data_helpers.clean_str(x) for x in x_raw]
-    logging.info('The number of x_test: {}'.format(len(x_eval)))
 
     y_test = None
     if 'class' in test_examples[0]:
         y_raw = [example['class'] for example in test_examples]
         y_test = [label_dict[y] for y in y_raw]
-        logging.info('The number of y_test: {}'.format(len(y_test)))
 
     vocab_path = os.path.join(FLAGS.model_dir + "text_vocab")
     vocab_processor = learn.preprocessing.VocabularyProcessor.restore(vocab_path)
