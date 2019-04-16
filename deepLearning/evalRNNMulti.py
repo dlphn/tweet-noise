@@ -1,5 +1,4 @@
 import os
-import logging
 import deepLearning.data_helpersMulti as data_helpers
 import numpy as np
 import tensorflow as tf
@@ -7,20 +6,17 @@ from tensorflow.contrib import learn
 import json
 import csv
 
-logging.getLogger().setLevel(logging.INFO)
 
 # Parameters
 # ==================================================
+tf.flags.DEFINE_string("model_dir", "./runs/1555225577/", "Model directory from training run")
 
 # Data loading params
-tf.flags.DEFINE_string("pos_dir", "test_data_actualite.json", "Data source for the positive data.")
-tf.flags.DEFINE_string("neg_dir", "test_data_spam.json", "Data source for the negative data.")
+tf.flags.DEFINE_string("test_data_file", "test_data_multi.json", "Data source for the test data.")
 
 # Eval Parameters
 "best run : 1555225577 : gru, dropout 0.75, l2 : 0.0, num_epoch : 5 , batch size : 32, learning_rate : 1e-3"
 tf.flags.DEFINE_integer("batch_size", 1054, "Batch Size (Default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "./runs/1555225577/checkpoints", "Checkpoint directory from training run")
-tf.flags.DEFINE_string("voc_dir", "./runs/1555225577/text_vocab", "Checkpoint directory from training run")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -29,13 +25,10 @@ tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on 
 
 FLAGS = tf.flags.FLAGS
 
-def eval():
-    """Step 0: load trained model and parameters"""
-    checkpoint_file = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
-    logging.critical('Loaded the trained model: {}'.format(checkpoint_file))
+def eval_rnn_multi():
+    checkpoint_file = tf.train.latest_checkpoint(FLAGS.model_dir + "checkpoints")
 
-    """Step 1: load data for prediction"""
-    test_examples = json.loads(open("test_data_multi.json").read())
+    test_examples = json.loads(open(FLAGS.test_data_file).read())
 
     # labels.json was saved during training, and it has to be loaded during prediction
     labels = json.loads(open('./labels.json').read())
@@ -43,21 +36,17 @@ def eval():
     np.fill_diagonal(one_hot, 1)
     label_dict = dict(zip(labels, one_hot))
 
-    x_text = [example['text'] for example in test_examples]
-    x_eval = [data_helpers.clean_str(x) for x in x_text]
-    logging.info('The number of x_test: {}'.format(len(x_eval)))
+    x_raw = [example['text'] for example in test_examples]
+    x_eval = [data_helpers.clean_str(x) for x in x_raw]
 
     y_test = None
     if 'class' in test_examples[0]:
         y_raw = [example['class'] for example in test_examples]
         y_test = [label_dict[y] for y in y_raw]
-        logging.info('The number of y_test: {}'.format(len(y_test)))
 
-    vocab_path = os.path.join(FLAGS.voc_dir)
+    vocab_path = os.path.join(FLAGS.model_dir + "text_vocab")
     vocab_processor = learn.preprocessing.VocabularyProcessor.restore(vocab_path)
     x_eval = np.array(list(vocab_processor.transform(x_eval)))
-
-    checkpoint_file = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
 
     graph = tf.Graph()
     with graph.as_default():
@@ -72,7 +61,6 @@ def eval():
 
             # Get the placeholders from the graph by name
             input_text = graph.get_operation_by_name("input_text").outputs[0]
-            # input_y = graph.get_operation_by_name("input_y").outputs[0]
             dropout_keep_prob = graph.get_operation_by_name("dropout_keep_prob").outputs[0]
 
             # Tensors we want to evaluate
@@ -89,7 +77,6 @@ def eval():
                 all_predictions = np.concatenate([all_predictions, batch_predictions])
 
     if y_test is not None:
-        print(y_test)
         y_test = np.argmax(y_test, axis=1)
         correct_predictions = sum(all_predictions == y_test)
 
@@ -120,16 +107,13 @@ def eval():
         print("F Score: {:g}".format(fscore))
 
         # Save the evaluation to a csv
-        predictions_human_readable = np.column_stack((np.array(x_text), all_predictions))
-        out_path = os.path.join(FLAGS.checkpoint_dir, "prediction.csv")
+        predictions_human_readable = np.column_stack((np.array(x_raw), all_predictions))
+        out_path = os.path.join(FLAGS.model_dir + "checkpoints", "prediction.csv")
         print("Saving evaluation to {0}".format(out_path))
 
         with open(out_path, 'w') as f:
             csv.writer(f).writerows(predictions_human_readable)
 
-def main(_):
-    eval()
-
 
 if __name__ == "__main__":
-    tf.app.run()
+    eval_rnn_multi()
