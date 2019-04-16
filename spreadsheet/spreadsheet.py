@@ -1,3 +1,7 @@
+"""
+Read or write data in Google Spreadsheet
+"""
+
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from config import google_api_key_file
@@ -18,7 +22,9 @@ class SpreadSheet:
         self.row_id = 4
 
     def read(self):
-        # Extract and print all of the values
+        """
+        Extract and print all of the values
+        """
         list_of_hashes = self.sheet.get_all_records()
         list_of_lists = self.sheet.get_all_values()
         print(list_of_hashes)
@@ -36,8 +42,6 @@ class SpreadSheet:
         return self.sheet.cell(row, col).value
 
     def write(self, row):
-        # self.sheet.update_cell(19, 3, "I just wrote to a spreadsheet using Python!")
-        # row = ["I'm", "inserting", "a", "row", "into", "a,", "Spreadsheet", "with", "Python"]
         index = self.row_id
         self.sheet.insert_row(row, index)
         self.row_id += 1
@@ -46,6 +50,4 @@ class SpreadSheet:
 if __name__ == '__main__':
     spreadsheet_api = SpreadSheet("Tests clustering")
     spreadsheet_api.read()
-    # spreadsheet_api.write(["I'm", "inserting", "a", "row", "into", "a,", "Spreadsheet", "with", "Python"])
-    # print(int(spreadsheet_api.read_cell(4, 1)) + 1)
     print(spreadsheet_api.get_next_row_id())

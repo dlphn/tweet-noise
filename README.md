@@ -20,6 +20,8 @@ pip install -r requirements.txt
 
 Add a `config.py` file which contains Twitter API and MongoDB keys.
 ```python
+import os
+
 # OAuth authentification keys to Twitter API
 ACCESS = (
     # consumer_key,
@@ -35,6 +37,8 @@ LANG = 'fr'
 
 # Directory where tweets files are stored
 FILEDIR = str
+PROJECT_DIR = "/path/to/tweet-noise/"
+DATA_DIR = PROJECT_DIR + "data/"
 
 # Number of tweets in each file
 FILEBREAK = 1000
@@ -50,38 +54,52 @@ MONGODB = {
     "PORT": 27017,
     "DATABASE": str
 }
+
+# features file
+current_file = FILEDIR + "tweets_data.csv"
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# For reading/writing in Google Spreadsheet
+google_api_key_file = ROOT_DIR + '/client_secret.json'
+
 ```
 
 
 ## Project structure
 
-- `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
-- `JSONBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
-- `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)
+- `main.py` : from a dataset split the dataset into test and train. 
+- Save tweets in MongoDB - tweetsUpload :
+    - `streamingAPI.py`: fetch data from Twitter API and save in MongoDB
+    - `loadLocalTweets.py`: save tweets from json file in MongoDB
 - `dataLabelling.py`: small algorithm to ease the data labelling process
 - `classification.py`: fetch the features tables and categorize the different features
 - Data Visualisation :
-    - `features_analysis.py` : matplotlib and seaborn
-    - `dataViz.py` : matplotlib tests
+    - `featuresAnalysis.py` : matplotlib and seaborn
+    - `dataViz.py` : matplotlib tests - **TO BE REMOVED**
+    - `randomForestVisualization.py` : plot randome forest tree
+    - `retweetFavoriteAnalysis.py`
 - Classification :
     - `IfClassification.py` : simple if/else classification
-    - `scikit_classification.py` : test and compare different scikitlearn classifiers
+    - `scikitClassification.py` : test and compare different scikitlearn classifiers
     - `KNearest.py` : K Nearest Neighbours classifier
-    - `random_forest.py` : Random Forest classifier
-    - `Support_Vector_Machine.py` : Support Vector Machine classifier
+    - `randomForest.py` : Random Forest classifier
+    - `supportVectorMachine.py` : Support Vector Machine classifier
+    - `classification2.py`
 - Classification (npm) `bayesnpm/` : implement a simple text classifier with the Bayes NPM package
 - Features :
-	- 'dictBuilder.py' :
+	- `dictBuilder.py`
+	- `jsonBuilder.py`: fetch data from MongoDB and build 2 JSON files for spam and info
+	- `arrayBuilder.py`: fetch data from MongoDB and build an array of all the tweets (text and label only)
 	- `featuresBuilder.py`: fetch data from MongoDB and build the features table
 	- `Keywords.py`: list of key words considered as spamwords, whitewords, stopwords and list of emojis
-	- 'Medias.py' : list of media twitter account
-	- 'Cluster_features.py' : from a csv of clusterized tweet return the number of medias, urls and hashtags per cluster
-- Textprocessing :
-	- `textProcessing.py` : petits test de Delphine [to be removed ??] 
+	- `Medias.py` : list of media twitter account
+	- `clusterFeatures.py` : from a csv of clusterized tweet return the number of medias, urls and hashtags per cluster
+- Text Clustering :
     - `textClustering.py` : text processing and tf-idf vectorizer fitted on a k-means model 
 	- `doc2vect.py` : build a csv of vectorized (300x300) tweets fetch from the data base
 	- `K-means.py` : from a csv of vectorize tweets return prediction of cluster made with K-means
-    - `clusteringTest.py` : tests [to be removed]
+- Tweets Clustering
 
 
 ## Steps
@@ -90,15 +108,15 @@ MONGODB = {
 
 Fetch data from Twitter API.
 
-Run `streamingAPI.py`.
+Run `tweetsUpload/streamingAPI.py`.
 
-Or upload a json file of tweets by running `loadLocalTweets.py`.
+Or upload a json file of tweets by running `tweetsUpload/loadLocalTweets.py`.
 
 ### 2. Data Preprocessing
 
-Build features file.
+Build features file by running `features/featuresBuilder.py`.
 
-Run `features.featuresBuilder.py`.
+Or build csv file with text by running `arrayBuilder.py`.
 
 ### 3. Visualization
 
@@ -106,11 +124,17 @@ Run `features_analysis.py` from `Data Visualisation/`.
 
 ### 4. Classification
 
-Run `classification.scikit_classification.py` to compare different scikit-learn classifiers.
+Run `classification.scikitClassification.py` to compare different scikit-learn classifiers.
 
 ### 5. Clustering
 
 Run `testClustering.py` or `tweets-clustering/__init__.py`.
+
+### 6. Clustering + Classification
+
+Run `main.py`.
+
+### 7. Deep Learning
 
 ## Features stored in database
 
